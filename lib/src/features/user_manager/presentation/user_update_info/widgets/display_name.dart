@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_passmanager/src/features/user_manager/user_manager.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
 
 class DisplayName extends StatelessWidget {
@@ -16,26 +15,20 @@ class DisplayName extends StatelessWidget {
         children: [
           const UserInfoView(),
           const SizedBox(height: 35.0),
-          BlocBuilder<UserUpdateInfoCubit, UserUpdateInfoState>(
-            builder: (context, state) {
-              return TextFormField(
-                keyboardType: TextInputType.name,
-                decoration: InputDecoration(
-                  labelText: "displayNameGeneral".tr,
-                  border: OutlineInputBorder(
-                    borderSide: const BorderSide(),
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                ),
-                onChanged: (displayName) => context
-                    .read<UserUpdateInfoCubit>()
-                    .nameChanged(displayName),
-              );
-            },
+          TextFormField(
+            keyboardType: TextInputType.name,
+            decoration: InputDecoration(
+              labelText: "displayNameGeneral".tr,
+              border: OutlineInputBorder(
+                borderSide: const BorderSide(),
+                borderRadius: BorderRadius.circular(10),
+              ),
+            ),
+            onChanged: (displayName) {},
           ),
           ElevatedButton(
-            onPressed: () => context.read<UserUpdateInfoCubit>().submitted(),
-            child: Text('Change Name'),
+            onPressed: () {},
+            child: const Text('Change Name'),
           )
         ],
       ),

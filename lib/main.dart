@@ -108,7 +108,7 @@ class AppView extends StatelessWidget {
       locale: controller.language,
       fallbackLocale: const Locale('en', 'US'),
       translations: AppTranslation(),
-      initialRoute: AppRoutes.skeleton,
+      initialRoute: AppRoutes.signIn,
       defaultTransition: Transition.fade,
     );
   }

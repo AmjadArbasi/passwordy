@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_passmanager/src/core/core.dart';
 import 'package:flutter_application_passmanager/src/features/features.dart';
-import 'package:flutter_application_passmanager/src/features/user_manager/user_manager.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
 
 class Profile extends StatelessWidget {
@@ -57,8 +55,7 @@ class Profile extends StatelessWidget {
                 return Align(
                   alignment: Alignment.topLeft,
                   child: IconButton(
-                    onPressed: () =>
-                        context.read<AppBloc>().add(AppLogoutRequested()),
+                    onPressed: () {},
                     icon: const Icon(
                       Icons.logout,
                       size: 40,

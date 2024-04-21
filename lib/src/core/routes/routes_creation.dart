@@ -45,14 +45,6 @@ class Routes {
       page: () => const ActivitiesLog(),
     ),
     GetPage(
-      name: AppRoutes.signIn,
-      page: () => const SignIn(),
-    ),
-    GetPage(
-      name: AppRoutes.signUp,
-      page: () => const SignUp(),
-    ),
-    GetPage(
       name: AppRoutes.onBoarding,
       page: () => const Onboarding(),
     ),
