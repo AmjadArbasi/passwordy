@@ -1,0 +1,105 @@
+import 'package:equatable/equatable.dart';
+import 'package:flutter_application_passmanager/src/core/core.dart';
+import 'package:flutter_application_passmanager/src/features/category_manager/category_manager.dart';
+
+/// {@template catchwordEntity}
+/// A single catchword object
+///
+/// Contains [id], [name], [accountId], [passcode] and [createdAt]
+///
+/// [Catchword] is immutable and can be copied using [copyWith],
+/// {@endtemplate}
+class CatchwordEntity extends Equatable
+    implements DataMapperModel<CatchwordModel> {
+  /// {@macro catchwordEntity}
+  CatchwordEntity({
+    required this.name,
+    required this.accountId,
+    required this.passcode,
+    this.isVisible = false,
+    DateTime? createdAt,
+    this.id,
+  }) : createdAt = createdAt ??
+            DateTime(
+              DateTime.now().year,
+              DateTime.now().month,
+              DateTime.now().day,
+              DateTime.now().hour,
+              DateTime.now().minute,
+            );
+
+  /// The unique identifier
+  ///
+  /// can not be empty
+  final int? id;
+
+  /// The name of Catchword account
+  ///
+  /// may not be empty
+  final String name;
+
+  /// The accound id of the service
+  ///
+  /// cant be empty
+  final String accountId;
+
+  /// The image path
+  /// final String path;
+
+  /// The passcode
+  ///
+  /// cant be empty
+  final String passcode;
+
+  /// The isVisible
+  /// initital value is false
+  final bool isVisible;
+
+  /// The date of created the catchword
+  final DateTime createdAt;
+
+  @override
+  List<Object?> get props {
+    return [
+      id,
+      name,
+      accountId,
+      passcode,
+      isVisible,
+      createdAt,
+    ];
+  }
+
+  ///{@macro Catchword}
+  ///
+  /// returns the updated copy of the instance
+  CatchwordEntity copyWith({
+    int? id,
+    String? name,
+    String? accountId,
+    String? passcode,
+    bool? isVisible,
+    DateTime? createdAt,
+  }) {
+    return CatchwordEntity(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      accountId: accountId ?? this.accountId,
+      passcode: passcode ?? this.passcode,
+      isVisible: isVisible ?? this.isVisible,
+      createdAt: createdAt ?? this.createdAt,
+    );
+  }
+
+  @override
+  CatchwordModel mapToModel() {
+    return CatchwordModel(
+      id: id,
+      name: name,
+      accountId: accountId,
+      passcode: passcode,
+      createdAt: createdAt,
+      isVisible: isVisible,
+    );
+  }
+}
