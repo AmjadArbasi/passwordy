@@ -146,63 +146,8 @@ class SaveCatchwordView extends StatelessWidget {
                         "categoriesTitleSaveCatchword".tr,
                         style: Theme.of(context).textTheme.titleLarge!,
                       ),
-                      const SizedBox(
-                        width: 10,
-                      ),
-                      BlocBuilder<CatchwordBloc, CatchwordState>(
-                        builder: (context, state) {
-                          CategoryEntity? categoryEntity;
-                          return DecoratedBox(
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(5),
-                            ),
-                            child: DropdownButton<CategoryEntity>(
-                              value: categoryEntity,
-                              hint: Text("selectionCategoryeSaveCatchword".tr),
-                              items: state.categories
-                                  .map<DropdownMenuItem<CategoryEntity>>((e) {
-                                return DropdownMenuItem<CategoryEntity>(
-                                  value: e,
-                                  child: Container(
-                                    padding: const EdgeInsets.all(5.0),
-                                    width:
-                                        MediaQuery.of(context).size.width * 0.3,
-                                    child: Wrap(
-                                      alignment: WrapAlignment.start,
-                                      runAlignment: WrapAlignment.end,
-                                      children: [
-                                        Text(
-                                          e.categoryName,
-                                          overflow: TextOverflow.ellipsis,
-                                          maxLines: 2,
-                                        ),
-                                        const Divider(thickness: 0.2),
-                                      ],
-                                    ),
-                                  ),
-                                );
-                              }).toList(),
-                              onChanged: (CategoryEntity? value) {
-                                logger.f('From Dropmenu $value');
-                                context.read<EditCatchwordBloc>().add(
-                                      EditCatchwordCategoryChanged(
-                                        category: value!,
-                                      ),
-                                    );
-                                categoryEntity = value;
-                              },
-                              style: TextStyle(
-                                color: Theme.of(context).colorScheme.secondary,
-                                fontSize: 16,
-                              ),
-                              underline: Container(),
-                              iconEnabledColor:
-                                  Theme.of(context).colorScheme.primary,
-                              menuMaxHeight: 300,
-                            ),
-                          );
-                        },
-                      ),
+                      const SizedBox(width: 10),
+                      const DropDownMuneCategories(),
                     ],
                   ),
                 ),
@@ -213,5 +158,81 @@ class SaveCatchwordView extends StatelessWidget {
         ),
       ),
     );
+  }
+}
+
+class DropDownMuneCategories extends StatelessWidget {
+  const DropDownMuneCategories({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<CatchwordBloc, CatchwordState>(
+      builder: (context, state) {
+        return DecoratedBox(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(5),
+          ),
+          child: _buidDropdownButton(state, context),
+        );
+      },
+    );
+  }
+
+  DropdownButton<CategoryEntity> _buidDropdownButton(
+      CatchwordState state, BuildContext context) {
+    final currentCategory =
+        context.select((EditCatchwordBloc bloc) => bloc.state.category);
+    final validCurrentCategory =
+        state.categories.contains(currentCategory) ? currentCategory : null;
+
+    logger.f(currentCategory);
+    return DropdownButton<CategoryEntity>(
+      value: validCurrentCategory,
+      hint: Text("selectionCategoryeSaveCatchword".tr),
+      items: state.categories.map<DropdownMenuItem<CategoryEntity>>((e) {
+        return _buildDropdownItem(e, context);
+      }).toList(),
+      onChanged: (categoryEntity) =>
+          _onCategoryChanged(context, categoryEntity),
+      style: TextStyle(
+        color: Theme.of(context).colorScheme.secondary,
+        fontSize: 16,
+      ),
+      underline: Container(),
+      iconEnabledColor: Theme.of(context).colorScheme.primary,
+      menuMaxHeight: 300,
+    );
+  }
+
+  DropdownMenuItem<CategoryEntity> _buildDropdownItem(
+      CategoryEntity e, BuildContext context) {
+    return DropdownMenuItem<CategoryEntity>(
+      value: e,
+      child: Container(
+        padding: const EdgeInsets.all(5.0),
+        width: MediaQuery.of(context).size.width * 0.3,
+        child: Wrap(
+          alignment: WrapAlignment.start,
+          runAlignment: WrapAlignment.end,
+          children: [
+            Text(
+              e.categoryName,
+              overflow: TextOverflow.ellipsis,
+              maxLines: 2,
+            ),
+            const Divider(thickness: 0.2),
+          ],
+        ),
+      ),
+    );
+  }
+
+  void _onCategoryChanged(BuildContext context, CategoryEntity? value) {
+    // logger.f('From Dropmenu $value');
+    context
+        .read<EditCatchwordBloc>()
+        .add(EditCatchwordCategoryChanged(category: value!));
   }
 }

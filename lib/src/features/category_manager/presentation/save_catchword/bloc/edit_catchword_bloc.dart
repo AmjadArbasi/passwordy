@@ -58,10 +58,7 @@ class EditCatchwordBloc extends Bloc<EditCatchwordEvent, EditCatchwordState> {
 
   Future<void> _onCategoryChanged(EditCatchwordCategoryChanged event,
       Emitter<EditCatchwordState> emit) async {
-    emit(state.copyWith(
-      category: event.category,
-      currentIndex: event.currentIndex,
-    ));
+    emit(state.copyWith(category: event.category));
   }
 
   Future<void> _onSubmitted(

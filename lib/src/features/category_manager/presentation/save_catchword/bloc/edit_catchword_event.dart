@@ -48,15 +48,11 @@ final class EditCatchwordValueCopied extends EditCatchwordEvent {
 }
 
 final class EditCatchwordCategoryChanged extends EditCatchwordEvent {
-  const EditCatchwordCategoryChanged({
-    required this.category,
-    this.currentIndex = 0,
-  });
+  const EditCatchwordCategoryChanged({required this.category});
 
   final CategoryEntity category;
-  final int currentIndex;
   @override
-  List<Object> get props => [category, currentIndex];
+  List<Object> get props => [category];
 }
 
 final class EditCatchwordSubmitted extends EditCatchwordEvent {
