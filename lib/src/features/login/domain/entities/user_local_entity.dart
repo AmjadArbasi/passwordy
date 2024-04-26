@@ -17,7 +17,7 @@ class UserLocalEntity extends Equatable
   final String? name;
   final String? masterPassword;
   final String? secret;
-  final DateTime? lastSuccessfulSignIn;
+  final String? lastSuccessfulSignIn;
   final DateTime? createdAt;
 
   static const empty = UserLocalEntity();

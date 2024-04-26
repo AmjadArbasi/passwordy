@@ -46,4 +46,6 @@ class AppRoutes {
 
   /// The [Translator] page
   static const String translator = "${root}translator";
+
+  static const String welcome = "${root}welcome";
 }

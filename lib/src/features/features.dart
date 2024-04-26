@@ -8,3 +8,4 @@ export 'splash/splash.dart';
 export 'translator/translator.dart';
 export 'user_manager/user_manager.dart';
 export 'login/login.dart';
+export 'welcome/welcome.dart';

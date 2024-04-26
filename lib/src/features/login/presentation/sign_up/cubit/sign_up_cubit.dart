@@ -1,8 +1,10 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter_application_passmanager/src/core/constants/constants.dart';
 import 'package:flutter_application_passmanager/src/features/form_inputs/form_inputs.dart';
 import 'package:flutter_application_passmanager/src/features/login/login.dart';
 import 'package:formz/formz.dart';
+import 'package:get/get.dart';
 import 'package:logger/logger.dart';
 
 part 'sign_up_state.dart';
@@ -75,6 +77,7 @@ class SignUpCubit extends Cubit<SignUpState> {
           status: FormzSubmissionStatus.success,
           isValid: false,
         ));
+        Get.offAllNamed(AppRoutes.signIn);
       } else {
         emit(state.copyWith(status: FormzSubmissionStatus.failure));
       }

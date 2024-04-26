@@ -6,6 +6,7 @@ import 'package:flutter_application_passmanager/src/core/services/services.dart'
 import 'package:flutter_application_passmanager/src/features/login/data/datasources/local/apis/i_user_management_api.dart';
 import 'package:flutter_application_passmanager/src/features/login/data/datasources/local/models/user_local_dto.dart';
 import 'package:flutter_application_passmanager/src/features/login/data/models/user_local_model.dart';
+import 'package:intl/intl.dart';
 import 'package:isar/isar.dart';
 import 'package:logger/logger.dart';
 import 'package:rxdart/rxdart.dart';
@@ -74,11 +75,13 @@ class UserManagementApi implements IUserManagementApi {
         await _isar.writeTxn(() async {
           await _isar.userLocalDtos.put(user);
         });
-
+        String formattedDate = DateFormat('yyyy-MM-dd – kk:mm').format(
+          user.lastSuccessfulSignIn!,
+        );
         final userLocalModel = UserLocalModel(
           id: user.id,
           name: user.username,
-          lastSuccessfulSignIn: user.lastSuccessfulSignIn,
+          lastSuccessfulSignIn: formattedDate,
           createdAt: user.createdAt,
         );
         _behaviorSubject.add(userLocalModel);
@@ -172,10 +175,15 @@ class UserManagementApi implements IUserManagementApi {
           await _isar.userLocalDtos.filter().tokenEqualTo(token).findFirst();
 
       if (user != null) {
+        String formattedDate = DateFormat('yyyy-MM-dd – kk:mm').format(
+          user.lastSuccessfulSignIn!,
+        );
+
         final userLocalModel = UserLocalModel(
           id: user.id,
           name: user.username,
           createdAt: user.createdAt,
+          lastSuccessfulSignIn: formattedDate,
         );
         _behaviorSubject.add(userLocalModel);
         return userLocalModel;

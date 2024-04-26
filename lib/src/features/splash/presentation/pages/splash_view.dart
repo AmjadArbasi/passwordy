@@ -4,19 +4,15 @@ import 'package:lottie/lottie.dart';
 class SplashView extends StatelessWidget {
   const SplashView({super.key});
 
-  static Route<void> route() {
-    return MaterialPageRoute(
-      builder: (_) => const SplashView(),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Lottie.asset(
-        'assets/lottie/loading_1.json',
-        width: 150,
-        height: 150,
+    return Scaffold(
+      body: Center(
+        child: Lottie.asset(
+          'assets/lottie/loading_1.json',
+          width: 150,
+          height: 150,
+        ),
       ),
     );
   }

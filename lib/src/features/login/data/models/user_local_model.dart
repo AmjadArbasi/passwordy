@@ -15,7 +15,7 @@ class UserLocalModel implements DataMapperEntity<UserLocalEntity> {
   final String? name;
   final String? masterPassword;
   final String? secret;
-  final DateTime? lastSuccessfulSignIn;
+  final String? lastSuccessfulSignIn;
   final DateTime? createdAt;
 
   static const empty = UserLocalModel();

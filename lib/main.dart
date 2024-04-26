@@ -162,6 +162,8 @@ class AppView extends StatelessWidget {
             Get.offAllNamed(AppRoutes.skeleton);
           case AuthStatus.unauthenticated:
             Get.offAllNamed(AppRoutes.signIn);
+          default:
+            Get.toNamed(AppRoutes.splash);
         }
       },
       child: GetMaterialApp(
@@ -170,7 +172,7 @@ class AppView extends StatelessWidget {
         locale: controller.language,
         fallbackLocale: const Locale('en', 'US'),
         translations: AppTranslation(),
-        initialRoute: AppRoutes.signIn,
+        initialRoute: AppRoutes.welcome,
         defaultTransition: Transition.fade,
       ),
     );
