@@ -4,28 +4,49 @@ class UserManagementRepositoryImpl extends UserManagementRepository {
   UserManagementRepositoryImpl({
     required UserManagementApi api,
   }) : _api = api;
+
   final UserManagementApi _api;
 
-  static const String key = "";
-
   @override
-  Future<bool> logIn(String masterPassword, String username) async {
-    final status = await _api.signIn(masterPassword, username);
-    return status;
+  Future<UserLocalEntity> logIn(String masterPassword, String username) async {
+    final userLocalModel = await _api.signIn(masterPassword, username);
+    return userLocalModel.mapToEntity();
   }
 
   @override
-  Future<bool> signUp(UserLocalEntity userLocalEntity) async {
+  Future<int> signUp(UserLocalEntity userLocalEntity) async {
     return await _api.signUp(userLocalEntity.mapToModel());
   }
 
   @override
-  Future<void> updateInfo(UserLocalEntity userLocalEntity) async {
-    await _api.updateUserInfo(userLocalEntity.mapToModel());
+  Future<void> updateInfo(
+      String username, String masterPassword, String secret) async {
+    await _api.updateUserInfo(username, masterPassword, secret);
   }
 
   @override
   Future<void> deleteUser(UserLocalEntity userLocalEntity) async {
     await _api.deleteUser(userLocalEntity.mapToModel());
+  }
+
+  @override
+  Future<void> logOut() async {
+    await _api.logOut();
+  }
+
+  @override
+  Stream<UserLocalEntity> get stream => _api.userStream.map(
+        (userLocalModel) => userLocalModel.mapToEntity(),
+      );
+
+  @override
+  Future<UserLocalEntity> reAuthLoggedUser() async {
+    final userLocalModel = await _api.reAuthLoggedUser();
+    return userLocalModel.mapToEntity();
+  }
+
+  @override
+  Future<bool> checkCurrentPassword(String masterPassword) async {
+    return await _api.checkCurrentPassword(masterPassword);
   }
 }

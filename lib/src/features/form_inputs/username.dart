@@ -1,7 +1,7 @@
 import 'package:formz/formz.dart';
 
 /// validation on [username] using Formz
-enum UsernameValidationError { invalid }
+enum UsernameValidationError { invalid, empty }
 
 /// {@template username}
 /// Form input for an username input.
@@ -18,9 +18,9 @@ class Username extends FormzInput<String, UsernameValidationError> {
   // );
 
   @override
-  UsernameValidationError? validator(String? value) {
-    if (value == null) {
-      return null;
+  UsernameValidationError? validator(String value) {
+    if (value.isEmpty) {
+      return UsernameValidationError.empty;
     }
     //  else if (_UsernameRegExp.hasMatch(value)) {
     //   return UsernameValidationError.invalid;

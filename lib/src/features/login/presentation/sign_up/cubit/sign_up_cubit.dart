@@ -3,6 +3,7 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter_application_passmanager/src/features/form_inputs/form_inputs.dart';
 import 'package:flutter_application_passmanager/src/features/login/login.dart';
 import 'package:formz/formz.dart';
+import 'package:logger/logger.dart';
 
 part 'sign_up_state.dart';
 
@@ -17,8 +18,8 @@ class SignUpCubit extends Cubit<SignUpState> {
     final username = Username.dirty(value);
     emit(state.copyWith(
       username: username,
-      isValid:
-          Formz.validate([username, state.password, state.confirmPassword]),
+      isValid: Formz.validate(
+          [username, state.password, state.confirmPassword, state.secret]),
     ));
   }
 
@@ -31,7 +32,8 @@ class SignUpCubit extends Cubit<SignUpState> {
     emit(state.copyWith(
       password: password,
       confirmPassword: confirmPassword,
-      isValid: Formz.validate([state.username, password, confirmPassword]),
+      isValid: Formz.validate(
+          [state.username, password, confirmPassword, state.secret]),
     ));
   }
 
@@ -42,8 +44,17 @@ class SignUpCubit extends Cubit<SignUpState> {
     );
     emit(state.copyWith(
       confirmPassword: confirmPassword,
-      isValid:
-          Formz.validate([state.username, state.password, confirmPassword]),
+      isValid: Formz.validate(
+          [state.username, state.password, confirmPassword, state.secret]),
+    ));
+  }
+
+  void secretChanged(String value) {
+    final secret = Secret.dirty(value);
+    emit(state.copyWith(
+      secret: secret,
+      isValid: Formz.validate(
+          [state.username, state.password, state.confirmPassword, secret]),
     ));
   }
 
@@ -54,16 +65,19 @@ class SignUpCubit extends Cubit<SignUpState> {
       final user = UserLocalEntity(
         name: state.username.value,
         masterPassword: state.password.value,
+        secret: state.secret.value,
         createdAt: DateTime.now(),
       );
-      await _userManagementUsecase.signUp(user);
-      emit(state.copyWith(
-        status: FormzSubmissionStatus.success,
-        username: const Username.pure(),
-        password: const Password.pure(),
-        confirmPassword: const ConfirmPassword.pure(),
-        isValid: false,
-      ));
+      final signUpStatus = await _userManagementUsecase.signUp(user);
+      Logger().f(signUpStatus);
+      if (signUpStatus != -1) {
+        emit(state.copyWith(
+          status: FormzSubmissionStatus.success,
+          isValid: false,
+        ));
+      } else {
+        emit(state.copyWith(status: FormzSubmissionStatus.failure));
+      }
     } catch (_) {
       emit(state.copyWith(status: FormzSubmissionStatus.failure));
     }

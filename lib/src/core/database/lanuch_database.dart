@@ -1,4 +1,4 @@
-import 'package:flutter_application_passmanager/src/features/category_manager/category_manager.dart';
+import 'package:flutter_application_passmanager/src/features/features.dart';
 import 'package:isar/isar.dart';
 import 'package:path_provider/path_provider.dart';
 
@@ -7,7 +7,7 @@ class Database {
   static Future<Isar> create() async {
     final dir = await getApplicationDocumentsDirectory();
     return Isar.open(
-      [CategoryDbDtoSchema, CatchwordDbDtoSchema],
+      [CategoryDbDtoSchema, CatchwordDbDtoSchema, UserLocalDtoSchema],
       directory: dir.path,
     );
   }

@@ -1,7 +1,5 @@
 import 'package:flutter_application_passmanager/src/core/utils/converter_db/converter.dart';
 import 'package:flutter_application_passmanager/src/features/category_manager/category_manager.dart';
-import 'package:flutter_application_passmanager/src/features/category_manager/data/datasources/datasources.dart';
-import 'package:flutter_application_passmanager/src/features/category_manager/data/datasources/local/local.dart';
 
 class CategoryModelToDbDtoConverter
     implements Converter<CategoryModel, CategoryDbDto> {

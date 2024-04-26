@@ -16,8 +16,10 @@ class SignUp extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: true,
-      appBar:
-          CustomAppBar(title: "nameOfSignUpPage".tr, color: Colors.transparent),
+      appBar: CustomAppBar(
+        title: "nameOfSignUpPage".tr,
+        color: Colors.transparent,
+      ),
       body: SingleChildScrollView(
         child: Container(
           margin: const EdgeInsets.all(25.0),
@@ -67,6 +69,8 @@ class SignUpForm extends StatelessWidget {
           SignUpPasswordFormField(),
           SizedBox(height: 20),
           SignUpConfirmPasswordFormField(),
+          SizedBox(height: 25),
+          SignUpSecretFormField(),
           SizedBox(height: 25),
           SignUpLoginButton(),
         ],
@@ -208,6 +212,41 @@ class SignUpConfirmPasswordFormField extends StatelessWidget {
           onChanged: (confirmPassword) => context
               .read<SignUpCubit>()
               .confirmPasswordChanged(confirmPassword),
+        );
+      },
+    );
+  }
+}
+
+class SignUpSecretFormField extends StatelessWidget {
+  const SignUpSecretFormField({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<SignUpCubit, SignUpState>(
+      builder: (context, state) {
+        return TextField(
+          decoration: InputDecoration(
+            fillColor: Colors.grey.shade200,
+            filled: true,
+            prefixIcon: const Icon(Icons.info),
+            hintText: 'Secret',
+            labelText: 'Secret',
+            errorText:
+                state.secret.displayError != null ? 'invalid secret' : null,
+            contentPadding: const EdgeInsets.symmetric(
+              horizontal: 30.0,
+              vertical: 25.0,
+            ),
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(20.0),
+              borderSide: BorderSide.none,
+            ),
+          ),
+          onChanged: (secret) =>
+              context.read<SignUpCubit>().secretChanged(secret),
         );
       },
     );

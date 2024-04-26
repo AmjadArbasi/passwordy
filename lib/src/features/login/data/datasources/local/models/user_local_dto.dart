@@ -9,6 +9,9 @@ class UserLocalDto {
     this.username,
     this.masterPassword,
     this.salt,
+    this.token,
+    this.secret,
+    this.lastSuccessfulSignIn,
     this.createdAt,
   });
 
@@ -17,5 +20,13 @@ class UserLocalDto {
   String? username;
   String? masterPassword;
   String? salt;
+  String? token;
+  String? secret;
+  DateTime? lastSuccessfulSignIn;
   DateTime? createdAt;
+
+  @override
+  String toString() {
+    return "UserLocalDto(id: $id, username: $username, masterPassword: $masterPassword, salt: $salt, token: $token, secret: $secret, lastSuccessfulSignIn: $lastSuccessfulSignIn, createdAt: $createdAt)";
+  }
 }

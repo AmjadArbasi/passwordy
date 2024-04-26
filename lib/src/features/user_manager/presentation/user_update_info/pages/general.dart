@@ -9,12 +9,22 @@ class General extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: true,
       appBar: CustomAppBar(
         title: 'nameOfGeneral'.tr,
         color: Colors.transparent,
       ),
-      body: Container(
-        child: const DisplayName(),
+      body: SingleChildScrollView(
+        child: Container(
+          margin: const EdgeInsets.all(25.0),
+          child: const Column(
+            children: [
+              UserInfoView(),
+              SizedBox(height: 35.0),
+              UpdateUserInfoForm(),
+            ],
+          ),
+        ),
       ),
     );
   }

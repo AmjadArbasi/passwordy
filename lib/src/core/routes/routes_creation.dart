@@ -56,5 +56,13 @@ class Routes {
       name: AppRoutes.translator,
       page: () => const TranslatorPage(),
     ),
+    GetPage(
+      name: AppRoutes.signIn,
+      page: () => const SignIn(),
+    ),
+    GetPage(
+      name: AppRoutes.signUp,
+      page: () => const SignUp(),
+    ),
   ];
 }

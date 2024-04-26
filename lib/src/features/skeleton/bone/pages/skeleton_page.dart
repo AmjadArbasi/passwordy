@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_passmanager/src/core/core.dart';
 import 'package:flutter_application_passmanager/src/features/features.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
@@ -20,16 +19,11 @@ const List<String> titles = [
 class Skeleton extends StatelessWidget {
   const Skeleton({super.key});
 
-  static Page<void> page() => GetPage(
-        name: AppRoutes.skeleton,
-        page: () => const Skeleton(),
-        binding: TranslatorBindings(),
-      );
-
   @override
   Widget build(BuildContext context) {
-    final selectedTab =
-        context.select((NavigatorPageCubit cubit) => cubit.state.tab);
+    final selectedTab = context.select(
+      (NavigatorPageCubit cubit) => cubit.state.tab,
+    );
     Logger().f(selectedTab);
     return SafeArea(
       child: Scaffold(

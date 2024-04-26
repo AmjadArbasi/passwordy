@@ -22,18 +22,33 @@ const UserLocalDtoSchema = CollectionSchema(
       name: r'createdAt',
       type: IsarType.dateTime,
     ),
-    r'masterPassword': PropertySchema(
+    r'lastSuccessfulSignIn': PropertySchema(
       id: 1,
+      name: r'lastSuccessfulSignIn',
+      type: IsarType.dateTime,
+    ),
+    r'masterPassword': PropertySchema(
+      id: 2,
       name: r'masterPassword',
       type: IsarType.string,
     ),
     r'salt': PropertySchema(
-      id: 2,
+      id: 3,
       name: r'salt',
       type: IsarType.string,
     ),
+    r'secret': PropertySchema(
+      id: 4,
+      name: r'secret',
+      type: IsarType.string,
+    ),
+    r'token': PropertySchema(
+      id: 5,
+      name: r'token',
+      type: IsarType.string,
+    ),
     r'username': PropertySchema(
-      id: 3,
+      id: 6,
       name: r'username',
       type: IsarType.string,
     )
@@ -85,6 +100,18 @@ int _userLocalDtoEstimateSize(
     }
   }
   {
+    final value = object.secret;
+    if (value != null) {
+      bytesCount += 3 + value.length * 3;
+    }
+  }
+  {
+    final value = object.token;
+    if (value != null) {
+      bytesCount += 3 + value.length * 3;
+    }
+  }
+  {
     final value = object.username;
     if (value != null) {
       bytesCount += 3 + value.length * 3;
@@ -100,9 +127,12 @@ void _userLocalDtoSerialize(
   Map<Type, List<int>> allOffsets,
 ) {
   writer.writeDateTime(offsets[0], object.createdAt);
-  writer.writeString(offsets[1], object.masterPassword);
-  writer.writeString(offsets[2], object.salt);
-  writer.writeString(offsets[3], object.username);
+  writer.writeDateTime(offsets[1], object.lastSuccessfulSignIn);
+  writer.writeString(offsets[2], object.masterPassword);
+  writer.writeString(offsets[3], object.salt);
+  writer.writeString(offsets[4], object.secret);
+  writer.writeString(offsets[5], object.token);
+  writer.writeString(offsets[6], object.username);
 }
 
 UserLocalDto _userLocalDtoDeserialize(
@@ -114,9 +144,12 @@ UserLocalDto _userLocalDtoDeserialize(
   final object = UserLocalDto(
     createdAt: reader.readDateTimeOrNull(offsets[0]),
     id: id,
-    masterPassword: reader.readStringOrNull(offsets[1]),
-    salt: reader.readStringOrNull(offsets[2]),
-    username: reader.readStringOrNull(offsets[3]),
+    lastSuccessfulSignIn: reader.readDateTimeOrNull(offsets[1]),
+    masterPassword: reader.readStringOrNull(offsets[2]),
+    salt: reader.readStringOrNull(offsets[3]),
+    secret: reader.readStringOrNull(offsets[4]),
+    token: reader.readStringOrNull(offsets[5]),
+    username: reader.readStringOrNull(offsets[6]),
   );
   return object;
 }
@@ -131,10 +164,16 @@ P _userLocalDtoDeserializeProp<P>(
     case 0:
       return (reader.readDateTimeOrNull(offset)) as P;
     case 1:
-      return (reader.readStringOrNull(offset)) as P;
+      return (reader.readDateTimeOrNull(offset)) as P;
     case 2:
       return (reader.readStringOrNull(offset)) as P;
     case 3:
+      return (reader.readStringOrNull(offset)) as P;
+    case 4:
+      return (reader.readStringOrNull(offset)) as P;
+    case 5:
+      return (reader.readStringOrNull(offset)) as P;
+    case 6:
       return (reader.readStringOrNull(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
@@ -501,6 +540,80 @@ extension UserLocalDtoQueryFilter
   }
 
   QueryBuilder<UserLocalDto, UserLocalDto, QAfterFilterCondition>
+      lastSuccessfulSignInIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'lastSuccessfulSignIn',
+      ));
+    });
+  }
+
+  QueryBuilder<UserLocalDto, UserLocalDto, QAfterFilterCondition>
+      lastSuccessfulSignInIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'lastSuccessfulSignIn',
+      ));
+    });
+  }
+
+  QueryBuilder<UserLocalDto, UserLocalDto, QAfterFilterCondition>
+      lastSuccessfulSignInEqualTo(DateTime? value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'lastSuccessfulSignIn',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<UserLocalDto, UserLocalDto, QAfterFilterCondition>
+      lastSuccessfulSignInGreaterThan(
+    DateTime? value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'lastSuccessfulSignIn',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<UserLocalDto, UserLocalDto, QAfterFilterCondition>
+      lastSuccessfulSignInLessThan(
+    DateTime? value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'lastSuccessfulSignIn',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<UserLocalDto, UserLocalDto, QAfterFilterCondition>
+      lastSuccessfulSignInBetween(
+    DateTime? lower,
+    DateTime? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'lastSuccessfulSignIn',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+      ));
+    });
+  }
+
+  QueryBuilder<UserLocalDto, UserLocalDto, QAfterFilterCondition>
       masterPasswordIsNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(const FilterCondition.isNull(
@@ -806,6 +919,311 @@ extension UserLocalDtoQueryFilter
   }
 
   QueryBuilder<UserLocalDto, UserLocalDto, QAfterFilterCondition>
+      secretIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'secret',
+      ));
+    });
+  }
+
+  QueryBuilder<UserLocalDto, UserLocalDto, QAfterFilterCondition>
+      secretIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'secret',
+      ));
+    });
+  }
+
+  QueryBuilder<UserLocalDto, UserLocalDto, QAfterFilterCondition> secretEqualTo(
+    String? value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'secret',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<UserLocalDto, UserLocalDto, QAfterFilterCondition>
+      secretGreaterThan(
+    String? value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'secret',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<UserLocalDto, UserLocalDto, QAfterFilterCondition>
+      secretLessThan(
+    String? value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'secret',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<UserLocalDto, UserLocalDto, QAfterFilterCondition> secretBetween(
+    String? lower,
+    String? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'secret',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<UserLocalDto, UserLocalDto, QAfterFilterCondition>
+      secretStartsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.startsWith(
+        property: r'secret',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<UserLocalDto, UserLocalDto, QAfterFilterCondition>
+      secretEndsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.endsWith(
+        property: r'secret',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<UserLocalDto, UserLocalDto, QAfterFilterCondition>
+      secretContains(String value, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.contains(
+        property: r'secret',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<UserLocalDto, UserLocalDto, QAfterFilterCondition> secretMatches(
+      String pattern,
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.matches(
+        property: r'secret',
+        wildcard: pattern,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<UserLocalDto, UserLocalDto, QAfterFilterCondition>
+      secretIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'secret',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<UserLocalDto, UserLocalDto, QAfterFilterCondition>
+      secretIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        property: r'secret',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<UserLocalDto, UserLocalDto, QAfterFilterCondition>
+      tokenIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'token',
+      ));
+    });
+  }
+
+  QueryBuilder<UserLocalDto, UserLocalDto, QAfterFilterCondition>
+      tokenIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'token',
+      ));
+    });
+  }
+
+  QueryBuilder<UserLocalDto, UserLocalDto, QAfterFilterCondition> tokenEqualTo(
+    String? value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'token',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<UserLocalDto, UserLocalDto, QAfterFilterCondition>
+      tokenGreaterThan(
+    String? value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'token',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<UserLocalDto, UserLocalDto, QAfterFilterCondition> tokenLessThan(
+    String? value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'token',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<UserLocalDto, UserLocalDto, QAfterFilterCondition> tokenBetween(
+    String? lower,
+    String? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'token',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<UserLocalDto, UserLocalDto, QAfterFilterCondition>
+      tokenStartsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.startsWith(
+        property: r'token',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<UserLocalDto, UserLocalDto, QAfterFilterCondition> tokenEndsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.endsWith(
+        property: r'token',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<UserLocalDto, UserLocalDto, QAfterFilterCondition> tokenContains(
+      String value,
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.contains(
+        property: r'token',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<UserLocalDto, UserLocalDto, QAfterFilterCondition> tokenMatches(
+      String pattern,
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.matches(
+        property: r'token',
+        wildcard: pattern,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<UserLocalDto, UserLocalDto, QAfterFilterCondition>
+      tokenIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'token',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<UserLocalDto, UserLocalDto, QAfterFilterCondition>
+      tokenIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        property: r'token',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<UserLocalDto, UserLocalDto, QAfterFilterCondition>
       usernameIsNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(const FilterCondition.isNull(
@@ -981,6 +1399,20 @@ extension UserLocalDtoQuerySortBy
   }
 
   QueryBuilder<UserLocalDto, UserLocalDto, QAfterSortBy>
+      sortByLastSuccessfulSignIn() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'lastSuccessfulSignIn', Sort.asc);
+    });
+  }
+
+  QueryBuilder<UserLocalDto, UserLocalDto, QAfterSortBy>
+      sortByLastSuccessfulSignInDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'lastSuccessfulSignIn', Sort.desc);
+    });
+  }
+
+  QueryBuilder<UserLocalDto, UserLocalDto, QAfterSortBy>
       sortByMasterPassword() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'masterPassword', Sort.asc);
@@ -1003,6 +1435,30 @@ extension UserLocalDtoQuerySortBy
   QueryBuilder<UserLocalDto, UserLocalDto, QAfterSortBy> sortBySaltDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'salt', Sort.desc);
+    });
+  }
+
+  QueryBuilder<UserLocalDto, UserLocalDto, QAfterSortBy> sortBySecret() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'secret', Sort.asc);
+    });
+  }
+
+  QueryBuilder<UserLocalDto, UserLocalDto, QAfterSortBy> sortBySecretDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'secret', Sort.desc);
+    });
+  }
+
+  QueryBuilder<UserLocalDto, UserLocalDto, QAfterSortBy> sortByToken() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'token', Sort.asc);
+    });
+  }
+
+  QueryBuilder<UserLocalDto, UserLocalDto, QAfterSortBy> sortByTokenDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'token', Sort.desc);
     });
   }
 
@@ -1046,6 +1502,20 @@ extension UserLocalDtoQuerySortThenBy
   }
 
   QueryBuilder<UserLocalDto, UserLocalDto, QAfterSortBy>
+      thenByLastSuccessfulSignIn() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'lastSuccessfulSignIn', Sort.asc);
+    });
+  }
+
+  QueryBuilder<UserLocalDto, UserLocalDto, QAfterSortBy>
+      thenByLastSuccessfulSignInDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'lastSuccessfulSignIn', Sort.desc);
+    });
+  }
+
+  QueryBuilder<UserLocalDto, UserLocalDto, QAfterSortBy>
       thenByMasterPassword() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'masterPassword', Sort.asc);
@@ -1071,6 +1541,30 @@ extension UserLocalDtoQuerySortThenBy
     });
   }
 
+  QueryBuilder<UserLocalDto, UserLocalDto, QAfterSortBy> thenBySecret() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'secret', Sort.asc);
+    });
+  }
+
+  QueryBuilder<UserLocalDto, UserLocalDto, QAfterSortBy> thenBySecretDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'secret', Sort.desc);
+    });
+  }
+
+  QueryBuilder<UserLocalDto, UserLocalDto, QAfterSortBy> thenByToken() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'token', Sort.asc);
+    });
+  }
+
+  QueryBuilder<UserLocalDto, UserLocalDto, QAfterSortBy> thenByTokenDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'token', Sort.desc);
+    });
+  }
+
   QueryBuilder<UserLocalDto, UserLocalDto, QAfterSortBy> thenByUsername() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'username', Sort.asc);
@@ -1092,6 +1586,13 @@ extension UserLocalDtoQueryWhereDistinct
     });
   }
 
+  QueryBuilder<UserLocalDto, UserLocalDto, QDistinct>
+      distinctByLastSuccessfulSignIn() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'lastSuccessfulSignIn');
+    });
+  }
+
   QueryBuilder<UserLocalDto, UserLocalDto, QDistinct> distinctByMasterPassword(
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
@@ -1104,6 +1605,20 @@ extension UserLocalDtoQueryWhereDistinct
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'salt', caseSensitive: caseSensitive);
+    });
+  }
+
+  QueryBuilder<UserLocalDto, UserLocalDto, QDistinct> distinctBySecret(
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'secret', caseSensitive: caseSensitive);
+    });
+  }
+
+  QueryBuilder<UserLocalDto, UserLocalDto, QDistinct> distinctByToken(
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'token', caseSensitive: caseSensitive);
     });
   }
 
@@ -1129,6 +1644,13 @@ extension UserLocalDtoQueryProperty
     });
   }
 
+  QueryBuilder<UserLocalDto, DateTime?, QQueryOperations>
+      lastSuccessfulSignInProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'lastSuccessfulSignIn');
+    });
+  }
+
   QueryBuilder<UserLocalDto, String?, QQueryOperations>
       masterPasswordProperty() {
     return QueryBuilder.apply(this, (query) {
@@ -1139,6 +1661,18 @@ extension UserLocalDtoQueryProperty
   QueryBuilder<UserLocalDto, String?, QQueryOperations> saltProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'salt');
+    });
+  }
+
+  QueryBuilder<UserLocalDto, String?, QQueryOperations> secretProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'secret');
+    });
+  }
+
+  QueryBuilder<UserLocalDto, String?, QQueryOperations> tokenProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'token');
     });
   }
 

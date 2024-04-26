@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_passmanager/src/features/auth/bloc/auth_bloc.dart';
 import 'package:flutter_application_passmanager/src/features/form_inputs/form_inputs.dart';
 import 'package:flutter_application_passmanager/src/features/login/login.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:formz/formz.dart';
 import 'package:get/get.dart';
+import 'package:logger/logger.dart';
 import 'package:lottie/lottie.dart';
 
 import 'package:flutter_application_passmanager/src/core/core.dart';
@@ -24,21 +26,26 @@ class SignIn extends StatelessWidget {
       ),
       resizeToAvoidBottomInset: true,
       body: SingleChildScrollView(
-        child: Container(
-          margin: const EdgeInsets.all(25.0),
-          child: Column(
-            children: [
-              Center(
-                child: Text(
-                  "WelcomeBack".tr,
-                  style: Theme.of(context).textTheme.headlineSmall!,
+        child: BlocListener<AuthBloc, AuthState>(
+          listener: (context, state) {
+            Logger().f(state.status);
+          },
+          child: Container(
+            margin: const EdgeInsets.all(25.0),
+            child: Column(
+              children: [
+                Center(
+                  child: Text(
+                    "WelcomeBack".tr,
+                    style: Theme.of(context).textTheme.headlineSmall!,
+                  ),
                 ),
-              ),
-              const SizedBox(
-                height: 40.0,
-              ),
-              const SignInForm(),
-            ],
+                const SizedBox(
+                  height: 40.0,
+                ),
+                const SignInForm(),
+              ],
+            ),
           ),
         ),
       ),
@@ -76,8 +83,6 @@ class SignInForm extends StatelessWidget {
           const SigninPasswordFormField(),
           const SizedBox(height: 25),
           const SigninLoginButton(),
-          const SizedBox(height: 25),
-          const SizedBox(height: 25),
           ElevatedButton(
             onPressed: () => Get.offAllNamed(AppRoutes.signUp),
             child: const Text('Register'),

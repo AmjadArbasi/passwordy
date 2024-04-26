@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_passmanager/src/core/core.dart';
+import 'package:flutter_application_passmanager/src/features/auth/auth.dart';
 import 'package:flutter_application_passmanager/src/features/features.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
 
 class Profile extends StatelessWidget {
@@ -18,11 +20,17 @@ class Profile extends StatelessWidget {
           children: [
             const UserInfoView(),
             const SizedBox(height: 20),
-            CustomTileProfile(
-              leadIcon: Icons.help,
-              title: "generalInfoProfile".tr,
-              onTap: () {
-                Get.toNamed(AppRoutes.general);
+            BlocBuilder<AuthBloc, AuthState>(
+              builder: (context, state) {
+                return CustomTileProfile(
+                  leadIcon: Icons.help,
+                  title: "generalInfoProfile".tr,
+                  onTap: () {
+                    Get.toNamed(AppRoutes.general, arguments: {
+                      "user": state.userLocalEntity,
+                    });
+                  },
+                );
               },
             ),
             CustomTileProfile(
@@ -55,7 +63,11 @@ class Profile extends StatelessWidget {
                 return Align(
                   alignment: Alignment.topLeft,
                   child: IconButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      context.read<AuthBloc>().add(
+                            const AuthUserLogoutRequested(),
+                          );
+                    },
                     icon: const Icon(
                       Icons.logout,
                       size: 40,
