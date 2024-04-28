@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+
 import 'package:flutter_application_passmanager/src/core/core.dart';
 import 'package:flutter_application_passmanager/src/features/category_manager/category_manager.dart';
 
@@ -18,15 +19,10 @@ class CatchwordEntity extends Equatable
     required this.passcode,
     this.isVisible = false,
     DateTime? createdAt,
+    DateTime? whenUsed,
     this.id,
-  }) : createdAt = createdAt ??
-            DateTime(
-              DateTime.now().year,
-              DateTime.now().month,
-              DateTime.now().day,
-              DateTime.now().hour,
-              DateTime.now().minute,
-            );
+  })  : createdAt = createdAt ?? DateTime.now(),
+        whenUsed = whenUsed ?? DateTime.now();
 
   /// The unique identifier
   ///
@@ -58,6 +54,8 @@ class CatchwordEntity extends Equatable
   /// The date of created the catchword
   final DateTime createdAt;
 
+  final DateTime whenUsed;
+
   @override
   List<Object?> get props {
     return [
@@ -67,6 +65,7 @@ class CatchwordEntity extends Equatable
       passcode,
       isVisible,
       createdAt,
+      whenUsed,
     ];
   }
 
@@ -80,6 +79,7 @@ class CatchwordEntity extends Equatable
     String? passcode,
     bool? isVisible,
     DateTime? createdAt,
+    DateTime? whenUsed,
   }) {
     return CatchwordEntity(
       id: id ?? this.id,
@@ -88,6 +88,7 @@ class CatchwordEntity extends Equatable
       passcode: passcode ?? this.passcode,
       isVisible: isVisible ?? this.isVisible,
       createdAt: createdAt ?? this.createdAt,
+      whenUsed: whenUsed ?? this.whenUsed,
     );
   }
 
@@ -100,6 +101,12 @@ class CatchwordEntity extends Equatable
       passcode: passcode,
       createdAt: createdAt,
       isVisible: isVisible,
+      whenUsed: whenUsed,
     );
+  }
+
+  @override
+  String toString() {
+    return 'CatchwordEntity(id: $id, name: $name, accountId: $accountId, passcode: $passcode, isVisible: $isVisible, createdAt: $createdAt, whenUsed: $whenUsed)';
   }
 }

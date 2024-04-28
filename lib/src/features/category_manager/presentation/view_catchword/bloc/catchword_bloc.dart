@@ -31,6 +31,8 @@ class CatchwordBloc extends Bloc<CatchwordEvent, CatchwordState> {
         categories: data,
         catchwords: data.expand((e) => e.catchwords).toList(),
         filteredCategories: data,
+        recentlyUsedCatchwords: _categoryManagerUsecase
+            .sortCatchwordsCategoriesBasedOnDateTime(data),
       ),
       onError: (_, __) => state.copyWith(status: CatchwordStatus.failure),
     );
@@ -66,9 +68,8 @@ class CatchwordBloc extends Bloc<CatchwordEvent, CatchwordState> {
     Emitter<CatchwordState> emit,
   ) async {
     final copiedPasscode = event.copiedPasscode;
-    emit(state.copyWith(
-      copiedPasscode: copiedPasscode,
-    ));
+    await _categoryManagerUsecase.addWhenUsedDateTime(event.catchwordId);
+    emit(state.copyWith(copiedPasscode: copiedPasscode));
   }
 
   Future<void> _onUpdateCategoriesRequested(
@@ -98,6 +99,8 @@ class CatchwordBloc extends Bloc<CatchwordEvent, CatchwordState> {
         .copyWith(isVisible: !event.catchwordEntity.isVisible);
     logger.f(newCatchword);
     await _categoryManagerUsecase.editCatchword(
-        newCatchword, event.categoryEntity);
+      newCatchword,
+      event.categoryEntity,
+    );
   }
 }

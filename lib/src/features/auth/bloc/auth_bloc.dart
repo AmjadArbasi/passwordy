@@ -81,14 +81,14 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     Emitter<AuthState> emit,
   ) async {
     final user = await userManagementUsecase.reAuthLoggedUser();
-    if (user.isNotEmpty) {
-      emit(state.copyWith(
-        status: AuthStatus.authenticated,
-        userLocalEntity: user,
-      ));
-    } else {
-      emit(state.copyWith(status: AuthStatus.unauthenticated));
-    }
+    emit(
+      user.isNotEmpty
+          ? state.copyWith(
+              status: AuthStatus.authenticated,
+              userLocalEntity: user,
+            )
+          : state.copyWith(status: AuthStatus.unauthenticated),
+    );
   }
 
   /// The `close` function logs a message, cancels a subscription, and then calls the superclass `close`

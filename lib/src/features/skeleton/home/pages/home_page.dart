@@ -19,10 +19,24 @@ class Home extends StatelessWidget {
           HomeCategoryBar(),
           CategoryScrollView(),
           HomeCatchwordBar(),
-          Expanded(child: CatchwordCard()),
+          RecentlyCatchwordsUsed(),
         ],
       ),
     );
+  }
+}
+
+class RecentlyCatchwordsUsed extends StatelessWidget {
+  const RecentlyCatchwordsUsed({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final recentlyUsedCatchwords = context
+        .select((CatchwordBloc bloc) => bloc.state.recentlyUsedCatchwords);
+
+    return Expanded(child: CatchwordCard(categories: recentlyUsedCatchwords));
   }
 }
 

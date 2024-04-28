@@ -28,6 +28,7 @@ class CategoryManagerRepsoitoryImpl extends CategoryManagerRepositryBase {
   _keepStreamFresh() async {
     final categories = await _appLocalDatabase.loadAllValues();
     _categoriesListController.add(categories);
+    logger.f(categories);
   }
 
   @override
@@ -82,6 +83,39 @@ class CategoryManagerRepsoitoryImpl extends CategoryManagerRepositryBase {
       }
     }
     return result;
+  }
+
+  @override
+  List<CategoryEntity> sortCatchwordsCategoriesBasedOnDateTime(
+      List<CategoryEntity> categories) {
+    final catchwordsWithCategories =
+        <MapEntry<CatchwordEntity, CategoryEntity>>[];
+
+    final result = <CategoryEntity>[];
+    const limit = 7;
+
+    for (var category in categories) {
+      for (var catchword in category.catchwords) {
+        catchwordsWithCategories.add(MapEntry(catchword, category));
+      }
+    }
+
+    /// Sorting based on whenUsed
+    catchwordsWithCategories
+        .sort((a, b) => b.key.whenUsed.compareTo(a.key.whenUsed));
+
+    /// Outputting the sorted list
+    for (var entry in catchwordsWithCategories) {
+      logger.f('${entry.key} in ${entry.value}');
+      final category = CategoryEntity(
+        id: entry.value.id,
+        categoryName: entry.value.categoryName,
+        catchwords: [entry.key],
+        total: entry.value.total,
+      );
+      result.add(category);
+    }
+    return result.sublist(0, limit < result.length ? limit : result.length);
   }
 
   @override
@@ -207,5 +241,11 @@ class CategoryManagerRepsoitoryImpl extends CategoryManagerRepositryBase {
     } else {
       throw CategoryNotFoundException();
     }
+  }
+
+  @override
+  Future<void> addWhenUsedDateTime(int catchwordId) async {
+    await _appLocalDatabase.addCurrentDateTimeWhenUsed(catchwordId);
+    await _keepStreamFresh();
   }
 }

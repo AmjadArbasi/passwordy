@@ -35,12 +35,14 @@ final class CatchwrodsUndoDeleteRequested extends CatchwordEvent {
 }
 
 final class CatchwordsCopyPressed extends CatchwordEvent {
-  const CatchwordsCopyPressed({required this.copiedPasscode});
+  const CatchwordsCopyPressed(
+      {required this.copiedPasscode, required this.catchwordId});
 
   final String copiedPasscode;
+  final int catchwordId;
 
   @override
-  List<Object> get props => [copiedPasscode];
+  List<Object> get props => [copiedPasscode, catchwordId];
 }
 
 final class CatchwordsUpdateCategoriesRequested extends CatchwordEvent {

@@ -13,6 +13,7 @@ class CatchwordModel extends DataMapperEntity<CatchwordEntity> {
     required this.accountId,
     required this.passcode,
     required this.createdAt,
+    required this.whenUsed,
     required this.isVisible,
   });
 
@@ -23,6 +24,7 @@ class CatchwordModel extends DataMapperEntity<CatchwordEntity> {
   final String passcode;
   @JsonKey(name: 'created_at')
   final DateTime createdAt;
+  final DateTime whenUsed;
   final bool isVisible;
 
   @override
@@ -33,6 +35,7 @@ class CatchwordModel extends DataMapperEntity<CatchwordEntity> {
       accountId: accountId,
       passcode: passcode,
       createdAt: createdAt,
+      whenUsed: whenUsed,
       isVisible: isVisible,
     );
   }
@@ -46,6 +49,6 @@ class CatchwordModel extends DataMapperEntity<CatchwordEntity> {
 
   @override
   String toString() {
-    return 'CatchwordModel(id: $id, name: $name, accountId: $accountId, passcode: $passcode, createdAt: $createdAt, isVisibile: $isVisible)';
+    return 'CatchwordModel(id: $id, name: $name, accountId: $accountId, passcode: $passcode, createdAt: $createdAt, whenUsed: $whenUsed, isVisible: $isVisible)';
   }
 }

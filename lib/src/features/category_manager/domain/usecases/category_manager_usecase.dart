@@ -40,4 +40,12 @@ class CategoryManagerUsecase {
   /// returns a list of searched catchwords based on [value]
   Future<List<CategoryEntity>> searchCatchword(String value) =>
       _api.searchCatchword(value);
+
+  Future<void> addWhenUsedDateTime(int catchwordId) =>
+      _api.addWhenUsedDateTime(catchwordId);
+
+  List<CategoryEntity> sortCatchwordsCategoriesBasedOnDateTime(
+    List<CategoryEntity> categories,
+  ) =>
+      _api.sortCatchwordsCategoriesBasedOnDateTime(categories);
 }

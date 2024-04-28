@@ -41,6 +41,12 @@ abstract class CategoryManagerRepositryBase {
   ///  value=Service id
   /// returns null if there is no Catchword match!
   Future<List<CategoryEntity>> searchCatchword(String value);
+
+  Future<void> addWhenUsedDateTime(int catchwordId);
+
+  List<CategoryEntity> sortCatchwordsCategoriesBasedOnDateTime(
+    List<CategoryEntity> categories,
+  );
 }
 
 /// Throws an excpetion if there is no cathword

@@ -1,10 +1,10 @@
 part of 'auth_bloc.dart';
 
-enum AuthStatus { authenticated, unauthenticated }
+enum AuthStatus { authenticated, unauthenticated, unknown }
 
 final class AuthState extends Equatable {
   const AuthState({
-    this.status = AuthStatus.unauthenticated,
+    this.status = AuthStatus.unknown,
     this.userLocalEntity = UserLocalEntity.empty,
   });
 

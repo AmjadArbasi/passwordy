@@ -11,6 +11,7 @@ class CatchwordDbDto {
     required this.passcode,
     required this.dateTime,
     required this.isVisibile,
+    this.whenUsed,
   });
 
   Id? id = Isar.autoIncrement;
@@ -22,6 +23,8 @@ class CatchwordDbDto {
   String passcode;
 
   bool isVisibile;
+
+  DateTime? whenUsed;
 
   @Index()
   DateTime dateTime;

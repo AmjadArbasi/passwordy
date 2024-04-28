@@ -13,6 +13,7 @@ CatchwordModel _$CatchwordModelFromJson(Map<String, dynamic> json) =>
       accountId: json['account_id'] as String,
       passcode: json['passcode'] as String,
       createdAt: DateTime.parse(json['created_at'] as String),
+      whenUsed: DateTime.parse(json['whenUsed'] as String),
       isVisible: json['isVisible'] as bool,
     );
 
@@ -23,5 +24,6 @@ Map<String, dynamic> _$CatchwordModelToJson(CatchwordModel instance) =>
       'account_id': instance.accountId,
       'passcode': instance.passcode,
       'created_at': instance.createdAt.toIso8601String(),
+      'whenUsed': instance.whenUsed.toIso8601String(),
       'isVisible': instance.isVisible,
     };

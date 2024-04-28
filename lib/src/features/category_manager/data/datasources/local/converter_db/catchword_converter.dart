@@ -1,6 +1,5 @@
 import 'package:flutter_application_passmanager/src/core/utils/converter_db/converter.dart';
 import 'package:flutter_application_passmanager/src/features/category_manager/category_manager.dart';
-import 'package:flutter_application_passmanager/src/features/category_manager/data/datasources/datasources.dart';
 
 class CatchwordModelToDbDtoConverter
     implements Converter<CatchwordModel, CatchwordDbDto> {
@@ -13,6 +12,7 @@ class CatchwordModelToDbDtoConverter
       passcode: source.passcode,
       dateTime: source.createdAt,
       isVisibile: source.isVisible,
+      whenUsed: source.whenUsed,
     );
   }
 }
@@ -28,6 +28,7 @@ class CatchwordDbDtoToModelConverter
       passcode: model.passcode,
       createdAt: model.dateTime,
       isVisible: model.isVisibile,
+      whenUsed: model.whenUsed!,
     );
   }
 }

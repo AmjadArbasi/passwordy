@@ -41,6 +41,11 @@ const CatchwordDbDtoSchema = CollectionSchema(
       id: 4,
       name: r'passcode',
       type: IsarType.string,
+    ),
+    r'whenUsed': PropertySchema(
+      id: 5,
+      name: r'whenUsed',
+      type: IsarType.dateTime,
     )
   },
   estimateSize: _catchwordDbDtoEstimateSize,
@@ -94,6 +99,7 @@ void _catchwordDbDtoSerialize(
   writer.writeBool(offsets[2], object.isVisibile);
   writer.writeString(offsets[3], object.name);
   writer.writeString(offsets[4], object.passcode);
+  writer.writeDateTime(offsets[5], object.whenUsed);
 }
 
 CatchwordDbDto _catchwordDbDtoDeserialize(
@@ -109,6 +115,7 @@ CatchwordDbDto _catchwordDbDtoDeserialize(
     isVisibile: reader.readBool(offsets[2]),
     name: reader.readString(offsets[3]),
     passcode: reader.readString(offsets[4]),
+    whenUsed: reader.readDateTimeOrNull(offsets[5]),
   );
   return object;
 }
@@ -130,6 +137,8 @@ P _catchwordDbDtoDeserializeProp<P>(
       return (reader.readString(offset)) as P;
     case 4:
       return (reader.readString(offset)) as P;
+    case 5:
+      return (reader.readDateTimeOrNull(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
   }
@@ -878,6 +887,80 @@ extension CatchwordDbDtoQueryFilter
       ));
     });
   }
+
+  QueryBuilder<CatchwordDbDto, CatchwordDbDto, QAfterFilterCondition>
+      whenUsedIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'whenUsed',
+      ));
+    });
+  }
+
+  QueryBuilder<CatchwordDbDto, CatchwordDbDto, QAfterFilterCondition>
+      whenUsedIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'whenUsed',
+      ));
+    });
+  }
+
+  QueryBuilder<CatchwordDbDto, CatchwordDbDto, QAfterFilterCondition>
+      whenUsedEqualTo(DateTime? value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'whenUsed',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<CatchwordDbDto, CatchwordDbDto, QAfterFilterCondition>
+      whenUsedGreaterThan(
+    DateTime? value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'whenUsed',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<CatchwordDbDto, CatchwordDbDto, QAfterFilterCondition>
+      whenUsedLessThan(
+    DateTime? value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'whenUsed',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<CatchwordDbDto, CatchwordDbDto, QAfterFilterCondition>
+      whenUsedBetween(
+    DateTime? lower,
+    DateTime? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'whenUsed',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+      ));
+    });
+  }
 }
 
 extension CatchwordDbDtoQueryObject
@@ -950,6 +1033,19 @@ extension CatchwordDbDtoQuerySortBy
       sortByPasscodeDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'passcode', Sort.desc);
+    });
+  }
+
+  QueryBuilder<CatchwordDbDto, CatchwordDbDto, QAfterSortBy> sortByWhenUsed() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'whenUsed', Sort.asc);
+    });
+  }
+
+  QueryBuilder<CatchwordDbDto, CatchwordDbDto, QAfterSortBy>
+      sortByWhenUsedDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'whenUsed', Sort.desc);
     });
   }
 }
@@ -1032,6 +1128,19 @@ extension CatchwordDbDtoQuerySortThenBy
       return query.addSortBy(r'passcode', Sort.desc);
     });
   }
+
+  QueryBuilder<CatchwordDbDto, CatchwordDbDto, QAfterSortBy> thenByWhenUsed() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'whenUsed', Sort.asc);
+    });
+  }
+
+  QueryBuilder<CatchwordDbDto, CatchwordDbDto, QAfterSortBy>
+      thenByWhenUsedDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'whenUsed', Sort.desc);
+    });
+  }
 }
 
 extension CatchwordDbDtoQueryWhereDistinct
@@ -1067,6 +1176,12 @@ extension CatchwordDbDtoQueryWhereDistinct
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'passcode', caseSensitive: caseSensitive);
+    });
+  }
+
+  QueryBuilder<CatchwordDbDto, CatchwordDbDto, QDistinct> distinctByWhenUsed() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'whenUsed');
     });
   }
 }
@@ -1106,6 +1221,12 @@ extension CatchwordDbDtoQueryProperty
   QueryBuilder<CatchwordDbDto, String, QQueryOperations> passcodeProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'passcode');
+    });
+  }
+
+  QueryBuilder<CatchwordDbDto, DateTime?, QQueryOperations> whenUsedProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'whenUsed');
     });
   }
 }

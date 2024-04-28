@@ -6,6 +6,7 @@ final class CatchwordState extends Equatable {
   final List<CatchwordEntity> catchwords;
   final List<CategoryEntity> categories;
   final List<CategoryEntity> filteredCategories;
+  final List<CategoryEntity> recentlyUsedCatchwords;
   final CatchwordStatus status;
   final CatchwordEntity? lastDeletedItem;
   final CategoryEntity? categoryLinkedDeletedCatchword;
@@ -16,6 +17,7 @@ final class CatchwordState extends Equatable {
     this.catchwords = const [],
     this.categories = const [],
     this.filteredCategories = const [],
+    this.recentlyUsedCatchwords = const [],
     this.status = CatchwordStatus.initial,
     this.lastDeletedItem,
     this.categoryLinkedDeletedCatchword,
@@ -27,6 +29,7 @@ final class CatchwordState extends Equatable {
     List<CatchwordEntity>? catchwords,
     List<CategoryEntity>? categories,
     List<CategoryEntity>? filteredCategories,
+    List<CategoryEntity>? recentlyUsedCatchwords,
     CatchwordStatus? status,
     CatchwordEntity? Function()? lastDeletedItem,
     CategoryEntity? categoryLinkedDeletedCatchword,
@@ -37,6 +40,8 @@ final class CatchwordState extends Equatable {
       catchwords: catchwords ?? this.catchwords,
       categories: categories ?? this.categories,
       filteredCategories: filteredCategories ?? this.filteredCategories,
+      recentlyUsedCatchwords:
+          recentlyUsedCatchwords ?? this.recentlyUsedCatchwords,
       status: status ?? this.status,
       lastDeletedItem:
           lastDeletedItem != null ? lastDeletedItem() : this.lastDeletedItem,
@@ -52,6 +57,7 @@ final class CatchwordState extends Equatable {
         catchwords,
         categories,
         filteredCategories,
+        recentlyUsedCatchwords,
         status,
         lastDeletedItem,
         copiedPasscode,

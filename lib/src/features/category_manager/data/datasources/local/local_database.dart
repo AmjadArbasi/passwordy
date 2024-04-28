@@ -62,6 +62,7 @@ class AppLocalDatabase {
       passcode: catchwordModel.passcode,
       dateTime: catchwordModel.createdAt,
       isVisibile: catchwordModel.isVisible,
+      whenUsed: catchwordModel.whenUsed,
     );
 
     final category = await isar.categoryDbDtos.get(categoryModel.id!);
@@ -92,6 +93,7 @@ class AppLocalDatabase {
       passcode: catchwordModel.passcode,
       dateTime: catchwordModel.createdAt,
       isVisibile: catchwordModel.isVisible,
+      whenUsed: catchwordModel.whenUsed,
     );
 
     final category = await isar.categoryDbDtos.get(categoryModel.id!);
@@ -119,5 +121,14 @@ class AppLocalDatabase {
       () async => isar.categoryDbDtos.put(newCategory),
     );
     return categoryDbDtoToModelConverter.convert(newCategory);
+  }
+
+  Future<void> addCurrentDateTimeWhenUsed(int id) async {
+    final catchword = await isar.catchwordDbDtos.get(id);
+
+    if (catchword != null) {
+      catchword.whenUsed = DateTime.now();
+      await isar.writeTxn(() async => isar.catchwordDbDtos.put(catchword));
+    }
   }
 }

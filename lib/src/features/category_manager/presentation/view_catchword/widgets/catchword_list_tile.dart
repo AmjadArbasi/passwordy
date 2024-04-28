@@ -53,11 +53,9 @@ class CatchwordListTile extends StatelessWidget {
                   ? const Text('')
                   : IconButton(
                       onPressed: () {
-                        context.read<CatchwordBloc>().add(
-                              CatchwordsCopyPressed(
-                                copiedPasscode: catchword.passcode,
-                              ),
-                            );
+                        context.read<CatchwordBloc>().add(CatchwordsCopyPressed(
+                            copiedPasscode: catchword.passcode,
+                            catchwordId: catchword.id!));
                       },
                       icon: const Icon(Icons.copy),
                     ),
