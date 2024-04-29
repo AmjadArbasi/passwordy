@@ -10,5 +10,10 @@ abstract class UserManagementRepository {
       String username, String masterPassword, String secret);
   Future<bool> checkCurrentPassword(String masterPassword);
 
+  Future<bool> checkSecret(String username, String secret);
+
+  Future<void> updatePassword(
+      String username, String secret, String newPassword);
+
   Stream<UserLocalEntity> get stream;
 }

@@ -48,4 +48,6 @@ class AppRoutes {
   static const String translator = "${root}translator";
 
   static const String welcome = "${root}welcome";
+
+  static const String resetPassword = "${root}resetPassword";
 }

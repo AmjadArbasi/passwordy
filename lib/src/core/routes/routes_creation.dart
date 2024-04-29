@@ -20,5 +20,7 @@ class Routes {
     GetPage(name: AppRoutes.signIn, page: () => const SignIn()),
     GetPage(name: AppRoutes.signUp, page: () => const SignUp()),
     GetPage(name: AppRoutes.welcome, page: () => const WelcomePage()),
+    GetPage(
+        name: AppRoutes.resetPassword, page: () => const ResetMasterPasscode()),
   ];
 }

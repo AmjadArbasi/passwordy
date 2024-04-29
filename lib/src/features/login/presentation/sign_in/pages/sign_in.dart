@@ -31,7 +31,7 @@ class SignIn extends StatelessWidget {
             Logger().f(state.status);
           },
           child: Container(
-            margin: const EdgeInsets.all(25.0),
+            margin: const EdgeInsets.all(30.0),
             child: Column(
               children: [
                 Center(
@@ -40,9 +40,7 @@ class SignIn extends StatelessWidget {
                     style: Theme.of(context).textTheme.headlineSmall!,
                   ),
                 ),
-                const SizedBox(
-                  height: 40.0,
-                ),
+                const SizedBox(height: 40.0),
                 const SignInForm(),
               ],
             ),
@@ -76,19 +74,66 @@ class SignInForm extends StatelessWidget {
           },
         ),
       ],
-      child: Column(
+      child: const Column(
         children: [
-          const SigninUsernameFormField(),
-          const SizedBox(height: 25),
-          const SigninPasswordFormField(),
-          const SizedBox(height: 25),
-          const SigninLoginButton(),
-          ElevatedButton(
-            onPressed: () => Get.offAllNamed(AppRoutes.signUp),
-            child: const Text('Register'),
-          )
+          SigninUsernameFormField(),
+          SizedBox(height: 25),
+          SigninPasswordFormField(),
+          SizedBox(height: 25),
+          ResetForgotPasswordButton(),
+          SizedBox(height: 25),
+          SigninLoginButton(),
+          SizedBox(height: 25),
+          RegisterNewUser(),
         ],
       ),
+    );
+  }
+}
+
+class ResetForgotPasswordButton extends StatelessWidget {
+  const ResetForgotPasswordButton({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return TextButton(
+      onPressed: () => Get.toNamed(AppRoutes.resetPassword),
+      child: Text(
+        "resetPasswordMessageAndButton".tr,
+        style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+              color: Theme.of(context).primaryColor,
+            ),
+      ),
+    );
+  }
+}
+
+class RegisterNewUser extends StatelessWidget {
+  const RegisterNewUser({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        Text(
+          "DontHaveAnAccountMessage".tr,
+          style: Theme.of(context).textTheme.bodyMedium,
+        ),
+        TextButton(
+          onPressed: () => Get.offAllNamed(AppRoutes.signUp),
+          child: Text(
+            'SubmitSignUpButton'.tr,
+            style: Theme.of(context)
+                .textTheme
+                .titleMedium!
+                .copyWith(color: Theme.of(context).colorScheme.primary),
+          ),
+        ),
+      ],
     );
   }
 }
@@ -203,7 +248,7 @@ class SigninLoginButton extends StatelessWidget {
                       }
                     : null,
                 style: ElevatedButton.styleFrom(
-                  fixedSize: const Size(200, 50),
+                  fixedSize: Size(MediaQuery.of(context).size.width, 50),
                   backgroundColor: Theme.of(context).colorScheme.primary,
                   foregroundColor: Theme.of(context).colorScheme.onPrimary,
                   textStyle: Theme.of(context).textTheme.titleMedium,

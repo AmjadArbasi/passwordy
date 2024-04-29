@@ -60,6 +60,10 @@ class SignUpCubit extends Cubit<SignUpState> {
     ));
   }
 
+  void securityQuestionChanged(String value) {
+    emit(state.copyWith(securityQuestion: value));
+  }
+
   Future<void> signUpFormSubmitted() async {
     if (!state.isValid) return;
     emit(state.copyWith(status: FormzSubmissionStatus.inProgress));
@@ -68,6 +72,7 @@ class SignUpCubit extends Cubit<SignUpState> {
         name: state.username.value,
         masterPassword: state.password.value,
         secret: state.secret.value,
+        securityQuestion: state.securityQuestion,
         createdAt: DateTime.now(),
       );
       final signUpStatus = await _userManagementUsecase.signUp(user);

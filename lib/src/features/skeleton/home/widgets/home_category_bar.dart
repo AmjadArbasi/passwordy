@@ -10,7 +10,7 @@ class HomeCategoryBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 20),
+      padding: const EdgeInsets.symmetric(vertical: 12),
       child: Row(
         children: [
           Text(
@@ -21,10 +21,7 @@ class HomeCategoryBar extends StatelessWidget {
           ),
           IconButton(
             onPressed: () => Get.toNamed(AppRoutes.saveCategory),
-            icon: const Icon(
-              Icons.settings,
-              size: 28,
-            ),
+            icon: const Icon(Icons.settings, size: 28),
             color: Theme.of(context).colorScheme.tertiary,
           )
         ],

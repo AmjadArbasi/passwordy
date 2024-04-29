@@ -11,7 +11,9 @@ class AppTranslation extends Translations {
     "PasswordLabelText": "Password",
     "PasswordHintText": "Password",
     "SubmitSignInButton": "Sign in",
-    "SignInWithGoogleButton": "SIGN IN WITH GOOGLE",
+    "SubmitSignUpButton": "Sign up",
+    "DontHaveAnAccountMessage": "Don't have an account?",
+    "resetPasswordMessageAndButton": "Forget your password?",
 
     /// [Sign up] page
     "nameOfSignUpPage": "Sign up",
@@ -22,7 +24,7 @@ class AppTranslation extends Translations {
     "confirmPasswordFieldSignupPage": "Confirm Password",
     "buttonSignUpSignUpPage": "Sign up",
     "buttonSignInSignUpPage": "Sign in",
-    "messageHavingAnAccountSignUp": "Have you an account! ",
+    "messageHavingAnAccountSignUp": "Do you have an account?",
 
     /// [Translator Page]
     "nameOfLangEn": "English",
@@ -35,6 +37,8 @@ class AppTranslation extends Translations {
     "homeCategoriesTitle": "Categories",
     "recentlyUsedHome": "Recently Used",
     "addItemHome": "Add item",
+    "welcomeMessageHomePage": "Hello, ",
+    "lastSuccessfulSignInHomePage": "Last successful login: ",
 
     /// [CatchwordView]
     "nameOfCatchwordView": "View Password Card",
@@ -104,6 +108,21 @@ class AppTranslation extends Translations {
     /// [General]
     "nameOfGeneral": "Personal Information",
     "displayNameGeneral": "Display Name",
+
+    /// [Secret]
+    "hintLabelSecret": "Secret",
+    "selectOneSecurityQuestionSecret": "Please select one security question",
+    "securityQuestionOneSecret":
+        "What was the name of your elementary/primary school?",
+    "securityQuestionTwoSecret": "What was the first concert you attended?",
+    "securityQuestionThreeSecret":
+        "What was the make and model of your first car?",
+
+    /// [Reset Master Passcode]
+    "resetMasterPasscodeTitlePage": "Reset Master Passcode",
+    "resetMasterPasscodeButton": "Reset Master Passcode",
+    "resetGoToSignInPage": "Try sign in again!",
+    "enterNewPasswordResetMasterPasscode": "Enter your new master passcode",
   };
   static const Map<String, String> ar = {
     /// [Sign in] Page
@@ -115,8 +134,9 @@ class AppTranslation extends Translations {
     "PasswordLabelText": "الرمز السري",
     "PasswordHintText": "الرمز السري",
     "SubmitSignInButton": "تسجيل الدخول",
-    "SignInWithGoogleButton": "تسجيل الدخول بحساب جوجل",
-    "messageHavingAnAccountSignUp": "لديك حساب بالفعل! ",
+    "SubmitSignUpButton": "انشاء حساب",
+    "DontHaveAnAccountMessage": "ليس لديك حساب؟",
+    "resetPasswordMessageAndButton": "نسيت كلمة المرور؟",
 
     /// [Sign up] page
     "nameOfSignUpPage": "انشاء حساب",
@@ -127,6 +147,7 @@ class AppTranslation extends Translations {
     "confirmPasswordFieldSignupPage": "تاكيد الرقم السري",
     "buttonSignUpSignUpPage": "انشاء الحساب",
     "buttonSignInSignUpPage": "تسجيل الدخول",
+    "messageHavingAnAccountSignUp": "هل لديك حساب بالفعل؟",
 
     /// [Translator Page]
     "nameOfLangEn": "اللغة الانجليزية",
@@ -139,6 +160,8 @@ class AppTranslation extends Translations {
     "homeCategoriesTitle": "الفئات",
     "recentlyUsedHome": "اضيفت حديثا",
     "addItemHome": "اضافة",
+    "welcomeMessageHomePage": "مرحبا, ",
+    "lastSuccessfulSignInHomePage": "اخر محاولة تسجيل دخول ناجحة: ",
 
     /// [CatchwordView]
     "nameOfCatchwordView": "عرض معلومات الرقم السري",
@@ -204,6 +227,19 @@ class AppTranslation extends Translations {
     "passwordTooShortFormz":
         "يحب ان يكون الرقم السري مكون من 8 عناصر على الاقل",
     "passwordTooLong": "يجب ان لا يتجاوز الرقم السري 20 عنصر",
+
+    /// [Secret]
+    "hintLabelSecret": "جواب السؤال السري",
+    "selectOneSecurityQuestionSecret": "يرجى اختيار احد الاسئلة السرية التالية",
+    "securityQuestionOneSecret": "ما هو اسم مدرستك الابتدائية؟",
+    "securityQuestionTwoSecret": "ما هو اول حفل تمت دعوتك اليه؟",
+    "securityQuestionThreeSecret": "ما هو نوع وطراز سيارتك الاولى؟",
+
+    /// [Reset Master Passcode]
+    "resetMasterPasscodeTitlePage": "اعادة تعيين كلمة السر",
+    "resetMasterPasscodeButton": "اعادة تعيين كلمة السر",
+    "resetGoToSignInPage": "تسجيل الدخول!",
+    "enterNewPasswordResetMasterPasscode": "ادخل كلمة السر الجديدة"
   };
 
   @override

@@ -3,9 +3,7 @@ import 'dart:math';
 
 import 'package:crypto/crypto.dart';
 import 'package:flutter_application_passmanager/src/core/services/services.dart';
-import 'package:flutter_application_passmanager/src/features/login/data/datasources/local/apis/i_user_management_api.dart';
-import 'package:flutter_application_passmanager/src/features/login/data/datasources/local/models/user_local_dto.dart';
-import 'package:flutter_application_passmanager/src/features/login/data/models/user_local_model.dart';
+import 'package:flutter_application_passmanager/src/features/features.dart';
 import 'package:intl/intl.dart';
 import 'package:isar/isar.dart';
 import 'package:logger/logger.dart';
@@ -43,6 +41,7 @@ class UserManagementApi implements IUserManagementApi {
         id: userLocalModel.id,
         username: userLocalModel.name,
         salt: salt,
+        securityQuestion: userLocalModel.securityQuestion,
         secret: hashedSecret,
         masterPassword: hashedMassterPassword,
         createdAt: userLocalModel.createdAt,
@@ -216,5 +215,57 @@ class UserManagementApi implements IUserManagementApi {
       }
     }
     return false;
+  }
+
+  @override
+  Future<bool> checkSecret(String username, String secret) async {
+    final user = await _isar.userLocalDtos
+        .filter()
+        .usernameEqualTo(username)
+        .findFirst();
+    logger.w(user);
+    if (user != null) {
+      final hashedSecret = _hash(secret, user.salt!);
+
+      if (hashedSecret == user.secret) {
+        return true;
+      }
+      return false;
+    }
+    return false;
+  }
+
+  @override
+  Future<void> updatePassword(
+    String username,
+    String secret,
+    String newPassword,
+  ) async {
+    final user = await _isar.userLocalDtos
+        .filter()
+        .usernameEqualTo(username)
+        .findFirst();
+
+    if (user != null && secret.isNotEmpty && newPassword.isNotEmpty) {
+      final hashedSecret = _hash(secret, user.salt!);
+
+      if (hashedSecret == user.secret) {
+        final newSalt = _generateSalt(username.length);
+        final newPasswordHashed = _hash(newPassword, newSalt);
+        final secretHashed = _hash(secret, newSalt);
+
+        user.salt = newSalt;
+        user.secret = secretHashed;
+        user.masterPassword = newPasswordHashed;
+
+        await _isar.writeTxn(() async {
+          await _isar.userLocalDtos.put(user);
+        });
+      } else {
+        throw Exception("Secret invalid");
+      }
+    } else {
+      throw Exception("user not found, secret or new password empty");
+    }
   }
 }

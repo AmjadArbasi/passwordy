@@ -7,7 +7,9 @@ class UserLocalModel implements DataMapperEntity<UserLocalEntity> {
     this.name,
     this.masterPassword,
     this.secret,
+    this.securityQuestion,
     this.lastSuccessfulSignIn,
+    this.lastUnsuccessfulSignIn,
     this.createdAt,
   });
 
@@ -15,7 +17,9 @@ class UserLocalModel implements DataMapperEntity<UserLocalEntity> {
   final String? name;
   final String? masterPassword;
   final String? secret;
+  final String? securityQuestion;
   final String? lastSuccessfulSignIn;
+  final String? lastUnsuccessfulSignIn;
   final DateTime? createdAt;
 
   static const empty = UserLocalModel();
@@ -25,19 +29,21 @@ class UserLocalModel implements DataMapperEntity<UserLocalEntity> {
   bool get isEmpty => this == UserLocalModel.empty;
 
   @override
-  String toString() {
-    return 'UserLocalModel(id: $id, name: $name, masterPassword: $masterPassword, secret: $secret, lastSuccessfulSignIn: $lastSuccessfulSignIn, createdAt: $createdAt)';
-  }
-
-  @override
   UserLocalEntity mapToEntity() {
     return UserLocalEntity(
       id: id,
       name: name,
       masterPassword: masterPassword,
       secret: secret,
+      securityQuestion: securityQuestion,
       lastSuccessfulSignIn: lastSuccessfulSignIn,
+      lastUnsuccessfulSignIn: lastUnsuccessfulSignIn,
       createdAt: createdAt,
     );
+  }
+
+  @override
+  String toString() {
+    return 'UserLocalModel(id: $id, name: $name, masterPassword: $masterPassword, secret: $secret, securityQuestion: $securityQuestion, lastSuccessfulSignIn: $lastSuccessfulSignIn, lastUnsuccessfulSignIn: $lastUnsuccessfulSignIn, createdAt: $createdAt)';
   }
 }

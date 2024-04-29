@@ -21,7 +21,7 @@ class CustomNavbar extends StatelessWidget {
         ],
       ),
       child: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(12.0),
         child: GNav(
           curve: Curves.decelerate,
           color: Colors.grey[600],

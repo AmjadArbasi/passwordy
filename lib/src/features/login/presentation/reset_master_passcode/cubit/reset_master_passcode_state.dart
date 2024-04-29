@@ -1,56 +1,56 @@
-part of 'sign_up_cubit.dart';
+part of 'reset_master_passcode_cubit.dart';
 
-final class SignUpState extends Equatable {
-  const SignUpState({
+final class ResetMasterPasscodeState extends Equatable {
+  const ResetMasterPasscodeState({
     this.username = const Username.pure(),
-    this.password = const Password.pure(),
+    this.newPassword = const Password.pure(),
+    this.confirmNewPassword = const ConfirmPassword.pure(),
     this.secret = const Secret.pure(),
-    this.securityQuestion = "",
-    this.confirmPassword = const ConfirmPassword.pure(),
     this.status = FormzSubmissionStatus.initial,
     this.isValid = false,
+    this.secertIsCorrect = false,
     this.errorMessage,
   });
 
   final Username username;
-  final Password password;
-  final ConfirmPassword confirmPassword;
+  final Password newPassword;
+  final ConfirmPassword confirmNewPassword;
   final Secret secret;
-  final String securityQuestion;
   final FormzSubmissionStatus status;
   final bool isValid;
+  final bool secertIsCorrect;
   final String? errorMessage;
 
   @override
   List<Object?> get props => [
         username,
-        password,
-        confirmPassword,
+        newPassword,
+        confirmNewPassword,
         secret,
-        securityQuestion,
         status,
         isValid,
+        secertIsCorrect,
         errorMessage
       ];
 
-  SignUpState copyWith({
+  ResetMasterPasscodeState copyWith({
     Username? username,
-    Password? password,
-    ConfirmPassword? confirmPassword,
+    Password? newPassword,
+    ConfirmPassword? confirmNewPassword,
     Secret? secret,
-    String? securityQuestion,
     FormzSubmissionStatus? status,
     bool? isValid,
+    bool? secertIsCorrect,
     String? errorMessage,
   }) {
-    return SignUpState(
+    return ResetMasterPasscodeState(
       username: username ?? this.username,
-      password: password ?? this.password,
-      confirmPassword: confirmPassword ?? this.confirmPassword,
+      newPassword: newPassword ?? this.newPassword,
+      confirmNewPassword: confirmNewPassword ?? this.confirmNewPassword,
       secret: secret ?? this.secret,
-      securityQuestion: securityQuestion ?? this.securityQuestion,
       status: status ?? this.status,
       isValid: isValid ?? this.isValid,
+      secertIsCorrect: secertIsCorrect ?? this.secertIsCorrect,
       errorMessage: errorMessage ?? this.errorMessage,
     );
   }

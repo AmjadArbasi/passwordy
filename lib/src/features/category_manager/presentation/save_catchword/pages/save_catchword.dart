@@ -187,7 +187,6 @@ class DropDownMuneCategories extends StatelessWidget {
     final validCurrentCategory =
         state.categories.contains(currentCategory) ? currentCategory : null;
 
-    logger.f(currentCategory);
     return DropdownButton<CategoryEntity>(
       value: validCurrentCategory,
       hint: Text("selectionCategoryeSaveCatchword".tr),

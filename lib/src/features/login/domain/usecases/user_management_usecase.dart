@@ -28,5 +28,12 @@ class UserManagementUsecase {
   Future<bool> checkCurrentPassword(String masterPassword) =>
       _userManagementRepository.checkCurrentPassword(masterPassword);
 
+  Future<bool> checkSecret(String username, String secret) =>
+      _userManagementRepository.checkSecret(username, secret);
+
+  Future<void> updatePassword(
+          String username, String secret, String newPassword) =>
+      _userManagementRepository.updatePassword(username, secret, newPassword);
+
   Stream<UserLocalEntity> get stream => _userManagementRepository.stream;
 }

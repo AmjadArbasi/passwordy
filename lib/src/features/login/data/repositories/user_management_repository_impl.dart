@@ -49,4 +49,15 @@ class UserManagementRepositoryImpl extends UserManagementRepository {
   Future<bool> checkCurrentPassword(String masterPassword) async {
     return await _api.checkCurrentPassword(masterPassword);
   }
+
+  @override
+  Future<bool> checkSecret(String username, String secret) async {
+    return await _api.checkSecret(username, secret);
+  }
+
+  @override
+  Future<void> updatePassword(
+      String username, String secret, String newPassword) async {
+    await _api.updatePassword(username, secret, newPassword);
+  }
 }

@@ -2,7 +2,7 @@ import 'package:isar/isar.dart';
 
 part 'user_local_dto.g.dart';
 
-@collection
+// @collection
 class UserLocalDto {
   UserLocalDto({
     this.id,
@@ -10,8 +10,10 @@ class UserLocalDto {
     this.masterPassword,
     this.salt,
     this.token,
+    this.securityQuestion,
     this.secret,
     this.lastSuccessfulSignIn,
+    this.lastUnuccessfulSignIn,
     this.createdAt,
   });
 
@@ -21,12 +23,14 @@ class UserLocalDto {
   String? masterPassword;
   String? salt;
   String? token;
+  String? securityQuestion;
   String? secret;
   DateTime? lastSuccessfulSignIn;
+  DateTime? lastUnuccessfulSignIn;
   DateTime? createdAt;
 
   @override
   String toString() {
-    return "UserLocalDto(id: $id, username: $username, masterPassword: $masterPassword, salt: $salt, token: $token, secret: $secret, lastSuccessfulSignIn: $lastSuccessfulSignIn, createdAt: $createdAt)";
+    return 'UserLocalDto(username: $username, masterPassword: $masterPassword, salt: $salt, token: $token, securityQuestion: $securityQuestion, secret: $secret, lastSuccessfulSignIn: $lastSuccessfulSignIn, lastUnuccessfulSignIn: $lastUnuccessfulSignIn, createdAt: $createdAt)';
   }
 }

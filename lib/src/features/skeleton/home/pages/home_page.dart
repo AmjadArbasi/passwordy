@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_application_passmanager/src/features/auth/auth.dart';
 import 'package:flutter_application_passmanager/src/features/features.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get/get.dart';
 
 class Home extends StatelessWidget {
   const Home({super.key});
@@ -54,15 +55,26 @@ class UserInfoBar extends StatelessWidget {
             backgroundImage: AssetImage('assets/images/user_icon.png'),
             radius: 30,
           ),
-          const SizedBox(width: 8.0),
+          const SizedBox(width: 6.0),
           BlocBuilder<AuthBloc, AuthState>(
             builder: (context, state) {
-              return Text(
-                'Hello, ${state.userLocalEntity.name}',
-                style: Theme.of(context)
-                    .textTheme
-                    .titleLarge!
-                    .copyWith(fontWeight: FontWeight.bold),
+              return Row(
+                children: [
+                  Text(
+                    "welcomeMessageHomePage".tr,
+                    style: Theme.of(context)
+                        .textTheme
+                        .titleLarge!
+                        .copyWith(fontWeight: FontWeight.bold),
+                  ),
+                  Text(
+                    '${state.userLocalEntity.name}',
+                    style: Theme.of(context)
+                        .textTheme
+                        .titleLarge!
+                        .copyWith(fontWeight: FontWeight.bold),
+                  ),
+                ],
               );
             },
           ),
@@ -86,8 +98,10 @@ class LastSuccessfulDateTime extends StatelessWidget {
           child: Row(
             children: [
               Text(
-                'Last succsful login: ',
-                style: Theme.of(context).textTheme.titleMedium,
+                'lastSuccessfulSignInHomePage'.tr,
+                style: Theme.of(context).textTheme.titleMedium!.copyWith(
+                      fontWeight: FontWeight.bold,
+                    ),
               ),
               Text('${state.userLocalEntity.lastSuccessfulSignIn}'),
             ],

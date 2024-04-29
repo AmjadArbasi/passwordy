@@ -139,7 +139,14 @@ class App extends StatelessWidget {
           create: (context) => UserUpdateInfoCubit(
             userManagementUsecase: context.read<UserManagementUsecase>(),
           ),
-        )
+        ),
+
+        /// Provides [Reset Password Qusetion]
+        BlocProvider(
+          create: (context) => ResetMasterPasscodeCubit(
+            userManagementUsecase: context.read<UserManagementUsecase>(),
+          ),
+        ),
       ],
       child: const AppView(),
     );

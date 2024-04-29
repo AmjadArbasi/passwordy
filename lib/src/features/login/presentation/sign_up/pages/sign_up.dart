@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_passmanager/src/features/form_inputs/form_inputs.dart';
-import 'package:flutter_application_passmanager/src/features/login/login.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:formz/formz.dart';
 import 'package:get/get.dart';
 import 'package:lottie/lottie.dart';
 
+import 'package:flutter_application_passmanager/src/core/constants/constants.dart';
+import 'package:flutter_application_passmanager/src/features/form_inputs/form_inputs.dart';
+import 'package:flutter_application_passmanager/src/features/login/login.dart';
 import 'package:flutter_application_passmanager/src/features/password_visiablity/password_visiablity.dart';
 import 'package:flutter_application_passmanager/src/features/skeleton/bone/widgets/custom_appbar.dart';
 
@@ -70,11 +71,94 @@ class SignUpForm extends StatelessWidget {
           SizedBox(height: 20),
           SignUpConfirmPasswordFormField(),
           SizedBox(height: 25),
+          DropMenuSecurityQuestions(),
+          SizedBox(height: 25),
           SignUpSecretFormField(),
           SizedBox(height: 25),
           SignUpLoginButton(),
+          SizedBox(height: 25),
+          SignInWithRegisterdAccount(),
         ],
       ),
+    );
+  }
+}
+
+class DropMenuSecurityQuestions extends StatelessWidget {
+  const DropMenuSecurityQuestions({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final currentQustion =
+        context.select((SignUpCubit cubit) => cubit.state.securityQuestion);
+    final validCurrentCategory =
+        Questions.questions.contains(currentQustion) ? currentQustion.tr : null;
+
+    return DropdownButton<String>(
+      value: validCurrentCategory,
+      hint: Text("selectOneSecurityQuestionSecret".tr),
+      icon: const Icon(Icons.security),
+      menuMaxHeight: MediaQuery.of(context).size.width * 0.4,
+      items: Questions.questions
+          .map<DropdownMenuItem<String>>(
+              (e) => _buildDropDownMenuItem(e, context))
+          .toList(),
+      style: TextStyle(
+        color: Theme.of(context).colorScheme.secondary,
+        fontSize: 16,
+      ),
+      onChanged: (String? value) =>
+          context.read<SignUpCubit>().securityQuestionChanged(value ?? ""),
+    );
+  }
+
+  DropdownMenuItem<String> _buildDropDownMenuItem(
+      String e, BuildContext context) {
+    return DropdownMenuItem<String>(
+      value: e,
+      child: Container(
+        padding: const EdgeInsets.all(5.0),
+        width: MediaQuery.of(context).size.width * 0.8,
+        child: Wrap(
+          alignment: WrapAlignment.start,
+          runAlignment: WrapAlignment.end,
+          children: [
+            Text(
+              e,
+              overflow: TextOverflow.ellipsis,
+              maxLines: 2,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class SignInWithRegisterdAccount extends StatelessWidget {
+  const SignInWithRegisterdAccount({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        Text(
+          'messageHavingAnAccountSignUp'.tr,
+          style: Theme.of(context).textTheme.bodyMedium,
+        ),
+        TextButton(
+          onPressed: () => Get.offAllNamed(AppRoutes.signIn),
+          child: Text(
+            "buttonSignInSignUpPage".tr,
+            style: Theme.of(context)
+                .textTheme
+                .titleMedium!
+                .copyWith(color: Theme.of(context).colorScheme.primary),
+          ),
+        ),
+      ],
     );
   }
 }
@@ -182,7 +266,7 @@ class SignUpConfirmPasswordFormField extends StatelessWidget {
           decoration: InputDecoration(
             fillColor: Colors.grey.shade200,
             filled: true,
-            prefixIcon: const Icon(Icons.security),
+            prefixIcon: const Icon(Icons.password),
             suffixIcon: state.password.value.isEmpty
                 ? const Icon(Icons.disabled_visible)
                 : IconButton(
@@ -231,9 +315,9 @@ class SignUpSecretFormField extends StatelessWidget {
           decoration: InputDecoration(
             fillColor: Colors.grey.shade200,
             filled: true,
-            prefixIcon: const Icon(Icons.info),
-            hintText: 'Secret',
-            labelText: 'Secret',
+            prefixIcon: const Icon(Icons.system_security_update),
+            hintText: 'hintLabelSecret'.tr,
+            labelText: 'hintLabelSecret'.tr,
             errorText:
                 state.secret.displayError != null ? 'invalid secret' : null,
             contentPadding: const EdgeInsets.symmetric(
