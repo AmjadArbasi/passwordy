@@ -1,3 +1,5 @@
+import 'package:dartz/dartz.dart';
+import 'package:flutter_application_passmanager/src/core/exceptions/exceptions.dart';
 import 'package:flutter_application_passmanager/src/features/login/login.dart';
 
 class UserManagementUsecase {
@@ -7,31 +9,39 @@ class UserManagementUsecase {
 
   final UserManagementRepository _userManagementRepository;
 
-  Future<int> signUp(UserLocalEntity userLocalEntity) =>
-      _userManagementRepository.signUp(userLocalEntity);
+  Future<Either<Failure, Unit>> signUp(UserLocalEntity userLocalEntity) async {
+    final result = await _userManagementRepository.signUp(userLocalEntity);
+    return result.fold((l) => Left(l), (r) => Right(r));
+  }
 
-  Future<UserLocalEntity> logIn(String masterPassword, String username) =>
-      _userManagementRepository.logIn(masterPassword, username);
+  Future<Either<Failure, UserLocalEntity>> logIn(
+      String masterPassword, String username) async {
+    final result =
+        await _userManagementRepository.logIn(masterPassword, username);
+    return result;
+  }
 
-  Future<void> deleteUser(UserLocalEntity userLocalEntity) =>
+  Future<Either<Failure, UserLocalEntity>> updateInfo(
+      String username, String masterPassword, String secret) async {
+    return _userManagementRepository.updateInfo(
+        username, masterPassword, secret);
+  }
+
+  Future<Either<Failure, Unit>> deleteUser(UserLocalEntity userLocalEntity) =>
       _userManagementRepository.deleteUser(userLocalEntity);
-
-  Future<void> updateInfo(
-          String username, String masterPassword, String secret) =>
-      _userManagementRepository.updateInfo(username, masterPassword, secret);
 
   Future<void> logOut() => _userManagementRepository.logOut();
 
-  Future<UserLocalEntity> reAuthLoggedUser() =>
+  Future<Either<Failure, UserLocalEntity>> reAuthLoggedUser() =>
       _userManagementRepository.reAuthLoggedUser();
 
-  Future<bool> checkCurrentPassword(String masterPassword) =>
+  Future<Either<Failure, Unit>> checkCurrentPassword(String masterPassword) =>
       _userManagementRepository.checkCurrentPassword(masterPassword);
 
-  Future<bool> checkSecret(String username, String secret) =>
+  Future<Either<Failure, Unit>> checkSecret(String username, String secret) =>
       _userManagementRepository.checkSecret(username, secret);
 
-  Future<void> updatePassword(
+  Future<Either<Failure, Unit>> updatePassword(
           String username, String secret, String newPassword) =>
       _userManagementRepository.updatePassword(username, secret, newPassword);
 

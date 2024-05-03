@@ -66,7 +66,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     AuthUserLogoutRequested event,
     Emitter<AuthState> emit,
   ) async {
-    await userManagementUsecase.logOut();
+    final failureOrSuccess = await userManagementUsecase.logOut();
     emit(state.copyWith(status: AuthStatus.unauthenticated));
   }
 
@@ -83,16 +83,21 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     AuthCheckingStatusRequested event,
     Emitter<AuthState> emit,
   ) async {
-    final user = await userManagementUsecase.reAuthLoggedUser();
+    final failureOrUser = await userManagementUsecase.reAuthLoggedUser();
     await categoryManagerUsecase.refreshData();
-
-    emit(
-      user.isNotEmpty
-          ? state.copyWith(
-              status: AuthStatus.authenticated,
-              userLocalEntity: user,
-            )
-          : state.copyWith(status: AuthStatus.unauthenticated),
+    failureOrUser.fold(
+      (failure) {
+        emit(state.copyWith(
+          status: AuthStatus.unauthenticated,
+          errorMessage: failure.message,
+        ));
+      },
+      (userLocalEntity) {
+        emit(state.copyWith(
+          status: AuthStatus.authenticated,
+          userLocalEntity: userLocalEntity,
+        ));
+      },
     );
   }
 

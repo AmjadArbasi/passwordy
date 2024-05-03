@@ -34,17 +34,17 @@ class ResetMasterPasscodeCubit extends Cubit<ResetMasterPasscodeState> {
   Future<void> secretChecked(String value) async {
     final username = state.username.value;
     final secret = Secret.dirty(value);
-    final status =
+    final result =
         await _userManagementUsecase.checkSecret(username, secret.value);
 
-    if (status) {
+    result.fold((failure) {
       emit(state.copyWith(secertIsCorrect: true, secret: secret));
-    } else {
+    }, (_) {
       emit(
         state.copyWith(
             secertIsCorrect: false, errorMessage: "Username or Secert invalid"),
       );
-    }
+    });
   }
 
   void newPasswordChanged(String value) {
@@ -91,20 +91,22 @@ class ResetMasterPasscodeCubit extends Cubit<ResetMasterPasscodeState> {
     if (!state.isValid || !state.secertIsCorrect) return;
 
     emit(state.copyWith(status: FormzSubmissionStatus.inProgress));
-    try {
-      await _userManagementUsecase.updatePassword(
-        state.username.value,
-        state.secret.value,
-        state.newPassword.value,
-      );
-      emit(
-        state.copyWith(
-          status: FormzSubmissionStatus.success,
-          isValid: false,
-        ),
-      );
-    } catch (_) {
-      emit(state.copyWith(status: FormzSubmissionStatus.failure));
-    }
+
+    final result = await _userManagementUsecase.updatePassword(
+      state.username.value,
+      state.secret.value,
+      state.newPassword.value,
+    );
+    result.fold((failure) {
+      emit(state.copyWith(
+        status: FormzSubmissionStatus.failure,
+        errorMessage: failure.message,
+      ));
+    }, (_) {
+      emit(state.copyWith(
+        status: FormzSubmissionStatus.success,
+        isValid: false,
+      ));
+    });
   }
 }

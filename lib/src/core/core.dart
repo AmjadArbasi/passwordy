@@ -10,3 +10,4 @@ export 'localization/localization.dart';
 export 'routes/routes.dart';
 export 'services/services.dart';
 export 'utils/utils.dart';
+export 'exceptions/exceptions.dart';

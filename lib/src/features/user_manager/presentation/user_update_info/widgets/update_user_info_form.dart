@@ -10,22 +10,36 @@ class UpdateUserInfoForm extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      alignment: Alignment.center,
-      margin: const EdgeInsets.all(16.0),
-      child: const Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          UsernameChangedField(),
-          SizedBox(height: 25),
-          NewPasswordChangedField(),
-          SizedBox(height: 25),
-          SecretChangedField(),
-          SizedBox(height: 25),
-          CurrentPasswordChangedField(),
-          SizedBox(height: 25),
-          UpdateUserInfoSubmitted(),
-        ],
+    return BlocListener<UserUpdateInfoCubit, UserUpdateInfoState>(
+      listenWhen: (previous, current) => previous.status != current.status,
+      listener: (context, state) {
+        if (state.status == FormzSubmissionStatus.failure) {
+          ScaffoldMessenger.of(context)
+            ..hideCurrentSnackBar()
+            ..showSnackBar(
+              SnackBar(
+                content: Text(state.errorMessage),
+              ),
+            );
+        }
+      },
+      child: Container(
+        alignment: Alignment.center,
+        margin: const EdgeInsets.all(16.0),
+        child: const Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            UsernameChangedField(),
+            SizedBox(height: 25),
+            NewPasswordChangedField(),
+            SizedBox(height: 25),
+            SecretChangedField(),
+            SizedBox(height: 25),
+            CurrentPasswordChangedField(),
+            SizedBox(height: 25),
+            UpdateUserInfoSubmitted(),
+          ],
+        ),
       ),
     );
   }

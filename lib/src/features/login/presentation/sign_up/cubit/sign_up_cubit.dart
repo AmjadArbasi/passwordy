@@ -5,7 +5,6 @@ import 'package:flutter_application_passmanager/src/features/form_inputs/form_in
 import 'package:flutter_application_passmanager/src/features/login/login.dart';
 import 'package:formz/formz.dart';
 import 'package:get/get.dart';
-import 'package:logger/logger.dart';
 
 part 'sign_up_state.dart';
 
@@ -67,27 +66,26 @@ class SignUpCubit extends Cubit<SignUpState> {
   Future<void> signUpFormSubmitted() async {
     if (!state.isValid) return;
     emit(state.copyWith(status: FormzSubmissionStatus.inProgress));
-    try {
-      final user = UserLocalEntity(
-        name: state.username.value,
-        masterPassword: state.password.value,
-        secret: state.secret.value,
-        securityQuestion: state.securityQuestion,
-        createdAt: DateTime.now(),
+    final user = UserLocalEntity(
+      name: state.username.value,
+      masterPassword: state.password.value,
+      secret: state.secret.value,
+      securityQuestion: state.securityQuestion,
+      createdAt: DateTime.now(),
+    );
+    final failureOrSuccess = await _userManagementUsecase.signUp(user);
+    failureOrSuccess.fold((failure) {
+      emit(
+        state.copyWith(
+            status: FormzSubmissionStatus.failure,
+            errorMessage: failure.message),
       );
-      final signUpStatus = await _userManagementUsecase.signUp(user);
-      Logger().f(signUpStatus);
-      if (signUpStatus != -1) {
-        emit(state.copyWith(
-          status: FormzSubmissionStatus.success,
-          isValid: false,
-        ));
-        Get.offAllNamed(AppRoutes.signIn);
-      } else {
-        emit(state.copyWith(status: FormzSubmissionStatus.failure));
-      }
-    } catch (_) {
-      emit(state.copyWith(status: FormzSubmissionStatus.failure));
-    }
+    }, (r) {
+      emit(state.copyWith(
+        status: FormzSubmissionStatus.success,
+        isValid: false,
+      ));
+      Get.offAllNamed(AppRoutes.signIn);
+    });
   }
 }

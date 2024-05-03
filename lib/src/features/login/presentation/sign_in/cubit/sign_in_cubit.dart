@@ -35,30 +35,26 @@ class SignInCubit extends Cubit<SignInState> {
     if (!state.isValid) return;
     emit(state.copyWith(status: FormzSubmissionStatus.inProgress));
 
-    try {
-      final userLocalEntity = await _userManagementUsecase.logIn(
-        state.password.value,
-        state.username.value,
-      );
-      if (userLocalEntity.isNotEmpty) {
+    final failureOrUser = await _userManagementUsecase.logIn(
+      state.password.value,
+      state.username.value,
+    );
+    failureOrUser.fold(
+      (failure) {
+        emit(
+          state.copyWith(
+            status: FormzSubmissionStatus.failure,
+            signInErrorMessage: failure.message,
+          ),
+        );
+      },
+      (userLocalEntity) {
         emit(state.copyWith(
           status: FormzSubmissionStatus.success,
           password: const Password.pure(),
           isValid: false,
         ));
-      } else {
-        emit(state.copyWith(
-          status: FormzSubmissionStatus.failure,
-          isValid: false,
-          signInErrorMessage: "Sign in Failed",
-        ));
-      }
-    } catch (_) {
-      emit(
-        state.copyWith(
-            status: FormzSubmissionStatus.failure,
-            signInErrorMessage: "Sign in Failed"),
-      );
-    }
+      },
+    );
   }
 }

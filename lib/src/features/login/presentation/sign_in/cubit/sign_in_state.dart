@@ -7,7 +7,7 @@ final class SignInState extends Equatable {
     this.status = FormzSubmissionStatus.initial,
     this.isValid = false,
     this.errorMessage,
-    this.signInErrorMessage,
+    this.signInErrorMessage = "",
   });
 
   final Username username;
@@ -15,7 +15,7 @@ final class SignInState extends Equatable {
   final FormzSubmissionStatus status;
   final bool isValid;
   final String? errorMessage;
-  final String? signInErrorMessage;
+  final String signInErrorMessage;
 
   @override
   List<Object?> get props =>

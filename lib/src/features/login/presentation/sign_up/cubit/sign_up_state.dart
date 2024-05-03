@@ -9,7 +9,7 @@ final class SignUpState extends Equatable {
     this.confirmPassword = const ConfirmPassword.pure(),
     this.status = FormzSubmissionStatus.initial,
     this.isValid = false,
-    this.errorMessage,
+    this.errorMessage = "",
   });
 
   final Username username;
@@ -19,7 +19,7 @@ final class SignUpState extends Equatable {
   final String securityQuestion;
   final FormzSubmissionStatus status;
   final bool isValid;
-  final String? errorMessage;
+  final String errorMessage;
 
   @override
   List<Object?> get props => [

@@ -32,6 +32,7 @@ dependencies:
   bloc_test: ^9.1.5
   crypto: ^3.0.3
   cupertino_icons: ^1.0.2
+  dartz: ^0.10.1
   equatable: ^2.0.5
   flutter:
     sdk: flutter

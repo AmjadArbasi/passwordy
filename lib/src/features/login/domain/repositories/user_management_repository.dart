@@ -1,18 +1,25 @@
+import 'package:dartz/dartz.dart';
+import 'package:flutter_application_passmanager/src/core/exceptions/exceptions.dart';
 import 'package:flutter_application_passmanager/src/features/login/login.dart';
 
 abstract class UserManagementRepository {
-  Future<int> signUp(UserLocalEntity userLocalEntity);
-  Future<UserLocalEntity> logIn(String masterPassword, String username);
-  Future<UserLocalEntity> reAuthLoggedUser();
-  Future<void> logOut();
-  Future<void> deleteUser(UserLocalEntity userLocalEntity);
-  Future<void> updateInfo(
+  Future<Either<Failure, Unit>> signUp(UserLocalEntity userLocalEntity);
+  Future<Either<Failure, UserLocalEntity>> logIn(
+      String masterPassword, String username);
+
+  Future<Either<Failure, UserLocalEntity>> updateInfo(
       String username, String masterPassword, String secret);
-  Future<bool> checkCurrentPassword(String masterPassword);
 
-  Future<bool> checkSecret(String username, String secret);
+  Future<Either<Failure, Unit>> deleteUser(UserLocalEntity userLocalEntity);
 
-  Future<void> updatePassword(
+  Future<Either<Failure, UserLocalEntity>> reAuthLoggedUser();
+  Future<void> logOut();
+
+  Future<Either<Failure, Unit>> checkCurrentPassword(String masterPassword);
+
+  Future<Either<Failure, Unit>> checkSecret(String username, String secret);
+
+  Future<Either<Failure, Unit>> updatePassword(
       String username, String secret, String newPassword);
 
   Stream<UserLocalEntity> get stream;

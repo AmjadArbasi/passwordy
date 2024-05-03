@@ -3,7 +3,6 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter_application_passmanager/src/features/form_inputs/form_inputs.dart';
 import 'package:flutter_application_passmanager/src/features/login/login.dart';
 import 'package:formz/formz.dart';
-import 'package:logger/logger.dart';
 
 part 'user_update_info_state.dart';
 
@@ -39,37 +38,46 @@ class UserUpdateInfoCubit extends Cubit<UserUpdateInfoState> {
   }
 
   Future<void> currentPasswordChecked(String masterPassword) async {
-    final status =
+    final failureOrSuccess =
         await userManagementUsecase.checkCurrentPassword(masterPassword);
 
-    emit(state.copyWith(checkCurrentPassword: status));
-    Logger().f(status);
+    failureOrSuccess.fold((failure) {
+      emit(state.copyWith(checkCurrentPassword: false));
+    }, (_) {
+      emit(state.copyWith(checkCurrentPassword: true));
+    });
   }
 
   Future<void> updateUserInfoSubmitted() async {
-    final status = state.checkCurrentPassword;
-
-    if (status) {
-      if (!state.isValid) return;
+    if (state.isValid && state.checkCurrentPassword) {
       emit(state.copyWith(status: FormzSubmissionStatus.inProgress));
-      try {
-        await userManagementUsecase.updateInfo(
-          state.username.value,
-          state.newPassword.value,
-          state.secret.value,
-        );
-        emit(state.copyWith(
-          status: FormzSubmissionStatus.success,
-          isValid: false,
-        ));
-      } catch (_) {
-        emit(state.copyWith(status: FormzSubmissionStatus.failure));
-      }
+
+      final failureOrUser = await userManagementUsecase.updateInfo(
+        state.username.value,
+        state.newPassword.value,
+        state.secret.value,
+      );
+      failureOrUser.fold(
+        (failure) {
+          emit(
+            state.copyWith(
+              status: FormzSubmissionStatus.failure,
+              errorMessage: failure.message,
+            ),
+          );
+        },
+        (userLocalEntity) {
+          emit(state.copyWith(
+            status: FormzSubmissionStatus.success,
+            isValid: false,
+          ));
+        },
+      );
     } else {
       emit(
         state.copyWith(
           status: FormzSubmissionStatus.failure,
-          errorMessage: "Change user info failed",
+          errorMessage: "Password incorrect",
         ),
       );
     }

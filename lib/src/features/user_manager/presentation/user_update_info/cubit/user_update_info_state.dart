@@ -9,7 +9,7 @@ final class UserUpdateInfoState extends Equatable {
     this.newPassword = const Password.pure(),
     this.isValid = false,
     this.checkCurrentPassword = false,
-    this.errorMessage,
+    this.errorMessage = "",
   });
 
   final FormzSubmissionStatus status;
@@ -19,7 +19,7 @@ final class UserUpdateInfoState extends Equatable {
   final Password newPassword;
   final bool isValid;
   final bool checkCurrentPassword;
-  final String? errorMessage;
+  final String errorMessage;
 
   @override
   List<Object?> get props => [

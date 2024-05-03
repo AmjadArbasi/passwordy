@@ -1,4 +1,7 @@
+import 'package:dartz/dartz.dart';
+import 'package:flutter_application_passmanager/src/core/exceptions/exceptions.dart';
 import 'package:flutter_application_passmanager/src/features/login/login.dart';
+import 'package:rxdart/rxdart.dart';
 
 class UserManagementRepositoryImpl extends UserManagementRepository {
   UserManagementRepositoryImpl({
@@ -7,57 +10,94 @@ class UserManagementRepositoryImpl extends UserManagementRepository {
 
   final UserManagementApi _api;
 
+  final _behaviorSubject = BehaviorSubject<UserLocalEntity>();
+
+  Stream<UserLocalEntity> get userStream => _behaviorSubject.stream;
+
   @override
-  Future<UserLocalEntity> logIn(String masterPassword, String username) async {
-    final userLocalModel = await _api.signIn(masterPassword, username);
-    return userLocalModel.mapToEntity();
+  Future<Either<Failure, UserLocalEntity>> logIn(
+      String masterPassword, String username) async {
+    final result = await _api.signIn(masterPassword, username);
+    return result.fold(
+      (failure) => Left(failure),
+      (userlocalModel) {
+        final userLocalEntity = userlocalModel.mapToEntity();
+        _behaviorSubject.add(userLocalEntity);
+        return Right(userLocalEntity);
+      },
+    );
   }
 
   @override
-  Future<int> signUp(UserLocalEntity userLocalEntity) async {
-    return await _api.signUp(userLocalEntity.mapToModel());
+  Future<Either<Failure, Unit>> signUp(UserLocalEntity userLocalEntity) async {
+    final result = await _api.signUp(userLocalEntity.mapToModel());
+    return result.fold((error) => Left(error), (r) => Right(r));
   }
 
   @override
-  Future<void> updateInfo(
+  Future<Either<Failure, UserLocalEntity>> updateInfo(
       String username, String masterPassword, String secret) async {
-    await _api.updateUserInfo(username, masterPassword, secret);
+    final result = await _api.updateUserInfo(username, masterPassword, secret);
+
+    return result.fold(
+      (failure) => Left(failure),
+      (userlocalModel) {
+        final userlocalEntity = userlocalModel.mapToEntity();
+        _behaviorSubject.add(userlocalEntity);
+        return Right(userlocalEntity);
+      },
+    );
   }
 
   @override
-  Future<void> deleteUser(UserLocalEntity userLocalEntity) async {
-    await _api.deleteUser(userLocalEntity.mapToModel());
+  Future<Either<Failure, Unit>> deleteUser(
+      UserLocalEntity userLocalEntity) async {
+    final result = await _api.deleteUser(userLocalEntity.mapToModel());
+
+    return result.fold(
+      (failure) => Left(failure),
+      (_) {
+        _behaviorSubject.add(UserLocalEntity.empty);
+        return const Right(unit);
+      },
+    );
   }
 
   @override
-  Future<void> logOut() async {
-    await _api.logOut();
+  Future<Either<Failure, UserLocalEntity>> reAuthLoggedUser() async {
+    final result = await _api.reAuthLoggedUser();
+    return result.fold((failure) => Left(failure), (userLocalModel) {
+      final userLocalEntity = userLocalModel.mapToEntity();
+      _behaviorSubject.add(userLocalEntity);
+      return Right(userLocalEntity);
+    });
   }
 
   @override
-  Stream<UserLocalEntity> get stream => _api.userStream.map(
-        (userLocalModel) => userLocalModel.mapToEntity(),
-      );
-
-  @override
-  Future<UserLocalEntity> reAuthLoggedUser() async {
-    final userLocalModel = await _api.reAuthLoggedUser();
-    return userLocalModel.mapToEntity();
+  Future<Either<Failure, Unit>> logOut() async {
+    final result = await _api.logOut();
+    return result.fold(
+      (failure) => Left(failure),
+      (_) {
+        _behaviorSubject.add(UserLocalEntity.empty);
+        return const Right(unit);
+      },
+    );
   }
 
   @override
-  Future<bool> checkCurrentPassword(String masterPassword) async {
-    return await _api.checkCurrentPassword(masterPassword);
-  }
+  Future<Either<Failure, Unit>> checkCurrentPassword(String masterPassword) =>
+      _api.checkCurrentPassword(masterPassword);
 
   @override
-  Future<bool> checkSecret(String username, String secret) async {
-    return await _api.checkSecret(username, secret);
-  }
+  Future<Either<Failure, Unit>> checkSecret(String username, String secret) =>
+      _api.checkSecret(username, secret);
 
   @override
-  Future<void> updatePassword(
-      String username, String secret, String newPassword) async {
-    await _api.updatePassword(username, secret, newPassword);
-  }
+  Future<Either<Failure, Unit>> updatePassword(
+          String username, String secret, String newPassword) =>
+      _api.updatePassword(username, secret, newPassword);
+
+  @override
+  Stream<UserLocalEntity> get stream => userStream;
 }

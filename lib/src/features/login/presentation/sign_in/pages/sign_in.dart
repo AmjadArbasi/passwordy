@@ -66,8 +66,7 @@ class SignInForm extends StatelessWidget {
                 ..hideCurrentSnackBar()
                 ..showSnackBar(
                   SnackBar(
-                    content:
-                        Text(state.errorMessage ?? "LoginFailedErrorText".tr),
+                    content: Text(state.signInErrorMessage),
                   ),
                 );
             }
