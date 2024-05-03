@@ -48,4 +48,6 @@ class CategoryManagerUsecase {
     List<CategoryEntity> categories,
   ) =>
       _api.sortCatchwordsCategoriesBasedOnDateTime(categories);
+
+  Future<void> refreshData() async => await _api.refreshData();
 }

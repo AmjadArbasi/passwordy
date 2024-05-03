@@ -15,6 +15,9 @@ void main() async {
 
   final isar = await Database.create();
 
+  const storage = FlutterSecureStorage();
+  final secureStorage = SecureStorage(storage: storage);
+
   final categoryModelToDbDtoConverter = CategoryModelToDbDtoConverter();
   final catchwordModelToDbDtoConverter = CatchwordModelToDbDtoConverter();
   final catchwordDbDtoToModelConverter = CatchwordDbDtoToModelConverter();
@@ -27,17 +30,13 @@ void main() async {
     catchwordModelToDbDtoConverter: catchwordModelToDbDtoConverter,
     catchwordDbDtoToModelConverter: catchwordDbDtoToModelConverter,
     isar: isar,
+    secureStorage: secureStorage,
   );
-  final api = CategoryManagerRepsoitoryImpl(
-    appLocalDatabase: appLocalDatabase,
-  );
+  final api = CategoryManagerRepsoitoryImpl(appLocalDatabase: appLocalDatabase);
   final categoryManagerUsecase = CategoryManagerUsecase(api: api);
   final passGenRepsotiory = PassGenRepsotiory();
   final generatePassword =
       GeneratePassword(passGenRepsotiory: passGenRepsotiory);
-
-  const storage = FlutterSecureStorage();
-  final secureStorage = SecureStorage(storage: storage);
 
   final userManagementApi = UserManagementApi(
     isar: isar,
@@ -129,6 +128,7 @@ class App extends StatelessWidget {
         BlocProvider(
           create: (context) => AuthBloc(
             userManagementUsecase: context.read<UserManagementUsecase>(),
+            categoryManagerUsecase: context.read<CategoryManagerUsecase>(),
           )..add(
               const AuthCheckingStatusRequested(),
             ),

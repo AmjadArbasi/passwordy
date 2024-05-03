@@ -223,7 +223,7 @@ class UserManagementApi implements IUserManagementApi {
         .filter()
         .usernameEqualTo(username)
         .findFirst();
-    logger.w(user);
+
     if (user != null) {
       final hashedSecret = _hash(secret, user.salt!);
 

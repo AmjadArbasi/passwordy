@@ -16,6 +16,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
   AuthBloc({
     required this.userManagementUsecase,
+    required this.categoryManagerUsecase,
   }) : super(const AuthState()) {
     on<AuthUserLogoutRequested>(_onUserLogoutRequested);
     on<AuthCheckingStatusRequested>(_onCheckingStatusRequested);
@@ -26,6 +27,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   }
 
   final UserManagementUsecase userManagementUsecase;
+  final CategoryManagerUsecase categoryManagerUsecase;
   late final StreamSubscription<UserLocalEntity> _userSubscription;
 
   /// The function `_onUserStatusChanged` updates the authentication state based on the user status change
@@ -41,6 +43,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     AuthUserStatusChanged event,
     Emitter<AuthState> emit,
   ) async {
+    await categoryManagerUsecase.refreshData();
     emit(
       event.userLocalEntity.isNotEmpty
           ? state.copyWith(
@@ -81,6 +84,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     Emitter<AuthState> emit,
   ) async {
     final user = await userManagementUsecase.reAuthLoggedUser();
+    await categoryManagerUsecase.refreshData();
+
     emit(
       user.isNotEmpty
           ? state.copyWith(

@@ -7,7 +7,12 @@ class Database {
   static Future<Isar> create() async {
     final dir = await getApplicationDocumentsDirectory();
     return Isar.open(
-      [CategoryDbDtoSchema, CatchwordDbDtoSchema, UserLocalDtoSchema],
+      [
+        CategoryDbDtoSchema,
+        CatchwordDbDtoSchema,
+        CategoriesDbDtoSchema,
+        UserLocalDtoSchema
+      ],
       directory: dir.path,
     );
   }

@@ -2,7 +2,7 @@ import 'package:isar/isar.dart';
 
 part 'user_local_dto.g.dart';
 
-// @collection
+@collection
 class UserLocalDto {
   UserLocalDto({
     this.id,

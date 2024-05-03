@@ -32,6 +32,9 @@ class CategoryManagerRepsoitoryImpl extends CategoryManagerRepositryBase {
   }
 
   @override
+  Future<void> refreshData() async => await _keepStreamFresh();
+
+  @override
   Stream<List<CategoryEntity>> categoriesList() => _categoriesListController;
 
   @override

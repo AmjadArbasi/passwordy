@@ -47,6 +47,8 @@ abstract class CategoryManagerRepositryBase {
   List<CategoryEntity> sortCatchwordsCategoriesBasedOnDateTime(
     List<CategoryEntity> categories,
   );
+
+  Future<void> refreshData();
 }
 
 /// Throws an excpetion if there is no cathword

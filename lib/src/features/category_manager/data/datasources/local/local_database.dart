@@ -1,4 +1,5 @@
-import 'package:flutter_application_passmanager/src/features/category_manager/category_manager.dart';
+import 'package:flutter_application_passmanager/src/core/services/services.dart';
+import 'package:flutter_application_passmanager/src/features/features.dart';
 import 'package:isar/isar.dart';
 import 'package:logger/logger.dart';
 
@@ -9,29 +10,60 @@ class AppLocalDatabase {
     required this.catchwordDbDtoToModelConverter,
     required this.catchwordModelToDbDtoConverter,
     required this.isar,
-  });
+    required SecureStorage secureStorage,
+    CacheClient? cacheClient,
+  })  : _secureStorage = secureStorage,
+        _cache = cacheClient ?? CacheClient();
 
   final CategoryModelToDbDtoConverter categoryModelToDbDtoConverter;
   final CategoryDbDtoToModelConverter categoryDbDtoToModelConverter;
   final CatchwordModelToDbDtoConverter catchwordModelToDbDtoConverter;
   final CatchwordDbDtoToModelConverter catchwordDbDtoToModelConverter;
   final Isar isar;
+  final SecureStorage _secureStorage;
+  final CacheClient _cache;
+
+  static const String key = "token";
+
+  static const usernameCategories = '__user_categories_cache_key__';
 
   var logger = Logger();
 
+  CategoriesDbDto? get categoryListUsername {
+    return _cache.read(key: usernameCategories);
+  }
+
   Future<List<CategoryEntity>> loadAllValues() async {
-    final categoriesDbDto = await isar.categoryDbDtos.where().findAll();
-    final categoriesModel = categoriesDbDto
-        .map(
-          (e) => categoryDbDtoToModelConverter.convert(e),
-        )
-        .toList();
-    categoriesDbDto.map((e) {
-      e.catchwords.map(
-        (e) => logger.f(e),
-      );
-    });
-    return categoriesModel.map((e) => e.mapToEntity()).toList();
+    final token = await _secureStorage.getToken(key);
+    final categoriesList = <CategoryEntity>[];
+
+    if (token != null) {
+      final user =
+          await isar.userLocalDtos.filter().tokenEqualTo(token).findFirst();
+      if (user != null) {
+        final username = user.username;
+        final usernameLinkedCategories = await isar.categoriesDbDtos
+            .filter()
+            .usernameEqualTo(username!)
+            .findFirst();
+        if (usernameLinkedCategories != null) {
+          _cache.write(
+              key: usernameCategories, value: usernameLinkedCategories);
+
+          final categoriesDbDto =
+              await usernameLinkedCategories.categories.filter().findAll();
+
+          final categoriesModel = categoriesDbDto
+              .map((e) => categoryDbDtoToModelConverter.convert(e))
+              .toList();
+
+          return categoriesModel.map((e) => e.mapToEntity()).toList();
+        } else {
+          return categoriesList;
+        }
+      }
+    }
+    return categoriesList;
   }
 
   Future<void> deleteCatchword(int catchwordId, int categoryId) async {
@@ -117,9 +149,32 @@ class AppLocalDatabase {
       categoryName: category.categoryName,
       total: category.total,
     );
-    await isar.writeTxn(
-      () async => isar.categoryDbDtos.put(newCategory),
-    );
+    final categoryList = categoryListUsername;
+
+    if (categoryList == null) {
+      final token = await _secureStorage.getToken(key);
+
+      final user =
+          await isar.userLocalDtos.filter().tokenEqualTo(token).findFirst();
+
+      if (user != null) {
+        final registerUser = CategoriesDbDto(username: user.username!);
+        await isar.writeTxn(() async {
+          await isar.categoryDbDtos.put(newCategory);
+          registerUser.categories.add(newCategory);
+          await isar.categoriesDbDtos.put(registerUser);
+          await registerUser.categories.save();
+        });
+      }
+    } else {
+      await isar.writeTxn(() async {
+        await isar.categoryDbDtos.put(newCategory);
+        categoryList.categories.add(newCategory);
+        await isar.categoriesDbDtos.put(categoryList);
+        await categoryList.categories.save();
+      });
+    }
+
     return categoryDbDtoToModelConverter.convert(newCategory);
   }
 
