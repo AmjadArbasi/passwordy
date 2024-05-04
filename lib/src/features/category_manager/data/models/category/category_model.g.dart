@@ -8,12 +8,12 @@ part of 'category_model.dart';
 
 CategoryModel _$CategoryModelFromJson(Map<String, dynamic> json) =>
     CategoryModel(
-      id: json['id'] as int?,
+      id: (json['id'] as num?)?.toInt(),
       categoryName: json['category_name'] as String,
       catchwords: (json['catchwords'] as List<dynamic>)
           .map((e) => CatchwordModel.fromJson(e as Map<String, dynamic>))
           .toList(),
-      total: json['total'] as int,
+      total: (json['total'] as num).toInt(),
     );
 
 Map<String, dynamic> _$CategoryModelToJson(CategoryModel instance) =>

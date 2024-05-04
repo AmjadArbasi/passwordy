@@ -22,43 +22,48 @@ const UserLocalDtoSchema = CollectionSchema(
       name: r'createdAt',
       type: IsarType.dateTime,
     ),
-    r'lastSuccessfulSignIn': PropertySchema(
+    r'displayName': PropertySchema(
       id: 1,
+      name: r'displayName',
+      type: IsarType.string,
+    ),
+    r'lastSuccessfulSignIn': PropertySchema(
+      id: 2,
       name: r'lastSuccessfulSignIn',
       type: IsarType.dateTime,
     ),
     r'lastUnuccessfulSignIn': PropertySchema(
-      id: 2,
+      id: 3,
       name: r'lastUnuccessfulSignIn',
       type: IsarType.dateTime,
     ),
     r'masterPassword': PropertySchema(
-      id: 3,
+      id: 4,
       name: r'masterPassword',
       type: IsarType.string,
     ),
     r'salt': PropertySchema(
-      id: 4,
+      id: 5,
       name: r'salt',
       type: IsarType.string,
     ),
     r'secret': PropertySchema(
-      id: 5,
+      id: 6,
       name: r'secret',
       type: IsarType.string,
     ),
     r'securityQuestion': PropertySchema(
-      id: 6,
+      id: 7,
       name: r'securityQuestion',
       type: IsarType.string,
     ),
     r'token': PropertySchema(
-      id: 7,
+      id: 8,
       name: r'token',
       type: IsarType.string,
     ),
     r'username': PropertySchema(
-      id: 8,
+      id: 9,
       name: r'username',
       type: IsarType.string,
     )
@@ -97,6 +102,12 @@ int _userLocalDtoEstimateSize(
   Map<Type, List<int>> allOffsets,
 ) {
   var bytesCount = offsets.last;
+  {
+    final value = object.displayName;
+    if (value != null) {
+      bytesCount += 3 + value.length * 3;
+    }
+  }
   {
     final value = object.masterPassword;
     if (value != null) {
@@ -143,14 +154,15 @@ void _userLocalDtoSerialize(
   Map<Type, List<int>> allOffsets,
 ) {
   writer.writeDateTime(offsets[0], object.createdAt);
-  writer.writeDateTime(offsets[1], object.lastSuccessfulSignIn);
-  writer.writeDateTime(offsets[2], object.lastUnuccessfulSignIn);
-  writer.writeString(offsets[3], object.masterPassword);
-  writer.writeString(offsets[4], object.salt);
-  writer.writeString(offsets[5], object.secret);
-  writer.writeString(offsets[6], object.securityQuestion);
-  writer.writeString(offsets[7], object.token);
-  writer.writeString(offsets[8], object.username);
+  writer.writeString(offsets[1], object.displayName);
+  writer.writeDateTime(offsets[2], object.lastSuccessfulSignIn);
+  writer.writeDateTime(offsets[3], object.lastUnuccessfulSignIn);
+  writer.writeString(offsets[4], object.masterPassword);
+  writer.writeString(offsets[5], object.salt);
+  writer.writeString(offsets[6], object.secret);
+  writer.writeString(offsets[7], object.securityQuestion);
+  writer.writeString(offsets[8], object.token);
+  writer.writeString(offsets[9], object.username);
 }
 
 UserLocalDto _userLocalDtoDeserialize(
@@ -161,15 +173,16 @@ UserLocalDto _userLocalDtoDeserialize(
 ) {
   final object = UserLocalDto(
     createdAt: reader.readDateTimeOrNull(offsets[0]),
+    displayName: reader.readStringOrNull(offsets[1]),
     id: id,
-    lastSuccessfulSignIn: reader.readDateTimeOrNull(offsets[1]),
-    lastUnuccessfulSignIn: reader.readDateTimeOrNull(offsets[2]),
-    masterPassword: reader.readStringOrNull(offsets[3]),
-    salt: reader.readStringOrNull(offsets[4]),
-    secret: reader.readStringOrNull(offsets[5]),
-    securityQuestion: reader.readStringOrNull(offsets[6]),
-    token: reader.readStringOrNull(offsets[7]),
-    username: reader.readStringOrNull(offsets[8]),
+    lastSuccessfulSignIn: reader.readDateTimeOrNull(offsets[2]),
+    lastUnuccessfulSignIn: reader.readDateTimeOrNull(offsets[3]),
+    masterPassword: reader.readStringOrNull(offsets[4]),
+    salt: reader.readStringOrNull(offsets[5]),
+    secret: reader.readStringOrNull(offsets[6]),
+    securityQuestion: reader.readStringOrNull(offsets[7]),
+    token: reader.readStringOrNull(offsets[8]),
+    username: reader.readStringOrNull(offsets[9]),
   );
   return object;
 }
@@ -184,11 +197,11 @@ P _userLocalDtoDeserializeProp<P>(
     case 0:
       return (reader.readDateTimeOrNull(offset)) as P;
     case 1:
-      return (reader.readDateTimeOrNull(offset)) as P;
+      return (reader.readStringOrNull(offset)) as P;
     case 2:
       return (reader.readDateTimeOrNull(offset)) as P;
     case 3:
-      return (reader.readStringOrNull(offset)) as P;
+      return (reader.readDateTimeOrNull(offset)) as P;
     case 4:
       return (reader.readStringOrNull(offset)) as P;
     case 5:
@@ -198,6 +211,8 @@ P _userLocalDtoDeserializeProp<P>(
     case 7:
       return (reader.readStringOrNull(offset)) as P;
     case 8:
+      return (reader.readStringOrNull(offset)) as P;
+    case 9:
       return (reader.readStringOrNull(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
@@ -489,6 +504,160 @@ extension UserLocalDtoQueryFilter
         includeLower: includeLower,
         upper: upper,
         includeUpper: includeUpper,
+      ));
+    });
+  }
+
+  QueryBuilder<UserLocalDto, UserLocalDto, QAfterFilterCondition>
+      displayNameIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'displayName',
+      ));
+    });
+  }
+
+  QueryBuilder<UserLocalDto, UserLocalDto, QAfterFilterCondition>
+      displayNameIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'displayName',
+      ));
+    });
+  }
+
+  QueryBuilder<UserLocalDto, UserLocalDto, QAfterFilterCondition>
+      displayNameEqualTo(
+    String? value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'displayName',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<UserLocalDto, UserLocalDto, QAfterFilterCondition>
+      displayNameGreaterThan(
+    String? value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'displayName',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<UserLocalDto, UserLocalDto, QAfterFilterCondition>
+      displayNameLessThan(
+    String? value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'displayName',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<UserLocalDto, UserLocalDto, QAfterFilterCondition>
+      displayNameBetween(
+    String? lower,
+    String? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'displayName',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<UserLocalDto, UserLocalDto, QAfterFilterCondition>
+      displayNameStartsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.startsWith(
+        property: r'displayName',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<UserLocalDto, UserLocalDto, QAfterFilterCondition>
+      displayNameEndsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.endsWith(
+        property: r'displayName',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<UserLocalDto, UserLocalDto, QAfterFilterCondition>
+      displayNameContains(String value, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.contains(
+        property: r'displayName',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<UserLocalDto, UserLocalDto, QAfterFilterCondition>
+      displayNameMatches(String pattern, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.matches(
+        property: r'displayName',
+        wildcard: pattern,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<UserLocalDto, UserLocalDto, QAfterFilterCondition>
+      displayNameIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'displayName',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<UserLocalDto, UserLocalDto, QAfterFilterCondition>
+      displayNameIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        property: r'displayName',
+        value: '',
       ));
     });
   }
@@ -1650,6 +1819,19 @@ extension UserLocalDtoQuerySortBy
     });
   }
 
+  QueryBuilder<UserLocalDto, UserLocalDto, QAfterSortBy> sortByDisplayName() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'displayName', Sort.asc);
+    });
+  }
+
+  QueryBuilder<UserLocalDto, UserLocalDto, QAfterSortBy>
+      sortByDisplayNameDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'displayName', Sort.desc);
+    });
+  }
+
   QueryBuilder<UserLocalDto, UserLocalDto, QAfterSortBy>
       sortByLastSuccessfulSignIn() {
     return QueryBuilder.apply(this, (query) {
@@ -1766,6 +1948,19 @@ extension UserLocalDtoQuerySortThenBy
   QueryBuilder<UserLocalDto, UserLocalDto, QAfterSortBy> thenByCreatedAtDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'createdAt', Sort.desc);
+    });
+  }
+
+  QueryBuilder<UserLocalDto, UserLocalDto, QAfterSortBy> thenByDisplayName() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'displayName', Sort.asc);
+    });
+  }
+
+  QueryBuilder<UserLocalDto, UserLocalDto, QAfterSortBy>
+      thenByDisplayNameDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'displayName', Sort.desc);
     });
   }
 
@@ -1894,6 +2089,13 @@ extension UserLocalDtoQueryWhereDistinct
     });
   }
 
+  QueryBuilder<UserLocalDto, UserLocalDto, QDistinct> distinctByDisplayName(
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'displayName', caseSensitive: caseSensitive);
+    });
+  }
+
   QueryBuilder<UserLocalDto, UserLocalDto, QDistinct>
       distinctByLastSuccessfulSignIn() {
     return QueryBuilder.apply(this, (query) {
@@ -1964,6 +2166,12 @@ extension UserLocalDtoQueryProperty
   QueryBuilder<UserLocalDto, DateTime?, QQueryOperations> createdAtProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'createdAt');
+    });
+  }
+
+  QueryBuilder<UserLocalDto, String?, QQueryOperations> displayNameProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'displayName');
     });
   }
 

@@ -35,7 +35,7 @@ class UserInfoView extends StatelessWidget {
         BlocBuilder<AuthBloc, AuthState>(
           builder: (context, state) {
             return Text(
-              state.userLocalEntity.name ?? 'N/A',
+              "@${state.userLocalEntity.username}",
               style: Theme.of(context).textTheme.titleMedium!.copyWith(
                     fontWeight: FontWeight.bold,
                     color: Colors.grey.shade600,

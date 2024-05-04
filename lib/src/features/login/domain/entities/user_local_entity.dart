@@ -8,7 +8,8 @@ class UserLocalEntity extends Equatable
   const UserLocalEntity({
     this.createdAt,
     this.id,
-    this.name,
+    this.username,
+    this.displayName,
     this.secret,
     this.securityQuestion,
     this.lastSuccessfulSignIn,
@@ -17,7 +18,8 @@ class UserLocalEntity extends Equatable
   });
 
   final int? id;
-  final String? name;
+  final String? username;
+  final String? displayName;
   final String? masterPassword;
   final String? secret;
   final String? securityQuestion;
@@ -35,7 +37,8 @@ class UserLocalEntity extends Equatable
   UserLocalModel mapToModel() {
     return UserLocalModel(
       id: id,
-      name: name,
+      username: username,
+      displayName: displayName,
       masterPassword: masterPassword,
       secret: secret,
       securityQuestion: securityQuestion,
@@ -48,7 +51,8 @@ class UserLocalEntity extends Equatable
   @override
   List<Object?> get props => [
         id,
-        name,
+        username,
+        displayName,
         masterPassword,
         secret,
         securityQuestion,
@@ -59,6 +63,6 @@ class UserLocalEntity extends Equatable
 
   @override
   String toString() {
-    return 'UserLocalEntity(id: $id, name: $name, masterPassword: $masterPassword, secret: $secret, securityQuestion: $securityQuestion, lastSuccessfulSignIn: $lastSuccessfulSignIn, lastUnsuccessfulSignIn: $lastUnsuccessfulSignIn, createdAt: $createdAt)';
+    return 'UserLocalEntity(id: $id, username: $username, displayName: $displayName, masterPassword: $masterPassword, secret: $secret, securityQuestion: $securityQuestion, lastSuccessfulSignIn: $lastSuccessfulSignIn, lastUnsuccessfulSignIn: $lastUnsuccessfulSignIn, createdAt: $createdAt)';
   }
 }

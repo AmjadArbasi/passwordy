@@ -3,7 +3,7 @@ part of 'user_update_info_cubit.dart';
 final class UserUpdateInfoState extends Equatable {
   const UserUpdateInfoState({
     this.status = FormzSubmissionStatus.initial,
-    this.username = const Username.pure(),
+    this.displayName = const Username.pure(),
     this.currentPassword = const Password.pure(),
     this.secret = const Secret.pure(),
     this.newPassword = const Password.pure(),
@@ -13,7 +13,7 @@ final class UserUpdateInfoState extends Equatable {
   });
 
   final FormzSubmissionStatus status;
-  final Username username;
+  final Username displayName;
   final Password currentPassword;
   final Secret secret;
   final Password newPassword;
@@ -24,7 +24,7 @@ final class UserUpdateInfoState extends Equatable {
   @override
   List<Object?> get props => [
         status,
-        username,
+        displayName,
         currentPassword,
         secret,
         newPassword,
@@ -35,7 +35,7 @@ final class UserUpdateInfoState extends Equatable {
 
   UserUpdateInfoState copyWith({
     FormzSubmissionStatus? status,
-    Username? username,
+    Username? displayName,
     Password? currentPassword,
     Secret? secret,
     Password? newPassword,
@@ -45,7 +45,7 @@ final class UserUpdateInfoState extends Equatable {
   }) {
     return UserUpdateInfoState(
       status: status ?? this.status,
-      username: username ?? this.username,
+      displayName: displayName ?? this.displayName,
       currentPassword: currentPassword ?? this.currentPassword,
       secret: secret ?? this.secret,
       newPassword: newPassword ?? this.newPassword,

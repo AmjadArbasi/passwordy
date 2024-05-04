@@ -4,7 +4,8 @@ import 'package:flutter_application_passmanager/src/features/login/login.dart';
 class UserLocalModel implements DataMapperEntity<UserLocalEntity> {
   const UserLocalModel({
     this.id,
-    this.name,
+    this.username,
+    this.displayName,
     this.masterPassword,
     this.secret,
     this.securityQuestion,
@@ -14,7 +15,8 @@ class UserLocalModel implements DataMapperEntity<UserLocalEntity> {
   });
 
   final int? id;
-  final String? name;
+  final String? username;
+  final String? displayName;
   final String? masterPassword;
   final String? secret;
   final String? securityQuestion;
@@ -32,7 +34,8 @@ class UserLocalModel implements DataMapperEntity<UserLocalEntity> {
   UserLocalEntity mapToEntity() {
     return UserLocalEntity(
       id: id,
-      name: name,
+      username: username,
+      displayName: displayName,
       masterPassword: masterPassword,
       secret: secret,
       securityQuestion: securityQuestion,
@@ -44,6 +47,6 @@ class UserLocalModel implements DataMapperEntity<UserLocalEntity> {
 
   @override
   String toString() {
-    return 'UserLocalModel(id: $id, name: $name, masterPassword: $masterPassword, secret: $secret, securityQuestion: $securityQuestion, lastSuccessfulSignIn: $lastSuccessfulSignIn, lastUnsuccessfulSignIn: $lastUnsuccessfulSignIn, createdAt: $createdAt)';
+    return 'UserLocalModel(id: $id, username: $username, displayName: $displayName, masterPassword: $masterPassword, secret: $secret, securityQuestion: $securityQuestion, lastSuccessfulSignIn: $lastSuccessfulSignIn, lastUnsuccessfulSignIn: $lastUnsuccessfulSignIn, createdAt: $createdAt)';
   }
 }

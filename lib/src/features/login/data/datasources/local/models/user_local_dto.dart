@@ -7,6 +7,7 @@ class UserLocalDto {
   UserLocalDto({
     this.id,
     this.username,
+    this.displayName,
     this.masterPassword,
     this.salt,
     this.token,
@@ -20,6 +21,7 @@ class UserLocalDto {
   Id? id = Isar.autoIncrement;
   @Index(unique: true)
   String? username;
+  String? displayName;
   String? masterPassword;
   String? salt;
   String? token;
@@ -31,6 +33,6 @@ class UserLocalDto {
 
   @override
   String toString() {
-    return 'UserLocalDto(username: $username, masterPassword: $masterPassword, salt: $salt, token: $token, securityQuestion: $securityQuestion, secret: $secret, lastSuccessfulSignIn: $lastSuccessfulSignIn, lastUnuccessfulSignIn: $lastUnuccessfulSignIn, createdAt: $createdAt)';
+    return 'UserLocalDto(username: $username, displayName: $displayName, masterPassword: $masterPassword, salt: $salt, token: $token, securityQuestion: $securityQuestion, secret: $secret, lastSuccessfulSignIn: $lastSuccessfulSignIn, lastUnuccessfulSignIn: $lastUnuccessfulSignIn, createdAt: $createdAt)';
   }
 }

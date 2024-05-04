@@ -25,17 +25,17 @@ class UserManagementApi implements IUserManagementApi {
   Future<Either<Failure, Unit>> signUp(UserLocalModel userLocalModel) async {
     final checkDuplicateUser = await _isar.userLocalDtos
         .filter()
-        .usernameEqualTo(userLocalModel.name)
+        .usernameEqualTo(userLocalModel.username)
         .findFirst();
 
-    if (checkDuplicateUser == null && userLocalModel.name!.isNotEmpty) {
+    if (checkDuplicateUser == null && userLocalModel.username!.isNotEmpty) {
       final salt = _generateSalt(userLocalModel.masterPassword!.length);
       final hashedMassterPassword = _hash(userLocalModel.masterPassword!, salt);
       final hashedSecret = _hash(userLocalModel.secret!, salt);
 
       final user = UserLocalDto(
         id: userLocalModel.id,
-        username: userLocalModel.name,
+        username: userLocalModel.username,
         salt: salt,
         securityQuestion: userLocalModel.securityQuestion,
         secret: hashedSecret,
@@ -79,7 +79,7 @@ class UserManagementApi implements IUserManagementApi {
           );
           final userLocalModel = UserLocalModel(
             id: user.id,
-            name: user.username,
+            username: user.username,
             lastSuccessfulSignIn: formattedDate,
             createdAt: user.createdAt,
           );
@@ -140,7 +140,7 @@ class UserManagementApi implements IUserManagementApi {
           });
           final userLocalModel = UserLocalModel(
             id: user.id,
-            name: user.username,
+            username: user.username,
             createdAt: user.createdAt,
             lastSuccessfulSignIn: DateFormat('yyyy-MM-dd – kk:mm')
                 .format(user.lastSuccessfulSignIn!),
@@ -163,7 +163,7 @@ class UserManagementApi implements IUserManagementApi {
       UserLocalModel userLocalModel) async {
     final user = await _isar.userLocalDtos
         .filter()
-        .usernameEqualTo(userLocalModel.name)
+        .usernameEqualTo(userLocalModel.username)
         .findFirst();
 
     if (user != null) {
@@ -195,7 +195,7 @@ class UserManagementApi implements IUserManagementApi {
 
         final userLocalModel = UserLocalModel(
           id: user.id,
-          name: user.username,
+          username: user.username,
           createdAt: user.createdAt,
           lastSuccessfulSignIn: formattedDate,
         );

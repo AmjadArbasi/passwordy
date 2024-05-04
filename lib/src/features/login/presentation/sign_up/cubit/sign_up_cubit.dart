@@ -67,7 +67,7 @@ class SignUpCubit extends Cubit<SignUpState> {
     if (!state.isValid) return;
     emit(state.copyWith(status: FormzSubmissionStatus.inProgress));
     final user = UserLocalEntity(
-      name: state.username.value,
+      username: state.username.value,
       masterPassword: state.password.value,
       secret: state.secret.value,
       securityQuestion: state.securityQuestion,
@@ -75,11 +75,10 @@ class SignUpCubit extends Cubit<SignUpState> {
     );
     final failureOrSuccess = await _userManagementUsecase.signUp(user);
     failureOrSuccess.fold((failure) {
-      emit(
-        state.copyWith(
-            status: FormzSubmissionStatus.failure,
-            errorMessage: failure.message),
-      );
+      emit(state.copyWith(
+        status: FormzSubmissionStatus.failure,
+        errorMessage: failure.message,
+      ));
     }, (r) {
       emit(state.copyWith(
         status: FormzSubmissionStatus.success,

@@ -12,11 +12,12 @@ class UserUpdateInfoCubit extends Cubit<UserUpdateInfoState> {
 
   final UserManagementUsecase userManagementUsecase;
 
-  void usernameChanged(String value) {
-    final username = Username.dirty(value);
+  void displayNameChanged(String value) {
+    final displayName = Username.dirty(value);
 
     emit(
-      state.copyWith(username: username, isValid: Formz.validate([username])),
+      state.copyWith(
+          displayName: displayName, isValid: Formz.validate([displayName])),
     );
   }
 
@@ -53,7 +54,7 @@ class UserUpdateInfoCubit extends Cubit<UserUpdateInfoState> {
       emit(state.copyWith(status: FormzSubmissionStatus.inProgress));
 
       final failureOrUser = await userManagementUsecase.updateInfo(
-        state.username.value,
+        state.displayName.value,
         state.newPassword.value,
         state.secret.value,
       );

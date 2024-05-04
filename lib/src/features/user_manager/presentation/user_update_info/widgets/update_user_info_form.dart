@@ -182,8 +182,9 @@ class UsernameChangedField extends StatelessWidget {
               borderRadius: BorderRadius.circular(10),
             ),
           ),
-          onChanged: (username) =>
-              context.read<UserUpdateInfoCubit>().usernameChanged(username),
+          onChanged: (displayName) => context
+              .read<UserUpdateInfoCubit>()
+              .displayNameChanged(displayName),
         );
       },
     );

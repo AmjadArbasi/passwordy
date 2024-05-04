@@ -68,7 +68,7 @@ class UserInfoBar extends StatelessWidget {
                         .copyWith(fontWeight: FontWeight.bold),
                   ),
                   Text(
-                    '${state.userLocalEntity.name}',
+                    '@${state.userLocalEntity.username}',
                     style: Theme.of(context)
                         .textTheme
                         .titleLarge!

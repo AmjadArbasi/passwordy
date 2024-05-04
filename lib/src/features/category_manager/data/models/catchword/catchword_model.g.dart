@@ -8,7 +8,7 @@ part of 'catchword_model.dart';
 
 CatchwordModel _$CatchwordModelFromJson(Map<String, dynamic> json) =>
     CatchwordModel(
-      id: json['id'] as int?,
+      id: (json['id'] as num?)?.toInt(),
       name: json['name'] as String,
       accountId: json['account_id'] as String,
       passcode: json['passcode'] as String,
