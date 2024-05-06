@@ -150,25 +150,14 @@ class App extends StatelessWidget {
             userManagementUsecase: context.read<UserManagementUsecase>(),
           ),
         ),
+
+        /// Provides [Provides Info]
+        BlocProvider(create: (context) => AboutCubit()),
       ],
       child: const AppView(),
     );
   }
 }
-
-// class OnBoardingCheck extends StatelessWidget {
-//   const OnBoardingCheck({super.key});
-
-//   @override
-//   Widget build(BuildContext context) {
-//     final controller = Get.put(OnboardingController());
-//     if (controller.onboardingCompleted) {
-//       return const AppView(widget: SplashView());
-//     } else {
-//       return const AppView(widget: OnboardingPage());
-//     }
-//   }
-// }
 
 class AppView extends StatelessWidget {
   const AppView({super.key});
