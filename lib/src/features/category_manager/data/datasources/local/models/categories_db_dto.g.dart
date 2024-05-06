@@ -17,9 +17,9 @@ const CategoriesDbDtoSchema = CollectionSchema(
   name: r'CategoriesDbDto',
   id: 3841949422973842718,
   properties: {
-    r'username': PropertySchema(
+    r'linker': PropertySchema(
       id: 0,
-      name: r'username',
+      name: r'linker',
       type: IsarType.string,
     )
   },
@@ -50,7 +50,7 @@ int _categoriesDbDtoEstimateSize(
   Map<Type, List<int>> allOffsets,
 ) {
   var bytesCount = offsets.last;
-  bytesCount += 3 + object.username.length * 3;
+  bytesCount += 3 + object.linker.length * 3;
   return bytesCount;
 }
 
@@ -60,7 +60,7 @@ void _categoriesDbDtoSerialize(
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
 ) {
-  writer.writeString(offsets[0], object.username);
+  writer.writeString(offsets[0], object.linker);
 }
 
 CategoriesDbDto _categoriesDbDtoDeserialize(
@@ -71,7 +71,7 @@ CategoriesDbDto _categoriesDbDtoDeserialize(
 ) {
   final object = CategoriesDbDto(
     id: id,
-    username: reader.readString(offsets[0]),
+    linker: reader.readString(offsets[0]),
   );
   return object;
 }
@@ -262,13 +262,13 @@ extension CategoriesDbDtoQueryFilter
   }
 
   QueryBuilder<CategoriesDbDto, CategoriesDbDto, QAfterFilterCondition>
-      usernameEqualTo(
+      linkerEqualTo(
     String value, {
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'username',
+        property: r'linker',
         value: value,
         caseSensitive: caseSensitive,
       ));
@@ -276,7 +276,7 @@ extension CategoriesDbDtoQueryFilter
   }
 
   QueryBuilder<CategoriesDbDto, CategoriesDbDto, QAfterFilterCondition>
-      usernameGreaterThan(
+      linkerGreaterThan(
     String value, {
     bool include = false,
     bool caseSensitive = true,
@@ -284,7 +284,7 @@ extension CategoriesDbDtoQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.greaterThan(
         include: include,
-        property: r'username',
+        property: r'linker',
         value: value,
         caseSensitive: caseSensitive,
       ));
@@ -292,7 +292,7 @@ extension CategoriesDbDtoQueryFilter
   }
 
   QueryBuilder<CategoriesDbDto, CategoriesDbDto, QAfterFilterCondition>
-      usernameLessThan(
+      linkerLessThan(
     String value, {
     bool include = false,
     bool caseSensitive = true,
@@ -300,7 +300,7 @@ extension CategoriesDbDtoQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.lessThan(
         include: include,
-        property: r'username',
+        property: r'linker',
         value: value,
         caseSensitive: caseSensitive,
       ));
@@ -308,7 +308,7 @@ extension CategoriesDbDtoQueryFilter
   }
 
   QueryBuilder<CategoriesDbDto, CategoriesDbDto, QAfterFilterCondition>
-      usernameBetween(
+      linkerBetween(
     String lower,
     String upper, {
     bool includeLower = true,
@@ -317,7 +317,7 @@ extension CategoriesDbDtoQueryFilter
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.between(
-        property: r'username',
+        property: r'linker',
         lower: lower,
         includeLower: includeLower,
         upper: upper,
@@ -328,13 +328,13 @@ extension CategoriesDbDtoQueryFilter
   }
 
   QueryBuilder<CategoriesDbDto, CategoriesDbDto, QAfterFilterCondition>
-      usernameStartsWith(
+      linkerStartsWith(
     String value, {
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.startsWith(
-        property: r'username',
+        property: r'linker',
         value: value,
         caseSensitive: caseSensitive,
       ));
@@ -342,13 +342,13 @@ extension CategoriesDbDtoQueryFilter
   }
 
   QueryBuilder<CategoriesDbDto, CategoriesDbDto, QAfterFilterCondition>
-      usernameEndsWith(
+      linkerEndsWith(
     String value, {
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.endsWith(
-        property: r'username',
+        property: r'linker',
         value: value,
         caseSensitive: caseSensitive,
       ));
@@ -356,10 +356,10 @@ extension CategoriesDbDtoQueryFilter
   }
 
   QueryBuilder<CategoriesDbDto, CategoriesDbDto, QAfterFilterCondition>
-      usernameContains(String value, {bool caseSensitive = true}) {
+      linkerContains(String value, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.contains(
-        property: r'username',
+        property: r'linker',
         value: value,
         caseSensitive: caseSensitive,
       ));
@@ -367,10 +367,10 @@ extension CategoriesDbDtoQueryFilter
   }
 
   QueryBuilder<CategoriesDbDto, CategoriesDbDto, QAfterFilterCondition>
-      usernameMatches(String pattern, {bool caseSensitive = true}) {
+      linkerMatches(String pattern, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.matches(
-        property: r'username',
+        property: r'linker',
         wildcard: pattern,
         caseSensitive: caseSensitive,
       ));
@@ -378,20 +378,20 @@ extension CategoriesDbDtoQueryFilter
   }
 
   QueryBuilder<CategoriesDbDto, CategoriesDbDto, QAfterFilterCondition>
-      usernameIsEmpty() {
+      linkerIsEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'username',
+        property: r'linker',
         value: '',
       ));
     });
   }
 
   QueryBuilder<CategoriesDbDto, CategoriesDbDto, QAfterFilterCondition>
-      usernameIsNotEmpty() {
+      linkerIsNotEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.greaterThan(
-        property: r'username',
+        property: r'linker',
         value: '',
       ));
     });
@@ -467,17 +467,16 @@ extension CategoriesDbDtoQueryLinks
 
 extension CategoriesDbDtoQuerySortBy
     on QueryBuilder<CategoriesDbDto, CategoriesDbDto, QSortBy> {
-  QueryBuilder<CategoriesDbDto, CategoriesDbDto, QAfterSortBy>
-      sortByUsername() {
+  QueryBuilder<CategoriesDbDto, CategoriesDbDto, QAfterSortBy> sortByLinker() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'username', Sort.asc);
+      return query.addSortBy(r'linker', Sort.asc);
     });
   }
 
   QueryBuilder<CategoriesDbDto, CategoriesDbDto, QAfterSortBy>
-      sortByUsernameDesc() {
+      sortByLinkerDesc() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'username', Sort.desc);
+      return query.addSortBy(r'linker', Sort.desc);
     });
   }
 }
@@ -496,27 +495,26 @@ extension CategoriesDbDtoQuerySortThenBy
     });
   }
 
-  QueryBuilder<CategoriesDbDto, CategoriesDbDto, QAfterSortBy>
-      thenByUsername() {
+  QueryBuilder<CategoriesDbDto, CategoriesDbDto, QAfterSortBy> thenByLinker() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'username', Sort.asc);
+      return query.addSortBy(r'linker', Sort.asc);
     });
   }
 
   QueryBuilder<CategoriesDbDto, CategoriesDbDto, QAfterSortBy>
-      thenByUsernameDesc() {
+      thenByLinkerDesc() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'username', Sort.desc);
+      return query.addSortBy(r'linker', Sort.desc);
     });
   }
 }
 
 extension CategoriesDbDtoQueryWhereDistinct
     on QueryBuilder<CategoriesDbDto, CategoriesDbDto, QDistinct> {
-  QueryBuilder<CategoriesDbDto, CategoriesDbDto, QDistinct> distinctByUsername(
+  QueryBuilder<CategoriesDbDto, CategoriesDbDto, QDistinct> distinctByLinker(
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'username', caseSensitive: caseSensitive);
+      return query.addDistinctBy(r'linker', caseSensitive: caseSensitive);
     });
   }
 }
@@ -529,9 +527,9 @@ extension CategoriesDbDtoQueryProperty
     });
   }
 
-  QueryBuilder<CategoriesDbDto, String, QQueryOperations> usernameProperty() {
+  QueryBuilder<CategoriesDbDto, String, QQueryOperations> linkerProperty() {
     return QueryBuilder.apply(this, (query) {
-      return query.addPropertyName(r'username');
+      return query.addPropertyName(r'linker');
     });
   }
 }

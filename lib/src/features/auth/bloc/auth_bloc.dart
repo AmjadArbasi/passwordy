@@ -66,7 +66,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     AuthUserLogoutRequested event,
     Emitter<AuthState> emit,
   ) async {
-    final failureOrSuccess = await userManagementUsecase.logOut();
+    await userManagementUsecase.logOut();
     emit(state.copyWith(status: AuthStatus.unauthenticated));
   }
 

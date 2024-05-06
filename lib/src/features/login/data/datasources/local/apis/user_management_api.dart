@@ -32,19 +32,24 @@ class UserManagementApi implements IUserManagementApi {
       final salt = _generateSalt(userLocalModel.masterPassword!.length);
       final hashedMassterPassword = _hash(userLocalModel.masterPassword!, salt);
       final hashedSecret = _hash(userLocalModel.secret!, salt);
+      final linker = _hash(userLocalModel.username!, salt);
 
       final user = UserLocalDto(
         id: userLocalModel.id,
         username: userLocalModel.username,
+        displayName: userLocalModel.username,
         salt: salt,
         securityQuestion: userLocalModel.securityQuestion,
         secret: hashedSecret,
+        linker: linker,
         masterPassword: hashedMassterPassword,
         createdAt: userLocalModel.createdAt,
       );
+      final categories = CategoriesDbDto(linker: linker);
       try {
         await _isar.writeTxn(() async {
           await _isar.userLocalDtos.put(user);
+          await _isar.categoriesDbDtos.put(categories);
         });
         return const Right(unit);
       } catch (e) {
@@ -80,9 +85,12 @@ class UserManagementApi implements IUserManagementApi {
           final userLocalModel = UserLocalModel(
             id: user.id,
             username: user.username,
+            displayName: user.displayName,
+            securityQuestion: user.securityQuestion,
             lastSuccessfulSignIn: formattedDate,
             createdAt: user.createdAt,
           );
+
           await _secureStorage.storeToken(key, user.token!);
           return Right(userLocalModel);
         } catch (_) {
@@ -98,63 +106,63 @@ class UserManagementApi implements IUserManagementApi {
 
   @override
   Future<Either<Failure, UserLocalModel>> updateUserInfo(
-    String username,
-    String masterPassword,
-    String secret,
-  ) async {
-    if (username.isEmpty && masterPassword.isEmpty && secret.isEmpty) {
-      return Left(DatabaseException("Please check your entries!"));
-    }
+      UserLocalModel userLocalModel) async {
+    if (userLocalModel.isNotEmpty) {
+      try {
+        final token = await _secureStorage.getToken(key);
+        final user =
+            await _isar.userLocalDtos.filter().tokenEqualTo(token).findFirst();
+        if (user != null) {
+          if (userLocalModel.displayName != null &&
+              userLocalModel.displayName!.isNotEmpty) {
+            user.displayName = userLocalModel.displayName;
+          }
+          if (userLocalModel.secret != null &&
+              userLocalModel.secret!.isNotEmpty) {
+            user.secret = userLocalModel.secret;
+          }
+          if (userLocalModel.securityQuestion != null &&
+              userLocalModel.securityQuestion!.isNotEmpty) {
+            user.securityQuestion = userLocalModel.securityQuestion;
+          }
 
-    final checkDuplicateUser = await _isar.userLocalDtos
-        .filter()
-        .usernameEqualTo(username)
-        .findFirst();
+          if (userLocalModel.masterPassword != null &&
+              userLocalModel.masterPassword!.isNotEmpty) {
+            logger.f(userLocalModel.masterPassword);
 
-    if (checkDuplicateUser != null) {
-      return Left(DatabaseException("The username is already used!"));
-    }
-
-    try {
-      final token = await _secureStorage.getToken(key);
-      final user =
-          await _isar.userLocalDtos.filter().tokenEqualTo(token).findFirst();
-
-      if (user != null) {
-        if (username.isNotEmpty) {
-          user.username = username;
+            final salt = _generateSalt(userLocalModel.masterPassword!.length);
+            final hashedMassterPassword =
+                _hash(userLocalModel.masterPassword!, salt);
+            user.masterPassword = hashedMassterPassword;
+            user.salt = salt;
+          }
+          try {
+            await _isar.writeTxn(() async {
+              await _isar.userLocalDtos.put(user);
+            });
+            final userLocalModel = UserLocalModel(
+              id: user.id,
+              username: user.username,
+              displayName: user.displayName,
+              createdAt: user.createdAt,
+              securityQuestion: user.securityQuestion,
+              lastSuccessfulSignIn: DateFormat('yyyy-MM-dd – kk:mm')
+                  .format(user.lastSuccessfulSignIn!),
+            );
+            return Right(userLocalModel);
+          } catch (_) {
+            return Left(DatabaseException(
+                "Something went wrong, Falied to update you information, plase try agian later"));
+          }
+        } else {
+          return Left(DatabaseException("Username does not exit"));
         }
-        if (masterPassword.isNotEmpty) {
-          final salt = _generateSalt(masterPassword.length);
-          final hashedMassterPassword = _hash(masterPassword, salt);
-          user.masterPassword = hashedMassterPassword;
-          user.salt = salt;
-        }
-        if (secret.isNotEmpty) {
-          user.secret = secret;
-        }
-
-        try {
-          await _isar.writeTxn(() async {
-            await _isar.userLocalDtos.put(user);
-          });
-          final userLocalModel = UserLocalModel(
-            id: user.id,
-            username: user.username,
-            createdAt: user.createdAt,
-            lastSuccessfulSignIn: DateFormat('yyyy-MM-dd – kk:mm')
-                .format(user.lastSuccessfulSignIn!),
-          );
-          return Right(userLocalModel);
-        } catch (_) {
-          return Left(DatabaseException(
-              "Something went wrong, Falied to update you information, plase try agian later"));
-        }
+      } catch (_) {
+        return Left(
+            DatabaseException("Something went wrong, plase try agian later"));
       }
-      return Left(DatabaseException("Username does not exit"));
-    } catch (_) {
-      return Left(
-          DatabaseException("Something went wrong, plase try agian later"));
+    } else {
+      return Left(DatabaseException("Please check your entries!"));
     }
   }
 
@@ -196,6 +204,8 @@ class UserManagementApi implements IUserManagementApi {
         final userLocalModel = UserLocalModel(
           id: user.id,
           username: user.username,
+          displayName: user.displayName,
+          securityQuestion: user.securityQuestion,
           createdAt: user.createdAt,
           lastSuccessfulSignIn: formattedDate,
         );

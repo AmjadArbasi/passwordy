@@ -7,16 +7,16 @@ part 'categories_db_dto.g.dart';
 class CategoriesDbDto {
   CategoriesDbDto({
     this.id,
-    required this.username,
+    required this.linker,
   });
 
   Id? id = Isar.autoIncrement;
 
   // @Index(unique: true)
-  String username;
+  String linker;
 
   final categories = IsarLinks<CategoryDbDto>();
 
   @override
-  String toString() => 'CategoriesDbDto(id: $id, username: $username)';
+  String toString() => 'CategoriesDbDto(id: $id, linker: $linker)';
 }

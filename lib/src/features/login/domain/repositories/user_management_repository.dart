@@ -8,7 +8,7 @@ abstract class UserManagementRepository {
       String masterPassword, String username);
 
   Future<Either<Failure, UserLocalEntity>> updateInfo(
-      String username, String masterPassword, String secret);
+      UserLocalEntity userLocalEntity);
 
   Future<Either<Failure, Unit>> deleteUser(UserLocalEntity userLocalEntity);
 

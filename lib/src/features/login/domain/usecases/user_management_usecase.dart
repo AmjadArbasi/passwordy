@@ -15,17 +15,12 @@ class UserManagementUsecase {
   }
 
   Future<Either<Failure, UserLocalEntity>> logIn(
-      String masterPassword, String username) async {
-    final result =
-        await _userManagementRepository.logIn(masterPassword, username);
-    return result;
-  }
+          String masterPassword, String username) =>
+      _userManagementRepository.logIn(masterPassword, username);
 
   Future<Either<Failure, UserLocalEntity>> updateInfo(
-      String username, String masterPassword, String secret) async {
-    return _userManagementRepository.updateInfo(
-        username, masterPassword, secret);
-  }
+          UserLocalEntity userLocalEntity) =>
+      _userManagementRepository.updateInfo(userLocalEntity);
 
   Future<Either<Failure, Unit>> deleteUser(UserLocalEntity userLocalEntity) =>
       _userManagementRepository.deleteUser(userLocalEntity);

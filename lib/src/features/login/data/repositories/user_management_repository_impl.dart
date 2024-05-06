@@ -8,7 +8,7 @@ class UserManagementRepositoryImpl extends UserManagementRepository {
     required UserManagementApi api,
   }) : _api = api;
 
-  final UserManagementApi _api;
+  final IUserManagementApi _api;
 
   final _behaviorSubject = BehaviorSubject<UserLocalEntity>();
 
@@ -36,8 +36,8 @@ class UserManagementRepositoryImpl extends UserManagementRepository {
 
   @override
   Future<Either<Failure, UserLocalEntity>> updateInfo(
-      String username, String masterPassword, String secret) async {
-    final result = await _api.updateUserInfo(username, masterPassword, secret);
+      UserLocalEntity userLocalEntity) async {
+    final result = await _api.updateUserInfo(userLocalEntity.mapToModel());
 
     return result.fold(
       (failure) => Left(failure),

@@ -29,9 +29,8 @@ class AppLocalDatabase {
 
   var logger = Logger();
 
-  CategoriesDbDto? get categoryListUsername {
-    return _cache.read(key: usernameCategories);
-  }
+  CategoriesDbDto? get categoryListUsername =>
+      _cache.read(key: usernameCategories);
 
   Future<List<CategoryEntity>> loadAllValues() async {
     final token = await _secureStorage.getToken(key);
@@ -41,11 +40,12 @@ class AppLocalDatabase {
       final user =
           await isar.userLocalDtos.filter().tokenEqualTo(token).findFirst();
       if (user != null) {
-        final username = user.username;
+        final linker = user.linker;
         final usernameLinkedCategories = await isar.categoriesDbDtos
             .filter()
-            .usernameEqualTo(username!)
+            .linkerEqualTo(linker!)
             .findFirst();
+
         if (usernameLinkedCategories != null) {
           _cache.write(
               key: usernameCategories, value: usernameLinkedCategories);
@@ -151,22 +151,7 @@ class AppLocalDatabase {
     );
     final categoryList = categoryListUsername;
 
-    if (categoryList == null) {
-      final token = await _secureStorage.getToken(key);
-
-      final user =
-          await isar.userLocalDtos.filter().tokenEqualTo(token).findFirst();
-
-      if (user != null) {
-        final registerUser = CategoriesDbDto(username: user.username!);
-        await isar.writeTxn(() async {
-          await isar.categoryDbDtos.put(newCategory);
-          registerUser.categories.add(newCategory);
-          await isar.categoriesDbDtos.put(registerUser);
-          await registerUser.categories.save();
-        });
-      }
-    } else {
+    if (categoryList != null) {
       await isar.writeTxn(() async {
         await isar.categoryDbDtos.put(newCategory);
         categoryList.categories.add(newCategory);

@@ -11,6 +11,7 @@ class UserLocalDto {
     this.masterPassword,
     this.salt,
     this.token,
+    this.linker,
     this.securityQuestion,
     this.secret,
     this.lastSuccessfulSignIn,
@@ -25,6 +26,7 @@ class UserLocalDto {
   String? masterPassword;
   String? salt;
   String? token;
+  String? linker;
   String? securityQuestion;
   String? secret;
   DateTime? lastSuccessfulSignIn;
@@ -33,6 +35,6 @@ class UserLocalDto {
 
   @override
   String toString() {
-    return 'UserLocalDto(username: $username, displayName: $displayName, masterPassword: $masterPassword, salt: $salt, token: $token, securityQuestion: $securityQuestion, secret: $secret, lastSuccessfulSignIn: $lastSuccessfulSignIn, lastUnuccessfulSignIn: $lastUnuccessfulSignIn, createdAt: $createdAt)';
+    return 'UserLocalDto(username: $username, displayName: $displayName, masterPassword: $masterPassword, salt: $salt, token: $token, linker: $linker, securityQuestion: $securityQuestion, secret: $secret, lastSuccessfulSignIn: $lastSuccessfulSignIn, lastUnuccessfulSignIn: $lastUnuccessfulSignIn, createdAt: $createdAt)';
   }
 }

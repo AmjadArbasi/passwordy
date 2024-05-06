@@ -25,12 +25,17 @@ class UserInfoView extends StatelessWidget {
             radius: 45,
           ),
         ),
-        Text(
-          '',
-          style: Theme.of(context)
-              .textTheme
-              .titleLarge!
-              .copyWith(fontWeight: FontWeight.bold),
+        const SizedBox(height: 10),
+        BlocBuilder<AuthBloc, AuthState>(
+          builder: (context, state) {
+            return Text(
+              "${state.userLocalEntity.displayName}",
+              style: Theme.of(context)
+                  .textTheme
+                  .titleLarge!
+                  .copyWith(fontWeight: FontWeight.bold),
+            );
+          },
         ),
         BlocBuilder<AuthBloc, AuthState>(
           builder: (context, state) {

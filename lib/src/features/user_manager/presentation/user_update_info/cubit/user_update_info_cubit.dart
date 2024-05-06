@@ -32,6 +32,10 @@ class UserUpdateInfoCubit extends Cubit<UserUpdateInfoState> {
     );
   }
 
+  void changeSecurityQuestion(String value) {
+    emit(state.copyWith(securityQuestion: value));
+  }
+
   void secretChanged(String value) {
     final secret = Secret.dirty(value);
 
@@ -53,11 +57,16 @@ class UserUpdateInfoCubit extends Cubit<UserUpdateInfoState> {
     if (state.isValid && state.checkCurrentPassword) {
       emit(state.copyWith(status: FormzSubmissionStatus.inProgress));
 
-      final failureOrUser = await userManagementUsecase.updateInfo(
-        state.displayName.value,
-        state.newPassword.value,
-        state.secret.value,
+      final userLocalEntiry = UserLocalEntity(
+        displayName: state.displayName.value,
+        masterPassword: state.newPassword.value,
+        securityQuestion: state.securityQuestion,
+        secret: state.secret.value,
       );
+
+      final failureOrUser =
+          await userManagementUsecase.updateInfo(userLocalEntiry);
+
       failureOrUser.fold(
         (failure) {
           emit(
