@@ -79,15 +79,19 @@ class UserManagementApi implements IUserManagementApi {
           await _isar.writeTxn(() async {
             await _isar.userLocalDtos.put(user);
           });
-          String formattedDate = DateFormat('yyyy-MM-dd–kk:mm').format(
+          final lastSuccessfulSignIn = DateFormat('yyyy-MM-dd–kk:mm').format(
             user.lastSuccessfulSignIn!,
+          );
+          final lastUnsuccessfulSignIn = DateFormat('yyyy-MM-dd–kk:mm').format(
+            user.lastUnuccessfulSignIn!,
           );
           final userLocalModel = UserLocalModel(
             id: user.id,
             username: user.username,
             displayName: user.displayName,
             securityQuestion: user.securityQuestion,
-            lastSuccessfulSignIn: formattedDate,
+            lastSuccessfulSignIn: lastSuccessfulSignIn,
+            lastUnsuccessfulSignIn: lastUnsuccessfulSignIn,
             createdAt: user.createdAt,
           );
 
@@ -96,8 +100,14 @@ class UserManagementApi implements IUserManagementApi {
         } catch (_) {
           return Left(DatabaseException("Something went wrong, bare with us"));
         }
+      } else {
+        user.lastUnuccessfulSignIn = DateTime.now();
+        await _isar.writeTxn(() async {
+          await _isar.userLocalDtos.put(user);
+        });
+
+        return Left(DatabaseException("Username or password incorrect"));
       }
-      return Left(DatabaseException("Username or password incorrect"));
     }
     return Left(
       DatabaseException("Username does not exist or password incorrect"),
@@ -197,8 +207,11 @@ class UserManagementApi implements IUserManagementApi {
           await _isar.userLocalDtos.filter().tokenEqualTo(token).findFirst();
 
       if (user != null) {
-        String formattedDate = DateFormat('yyyy-MM-dd–kk:mm').format(
+        String lastSuccessfulSignIn = DateFormat('yyyy-MM-dd–kk:mm').format(
           user.lastSuccessfulSignIn!,
+        );
+        String lastUnsuccessfulSignIn = DateFormat('yyyy-MM-dd–kk:mm').format(
+          user.lastUnuccessfulSignIn!,
         );
 
         final userLocalModel = UserLocalModel(
@@ -207,7 +220,8 @@ class UserManagementApi implements IUserManagementApi {
           displayName: user.displayName,
           securityQuestion: user.securityQuestion,
           createdAt: user.createdAt,
-          lastSuccessfulSignIn: formattedDate,
+          lastSuccessfulSignIn: lastSuccessfulSignIn,
+          lastUnsuccessfulSignIn: lastUnsuccessfulSignIn,
         );
         return Right(userLocalModel);
       }

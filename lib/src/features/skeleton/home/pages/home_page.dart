@@ -17,6 +17,7 @@ class Home extends StatelessWidget {
         children: <Widget>[
           UserInfoBar(),
           LastSuccessfulDateTime(),
+          LastUnsuccessfulDateTime(),
           HomeCategoryBar(),
           CategoryScrollView(),
           HomeCatchwordBar(),
@@ -104,6 +105,34 @@ class LastSuccessfulDateTime extends StatelessWidget {
                     ),
               ),
               Text('${state.userLocalEntity.lastSuccessfulSignIn}'),
+            ],
+          ),
+        );
+      },
+    );
+  }
+}
+
+class LastUnsuccessfulDateTime extends StatelessWidget {
+  const LastUnsuccessfulDateTime({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<AuthBloc, AuthState>(
+      builder: (context, state) {
+        return Padding(
+          padding: const EdgeInsets.only(top: 8.0),
+          child: Row(
+            children: [
+              Text(
+                'lastUnsuccessfulSignInHomePage'.tr,
+                style: Theme.of(context).textTheme.titleMedium!.copyWith(
+                      fontWeight: FontWeight.bold,
+                    ),
+              ),
+              Text('${state.userLocalEntity.lastUnsuccessfulSignIn}'),
             ],
           ),
         );

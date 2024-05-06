@@ -39,6 +39,7 @@ class AppTranslation extends Translations {
     "addItemHome": "Add item",
     "welcomeMessageHomePage": "Hello, ",
     "lastSuccessfulSignInHomePage": "Last successful login: ",
+    "lastUnsuccessfulSignInHomePage": "Last unsuccessful login: ",
 
     /// [CatchwordView]
     "nameOfCatchwordView": "View Password Card",
@@ -162,6 +163,7 @@ class AppTranslation extends Translations {
     "addItemHome": "اضافة",
     "welcomeMessageHomePage": "مرحبا, ",
     "lastSuccessfulSignInHomePage": "اخر محاولة تسجيل دخول ناجحة: ",
+    "lastUnsuccessfulSignInHomePage": "اخر محاولة تسجيل غير ناجحة: ",
 
     /// [CatchwordView]
     "nameOfCatchwordView": "عرض معلومات الرقم السري",
