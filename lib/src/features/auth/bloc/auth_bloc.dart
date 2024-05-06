@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter_application_passmanager/src/features/category_manager/category_manager.dart';
 import 'package:flutter_application_passmanager/src/features/features.dart';
 import 'package:logger/logger.dart';
 
@@ -84,17 +85,25 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     Emitter<AuthState> emit,
   ) async {
     final failureOrUser = await userManagementUsecase.reAuthLoggedUser();
+    final onboardingCompleted =
+        userManagementUsecase.checkOnboardingCompleted();
     await categoryManagerUsecase.refreshData();
+
+    AuthStatus? authStatus;
+
+    if (!onboardingCompleted) {
+      authStatus = AuthStatus.onboarding;
+    }
     failureOrUser.fold(
       (failure) {
         emit(state.copyWith(
-          status: AuthStatus.unauthenticated,
           errorMessage: failure.message,
+          status: authStatus ?? AuthStatus.unauthenticated,
         ));
       },
       (userLocalEntity) {
         emit(state.copyWith(
-          status: AuthStatus.authenticated,
+          status: authStatus ?? AuthStatus.authenticated,
           userLocalEntity: userLocalEntity,
         ));
       },

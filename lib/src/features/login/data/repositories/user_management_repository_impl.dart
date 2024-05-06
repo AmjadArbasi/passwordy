@@ -66,12 +66,17 @@ class UserManagementRepositoryImpl extends UserManagementRepository {
   @override
   Future<Either<Failure, UserLocalEntity>> reAuthLoggedUser() async {
     final result = await _api.reAuthLoggedUser();
-    return result.fold((failure) => Left(failure), (userLocalModel) {
-      final userLocalEntity = userLocalModel.mapToEntity();
-      _behaviorSubject.add(userLocalEntity);
-      return Right(userLocalEntity);
-    });
+    return result.fold(
+      (failure) => Left(failure),
+      (userLocalModel) {
+        final userLocalEntity = userLocalModel.mapToEntity();
+        _behaviorSubject.add(userLocalEntity);
+        return Right(userLocalEntity);
+      },
+    );
   }
+
+  bool checkOnboardingCompleted() => _api.checkOnboardingCompleted();
 
   @override
   Future<Either<Failure, Unit>> logOut() async {

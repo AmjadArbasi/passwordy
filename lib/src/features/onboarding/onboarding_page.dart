@@ -1,10 +1,11 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_application_passmanager/src/core/constants/constants.dart';
 import 'package:get/get.dart';
+import 'package:flutter/material.dart';
+import 'onboarding_controller.dart';
 import 'package:introduction_screen/introduction_screen.dart';
 
-class Onboarding extends StatelessWidget {
-  const Onboarding({super.key});
+class OnboardingPage extends GetView<OnboardingController> {
+  const OnboardingPage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -34,9 +35,7 @@ class Onboarding extends StatelessWidget {
             fontSize: 18,
           ),
         ),
-        onDone: () {
-          Get.toNamed(AppRoutes.signIn);
-        },
+        onDone: () => Get.toNamed(AppRoutes.signUp),
         nextStyle: ButtonStyle(
           foregroundColor: MaterialStateProperty.all(Colors.blue),
         ),

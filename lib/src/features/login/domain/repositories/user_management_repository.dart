@@ -19,6 +19,8 @@ abstract class UserManagementRepository {
 
   Future<Either<Failure, Unit>> checkSecret(String username, String secret);
 
+  bool checkOnboardingCompleted();
+
   Future<Either<Failure, Unit>> updatePassword(
       String username, String secret, String newPassword);
 

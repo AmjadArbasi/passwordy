@@ -8,16 +8,20 @@ import 'package:flutter_application_passmanager/src/features/features.dart';
 import 'package:intl/intl.dart';
 import 'package:isar/isar.dart';
 import 'package:logger/logger.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class UserManagementApi implements IUserManagementApi {
   UserManagementApi({
     required Isar isar,
     required SecureStorage secureStorage,
+    required SharedPreferences sharedPreferences,
   })  : _isar = isar,
-        _secureStorage = secureStorage;
+        _secureStorage = secureStorage,
+        _sharedPreferences = sharedPreferences;
 
   final Isar _isar;
   final SecureStorage _secureStorage;
+  final SharedPreferences _sharedPreferences;
 
   static const String key = "token";
 
@@ -51,6 +55,8 @@ class UserManagementApi implements IUserManagementApi {
           await _isar.userLocalDtos.put(user);
           await _isar.categoriesDbDtos.put(categories);
         });
+        await _sharedPreferences.setBool('onboardingCompleted', true);
+
         return const Right(unit);
       } catch (e) {
         return Left(
@@ -79,12 +85,17 @@ class UserManagementApi implements IUserManagementApi {
           await _isar.writeTxn(() async {
             await _isar.userLocalDtos.put(user);
           });
-          final lastSuccessfulSignIn = DateFormat('yyyy-MM-dd–kk:mm').format(
-            user.lastSuccessfulSignIn!,
-          );
-          final lastUnsuccessfulSignIn = DateFormat('yyyy-MM-dd–kk:mm').format(
-            user.lastUnuccessfulSignIn!,
-          );
+          String lastSuccessfulSignIn = user.lastSuccessfulSignIn == null
+              ? "n/a"
+              : DateFormat('yyyy-MM-dd–kk:mm').format(
+                  user.lastSuccessfulSignIn!,
+                );
+          String lastUnsuccessfulSignIn = user.lastUnuccessfulSignIn == null
+              ? "n/a"
+              : DateFormat('yyyy-MM-dd–kk:mm').format(
+                  user.lastUnuccessfulSignIn!,
+                );
+
           final userLocalModel = UserLocalModel(
             id: user.id,
             username: user.username,
@@ -96,6 +107,7 @@ class UserManagementApi implements IUserManagementApi {
           );
 
           await _secureStorage.storeToken(key, user.token!);
+          logger.f(userLocalModel);
           return Right(userLocalModel);
         } catch (_) {
           return Left(DatabaseException("Something went wrong, bare with us"));
@@ -150,14 +162,24 @@ class UserManagementApi implements IUserManagementApi {
             await _isar.writeTxn(() async {
               await _isar.userLocalDtos.put(user);
             });
+            String lastSuccessfulSignIn = user.lastSuccessfulSignIn == null
+                ? "n/a"
+                : DateFormat('yyyy-MM-dd–kk:mm').format(
+                    user.lastSuccessfulSignIn!,
+                  );
+            String lastUnsuccessfulSignIn = user.lastUnuccessfulSignIn == null
+                ? "n/a"
+                : DateFormat('yyyy-MM-dd–kk:mm').format(
+                    user.lastUnuccessfulSignIn!,
+                  );
             final userLocalModel = UserLocalModel(
               id: user.id,
               username: user.username,
               displayName: user.displayName,
               createdAt: user.createdAt,
               securityQuestion: user.securityQuestion,
-              lastSuccessfulSignIn: DateFormat('yyyy-MM-dd – kk:mm')
-                  .format(user.lastSuccessfulSignIn!),
+              lastSuccessfulSignIn: lastSuccessfulSignIn,
+              lastUnsuccessfulSignIn: lastUnsuccessfulSignIn,
             );
             return Right(userLocalModel);
           } catch (_) {
@@ -202,18 +224,21 @@ class UserManagementApi implements IUserManagementApi {
   Future<Either<Failure, UserLocalModel>> reAuthLoggedUser() async {
     final token = await _secureStorage.getToken(key);
 
-    if (token != null) {
-      final user =
-          await _isar.userLocalDtos.filter().tokenEqualTo(token).findFirst();
+    final user =
+        await _isar.userLocalDtos.filter().tokenEqualTo(token).findFirst();
 
-      if (user != null) {
-        String lastSuccessfulSignIn = DateFormat('yyyy-MM-dd–kk:mm').format(
-          user.lastSuccessfulSignIn!,
-        );
-        String lastUnsuccessfulSignIn = DateFormat('yyyy-MM-dd–kk:mm').format(
-          user.lastUnuccessfulSignIn!,
-        );
-
+    if (token != null && user != null) {
+      String lastSuccessfulSignIn = user.lastSuccessfulSignIn == null
+          ? "n/a"
+          : DateFormat('yyyy-MM-dd–kk:mm').format(
+              user.lastSuccessfulSignIn!,
+            );
+      String lastUnsuccessfulSignIn = user.lastUnuccessfulSignIn == null
+          ? "n/a"
+          : DateFormat('yyyy-MM-dd–kk:mm').format(
+              user.lastUnuccessfulSignIn!,
+            );
+      try {
         final userLocalModel = UserLocalModel(
           id: user.id,
           username: user.username,
@@ -224,10 +249,14 @@ class UserManagementApi implements IUserManagementApi {
           lastUnsuccessfulSignIn: lastUnsuccessfulSignIn,
         );
         return Right(userLocalModel);
+      } catch (_) {
+        return Left(
+          DatabaseException("Something went wrong, please try again later"),
+        );
       }
-      return Left(DatabaseException("User not exit"));
+    } else {
+      return Left(DatabaseException("User not authorzied"));
     }
-    return Left(DatabaseException("User not authorized"));
   }
 
   @override
@@ -332,5 +361,13 @@ class UserManagementApi implements IUserManagementApi {
     final digest = hmacSha256.convert(key);
 
     return digest.toString();
+  }
+
+  @override
+  bool checkOnboardingCompleted() {
+    final onboardingCompleted =
+        _sharedPreferences.getBool('onboardingCompleted') ?? false;
+
+    return onboardingCompleted;
   }
 }

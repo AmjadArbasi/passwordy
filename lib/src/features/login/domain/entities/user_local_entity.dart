@@ -15,6 +15,8 @@ class UserLocalEntity extends Equatable
     this.lastSuccessfulSignIn,
     this.lastUnsuccessfulSignIn,
     this.masterPassword,
+    this.onboardingCompleted,
+    this.isAuthorized,
   });
 
   final int? id;
@@ -26,6 +28,8 @@ class UserLocalEntity extends Equatable
   final String? lastSuccessfulSignIn;
   final String? lastUnsuccessfulSignIn;
   final DateTime? createdAt;
+  final bool? onboardingCompleted;
+  final bool? isAuthorized;
 
   static const empty = UserLocalEntity();
 
@@ -45,6 +49,8 @@ class UserLocalEntity extends Equatable
       lastSuccessfulSignIn: lastSuccessfulSignIn,
       lastUnsuccessfulSignIn: lastUnsuccessfulSignIn,
       createdAt: createdAt,
+      onboardingCompleted: onboardingCompleted,
+      isAuthorized: isAuthorized,
     );
   }
 
@@ -58,11 +64,13 @@ class UserLocalEntity extends Equatable
         securityQuestion,
         lastSuccessfulSignIn,
         lastUnsuccessfulSignIn,
-        createdAt
+        createdAt,
+        onboardingCompleted,
+        isAuthorized,
       ];
 
   @override
   String toString() {
-    return 'UserLocalEntity(id: $id, username: $username, displayName: $displayName, masterPassword: $masterPassword, secret: $secret, securityQuestion: $securityQuestion, lastSuccessfulSignIn: $lastSuccessfulSignIn, lastUnsuccessfulSignIn: $lastUnsuccessfulSignIn, createdAt: $createdAt)';
+    return 'UserLocalEntity(id: $id, username: $username, displayName: $displayName, masterPassword: $masterPassword, secret: $secret, securityQuestion: $securityQuestion, lastSuccessfulSignIn: $lastSuccessfulSignIn, lastUnsuccessfulSignIn: $lastUnsuccessfulSignIn, createdAt: $createdAt, onboardingCompleted: $onboardingCompleted, isAuthorized: $isAuthorized)';
   }
 }

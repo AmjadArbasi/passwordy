@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_passmanager/src/core/core.dart';
 import 'package:flutter_bloc/flutter_bloc.dart' hide Transition;
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get/get.dart';
 
-import 'package:flutter_application_passmanager/src/core/core.dart';
 import 'package:flutter_application_passmanager/src/features/auth/bloc/auth_bloc.dart';
 import 'package:flutter_application_passmanager/src/features/features.dart';
-import 'package:logger/logger.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -38,9 +38,12 @@ void main() async {
   final generatePassword =
       GeneratePassword(passGenRepsotiory: passGenRepsotiory);
 
+  final sharedPreferences = await SharedPreferences.getInstance();
+
   final userManagementApi = UserManagementApi(
     isar: isar,
     secureStorage: secureStorage,
+    sharedPreferences: sharedPreferences,
   );
   final userManagementRepository =
       UserManagementRepositoryImpl(api: userManagementApi);
@@ -153,6 +156,20 @@ class App extends StatelessWidget {
   }
 }
 
+// class OnBoardingCheck extends StatelessWidget {
+//   const OnBoardingCheck({super.key});
+
+//   @override
+//   Widget build(BuildContext context) {
+//     final controller = Get.put(OnboardingController());
+//     if (controller.onboardingCompleted) {
+//       return const AppView(widget: SplashView());
+//     } else {
+//       return const AppView(widget: OnboardingPage());
+//     }
+//   }
+// }
+
 class AppView extends StatelessWidget {
   const AppView({super.key});
 
@@ -163,12 +180,14 @@ class AppView extends StatelessWidget {
     return BlocListener<AuthBloc, AuthState>(
       listenWhen: (previous, current) => previous.status != current.status,
       listener: (context, state) {
-        Logger().f(state.status);
+        logger.f(state.status);
         switch (state.status) {
           case AuthStatus.authenticated:
             Get.offAllNamed(AppRoutes.skeleton);
           case AuthStatus.unauthenticated:
             Get.offAllNamed(AppRoutes.signIn);
+          case AuthStatus.onboarding:
+            Get.offAllNamed(AppRoutes.onBoarding);
           default:
             Get.toNamed(AppRoutes.splash);
         }
@@ -179,7 +198,7 @@ class AppView extends StatelessWidget {
         locale: controller.language,
         fallbackLocale: const Locale('en', 'US'),
         translations: AppTranslation(),
-        initialRoute: AppRoutes.welcome,
+        home: const WelcomePage(),
         defaultTransition: Transition.fade,
       ),
     );

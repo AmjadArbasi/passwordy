@@ -36,6 +36,9 @@ class UserManagementUsecase {
   Future<Either<Failure, Unit>> checkSecret(String username, String secret) =>
       _userManagementRepository.checkSecret(username, secret);
 
+  bool checkOnboardingCompleted() =>
+      _userManagementRepository.checkOnboardingCompleted();
+
   Future<Either<Failure, Unit>> updatePassword(
           String username, String secret, String newPassword) =>
       _userManagementRepository.updatePassword(username, secret, newPassword);

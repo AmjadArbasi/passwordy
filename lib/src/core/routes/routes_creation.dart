@@ -14,7 +14,7 @@ class Routes {
     GetPage(name: AppRoutes.general, page: () => const General()),
     GetPage(name: AppRoutes.about, page: () => const About()),
     GetPage(name: AppRoutes.activitiesLog, page: () => const ActivitiesLog()),
-    GetPage(name: AppRoutes.onBoarding, page: () => const Onboarding()),
+    GetPage(name: AppRoutes.onBoarding, page: () => const OnboardingPage()),
     GetPage(name: AppRoutes.splash, page: () => const SplashView()),
     GetPage(name: AppRoutes.translator, page: () => const TranslatorPage()),
     GetPage(name: AppRoutes.signIn, page: () => const SignIn()),
