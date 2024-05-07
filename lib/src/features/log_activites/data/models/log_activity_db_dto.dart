@@ -14,6 +14,7 @@ class LogActivityDbDto implements DataMapperEntity<LogActivityEntity> {
   String? name;
   String? operation;
   String? pathImage;
+  @Index()
   DateTime? dateTime;
 
   @override

@@ -43,7 +43,21 @@ const LogActivityDbDtoSchema = CollectionSchema(
   deserialize: _logActivityDbDtoDeserialize,
   deserializeProp: _logActivityDbDtoDeserializeProp,
   idName: r'id',
-  indexes: {},
+  indexes: {
+    r'dateTime': IndexSchema(
+      id: -138851979697481250,
+      name: r'dateTime',
+      unique: false,
+      replace: false,
+      properties: [
+        IndexPropertySchema(
+          name: r'dateTime',
+          type: IndexType.value,
+          caseSensitive: false,
+        )
+      ],
+    )
+  },
   links: {},
   embeddedSchemas: {},
   getId: _logActivityDbDtoGetId,
@@ -146,6 +160,14 @@ extension LogActivityDbDtoQueryWhereSort
       return query.addWhereClause(const IdWhereClause.any());
     });
   }
+
+  QueryBuilder<LogActivityDbDto, LogActivityDbDto, QAfterWhere> anyDateTime() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(
+        const IndexWhereClause.any(indexName: r'dateTime'),
+      );
+    });
+  }
 }
 
 extension LogActivityDbDtoQueryWhere
@@ -212,6 +234,121 @@ extension LogActivityDbDtoQueryWhere
         lower: lowerId,
         includeLower: includeLower,
         upper: upperId,
+        includeUpper: includeUpper,
+      ));
+    });
+  }
+
+  QueryBuilder<LogActivityDbDto, LogActivityDbDto, QAfterWhereClause>
+      dateTimeIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IndexWhereClause.equalTo(
+        indexName: r'dateTime',
+        value: [null],
+      ));
+    });
+  }
+
+  QueryBuilder<LogActivityDbDto, LogActivityDbDto, QAfterWhereClause>
+      dateTimeIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IndexWhereClause.between(
+        indexName: r'dateTime',
+        lower: [null],
+        includeLower: false,
+        upper: [],
+      ));
+    });
+  }
+
+  QueryBuilder<LogActivityDbDto, LogActivityDbDto, QAfterWhereClause>
+      dateTimeEqualTo(DateTime? dateTime) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IndexWhereClause.equalTo(
+        indexName: r'dateTime',
+        value: [dateTime],
+      ));
+    });
+  }
+
+  QueryBuilder<LogActivityDbDto, LogActivityDbDto, QAfterWhereClause>
+      dateTimeNotEqualTo(DateTime? dateTime) {
+    return QueryBuilder.apply(this, (query) {
+      if (query.whereSort == Sort.asc) {
+        return query
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'dateTime',
+              lower: [],
+              upper: [dateTime],
+              includeUpper: false,
+            ))
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'dateTime',
+              lower: [dateTime],
+              includeLower: false,
+              upper: [],
+            ));
+      } else {
+        return query
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'dateTime',
+              lower: [dateTime],
+              includeLower: false,
+              upper: [],
+            ))
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'dateTime',
+              lower: [],
+              upper: [dateTime],
+              includeUpper: false,
+            ));
+      }
+    });
+  }
+
+  QueryBuilder<LogActivityDbDto, LogActivityDbDto, QAfterWhereClause>
+      dateTimeGreaterThan(
+    DateTime? dateTime, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IndexWhereClause.between(
+        indexName: r'dateTime',
+        lower: [dateTime],
+        includeLower: include,
+        upper: [],
+      ));
+    });
+  }
+
+  QueryBuilder<LogActivityDbDto, LogActivityDbDto, QAfterWhereClause>
+      dateTimeLessThan(
+    DateTime? dateTime, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IndexWhereClause.between(
+        indexName: r'dateTime',
+        lower: [],
+        upper: [dateTime],
+        includeUpper: include,
+      ));
+    });
+  }
+
+  QueryBuilder<LogActivityDbDto, LogActivityDbDto, QAfterWhereClause>
+      dateTimeBetween(
+    DateTime? lowerDateTime,
+    DateTime? upperDateTime, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IndexWhereClause.between(
+        indexName: r'dateTime',
+        lower: [lowerDateTime],
+        includeLower: includeLower,
+        upper: [upperDateTime],
         includeUpper: includeUpper,
       ));
     });

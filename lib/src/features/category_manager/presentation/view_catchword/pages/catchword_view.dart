@@ -80,6 +80,15 @@ class CatchwordView extends StatelessWidget {
                         icon: Icons.edit,
                         name: 'editPasswordCard'.tr,
                         backgroundColor: DismissibleColors.edit,
+                        onPressed: () {
+                          Get.toNamed(
+                            AppRoutes.saveCatchword,
+                            arguments: {
+                              'catchword': catchword,
+                              'category': category
+                            },
+                          );
+                        },
                       ),
                       const SizedBox(
                         width: 20,
@@ -88,6 +97,14 @@ class CatchwordView extends StatelessWidget {
                         icon: Icons.delete,
                         name: 'deletePasswordCard'.tr,
                         backgroundColor: DismissibleColors.delete,
+                        onPressed: () {
+                          BlocProvider.of<CatchwordBloc>(context).add(
+                            CatchwordsDeleteRequested(
+                              catchword: catchword,
+                              category: category,
+                            ),
+                          );
+                        },
                       ),
                     ],
                   ),

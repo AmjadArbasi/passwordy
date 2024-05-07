@@ -59,6 +59,7 @@ class LogActivitiesApis implements ILogActivitiesApis {
             .findFirst();
         if (logs != null) {
           final result = await logs.logActivities.filter().findAll();
+          result.sort((a, b) => b.dateTime!.compareTo(a.dateTime!));
           return result;
         } else {
           throw LogActivitiesException("User not authorzied");
