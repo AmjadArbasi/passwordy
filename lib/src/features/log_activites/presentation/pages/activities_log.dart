@@ -15,9 +15,11 @@ class ActivitiesLog extends StatelessWidget {
         title: "Activities",
         color: Colors.transparent,
       ),
-      body: Container(
-        margin: const EdgeInsets.all(25.0),
-        child: const LogActivities(),
+      body: SingleChildScrollView(
+        child: Container(
+          margin: const EdgeInsets.all(25.0),
+          child: const LogActivities(),
+        ),
       ),
     );
   }
@@ -89,6 +91,7 @@ class LogActivitiesCard extends StatelessWidget {
       children: [
         CustomScrollView(
           shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
           slivers:
               logs.map((log) => _buildCatchwordSliver(log, context)).toList(),
         ),

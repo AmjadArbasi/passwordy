@@ -3,9 +3,6 @@ import 'package:json_annotation/json_annotation.dart';
 import 'package:flutter_application_passmanager/src/core/core.dart';
 import 'package:flutter_application_passmanager/src/features/category_manager/category_manager.dart';
 
-part 'category_model.g.dart';
-
-@JsonSerializable()
 class CategoryModel extends DataMapperEntity<CategoryEntity> {
   final int? id;
   @JsonKey(name: 'category_name')
@@ -29,13 +26,6 @@ class CategoryModel extends DataMapperEntity<CategoryEntity> {
       total: total,
     );
   }
-
-  /// Deserializes the given [Map<String, dynamic>] into a [Category] model.
-  static CategoryModel fromJson(Map<String, dynamic> json) =>
-      _$CategoryModelFromJson(json);
-
-  /// Converts this [Category] model into a [Map<String, dynamic>].
-  Map<String, dynamic> toJson() => _$CategoryModelToJson(this);
 
   @override
   String toString() {

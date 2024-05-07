@@ -10,6 +10,7 @@ sealed class EditCatchwordEvent extends Equatable {
 /// [EditCatchwordNameChanged] : update the value of name
 /// [EditCatchwordAccountIdChanged] : update the value of account id
 /// [EditCatchwordPasscodeChanged] : update the value of passcode
+/// [EditCatchwordNoteChanged] : update the value of note
 /// [EditCatchwordCategoryChanged] : update the value of category
 /// [EditCatchwordSubmitted] : submit the values
 
@@ -37,6 +38,15 @@ final class EditCatchwordPasscodeChanged extends EditCatchwordEvent {
 
   @override
   List<Object> get props => [passcode];
+}
+
+final class EditCatchwordNoteChanged extends EditCatchwordEvent {
+  final String note;
+
+  const EditCatchwordNoteChanged({required this.note});
+
+  @override
+  List<Object> get props => [note];
 }
 
 final class EditCatchwordValueCopied extends EditCatchwordEvent {

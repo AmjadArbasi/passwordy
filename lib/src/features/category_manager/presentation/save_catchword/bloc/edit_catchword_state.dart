@@ -6,6 +6,7 @@ final class EditCatchwordState extends Equatable {
   final String name;
   final String accountId;
   final String passcode;
+  final String note;
   final String? valueCopied;
   final CatchwordEntity? initCatchword;
   final CategoryEntity category;
@@ -16,6 +17,7 @@ final class EditCatchwordState extends Equatable {
     this.name = '',
     this.accountId = '',
     this.passcode = '',
+    this.note = "",
     this.valueCopied,
     this.initCatchword,
     required this.category,
@@ -28,6 +30,7 @@ final class EditCatchwordState extends Equatable {
         name,
         accountId,
         passcode,
+        note,
         initCatchword,
         category,
         status,
@@ -39,6 +42,7 @@ final class EditCatchwordState extends Equatable {
     String? name,
     String? accountId,
     String? passcode,
+    String? note,
     String? valueCopied,
     CatchwordEntity? initCatchword,
     CategoryEntity? category,
@@ -49,6 +53,7 @@ final class EditCatchwordState extends Equatable {
       name: name ?? this.name,
       accountId: accountId ?? this.accountId,
       passcode: passcode ?? this.passcode,
+      note: note ?? this.note,
       valueCopied: valueCopied ?? this.valueCopied,
       initCatchword: initCatchword ?? this.initCatchword,
       category: category ?? this.category,

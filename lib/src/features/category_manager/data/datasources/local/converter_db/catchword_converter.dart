@@ -11,6 +11,7 @@ class CatchwordModelToDbDtoConverter
       accountId: source.accountId,
       passcode: source.passcode,
       dateTime: source.createdAt,
+      note: source.note,
       isVisibile: source.isVisible,
       whenUsed: source.whenUsed,
     );
@@ -26,6 +27,7 @@ class CatchwordDbDtoToModelConverter
       name: model.name,
       accountId: model.accountId,
       passcode: model.passcode,
+      note: model.note,
       createdAt: model.dateTime,
       isVisible: model.isVisibile,
       whenUsed: model.whenUsed!,

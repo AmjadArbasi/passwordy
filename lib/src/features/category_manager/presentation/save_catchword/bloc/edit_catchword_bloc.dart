@@ -23,6 +23,7 @@ class EditCatchwordBloc extends Bloc<EditCatchwordEvent, EditCatchwordState> {
     on<EditCatchwordNameChanged>(_onNameChanged);
     on<EditCatchwordAccountIdChanged>(_onAccountIdChanged);
     on<EditCatchwordPasscodeChanged>(_onPasscodeChanged);
+    on<EditCatchwordNoteChanged>(_onNoteChanged);
     on<EditCatchwordValueCopied>(_onValueCopied);
     on<EditCatchwordCategoryChanged>(_onCategoryChanged);
     on<EditCatchwordSubmitted>(_onSubmitted);
@@ -51,6 +52,13 @@ class EditCatchwordBloc extends Bloc<EditCatchwordEvent, EditCatchwordState> {
     emit(state.copyWith(passcode: event.passcode));
   }
 
+  Future<void> _onNoteChanged(
+    EditCatchwordNoteChanged event,
+    Emitter<EditCatchwordState> emit,
+  ) async {
+    emit(state.copyWith(note: event.note));
+  }
+
   Future<void> _onValueCopied(
       EditCatchwordValueCopied event, Emitter<EditCatchwordState> emit) async {
     emit(state.copyWith(valueCopied: event.valueCopied));
@@ -71,11 +79,13 @@ class EditCatchwordBloc extends Bloc<EditCatchwordEvent, EditCatchwordState> {
               name: '',
               accountId: '',
               passcode: '',
+              note: '',
             ))
         .copyWith(
       name: state.name,
       accountId: state.accountId,
       passcode: state.passcode,
+      note: state.note,
     );
     try {
       if (newCatchword.id == null) {

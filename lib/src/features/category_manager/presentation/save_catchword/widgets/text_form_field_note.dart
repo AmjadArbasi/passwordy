@@ -1,9 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_passmanager/src/features/category_manager/category_manager.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
 
 class TextFormFieldNote extends StatefulWidget {
-  const TextFormFieldNote({super.key});
+  const TextFormFieldNote({
+    super.key,
+    required this.initialValue,
+  });
+
+  final String initialValue;
 
   @override
   State<TextFormFieldNote> createState() => _TextFormFieldNoteState();
@@ -13,7 +19,8 @@ class _TextFormFieldNoteState extends State<TextFormFieldNote> {
   late TextEditingController textEditingControllerNote;
   @override
   void initState() {
-    textEditingControllerNote = TextEditingController();
+    textEditingControllerNote =
+        TextEditingController(text: widget.initialValue);
     super.initState();
   }
 
@@ -38,6 +45,9 @@ class _TextFormFieldNoteState extends State<TextFormFieldNote> {
       ),
       onChanged: (value) {
         logger.f(value);
+        context.read<EditCatchwordBloc>().add(
+              EditCatchwordNoteChanged(note: value),
+            );
       },
     );
   }

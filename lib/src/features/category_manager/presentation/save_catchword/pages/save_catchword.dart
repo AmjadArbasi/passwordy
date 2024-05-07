@@ -25,6 +25,7 @@ class SaveCatchword extends StatelessWidget {
         name: '',
         accountId: '',
         passcode: '',
+        note: '',
       );
       category = const CategoryEntity();
     }
@@ -121,7 +122,8 @@ class SaveCatchwordView extends StatelessWidget {
                 const SizedBox(
                   height: 15,
                 ),
-                const TextFormFieldNote(),
+                TextFormFieldNote(
+                    initialValue: context.read<EditCatchwordBloc>().state.note),
                 /*
                   * [Password Generator] Part 
                   * using Slide Widget to represent 
@@ -229,7 +231,6 @@ class DropDownMuneCategories extends StatelessWidget {
   }
 
   void _onCategoryChanged(BuildContext context, CategoryEntity? value) {
-    // logger.f('From Dropmenu $value');
     context
         .read<EditCatchwordBloc>()
         .add(EditCatchwordCategoryChanged(category: value!));

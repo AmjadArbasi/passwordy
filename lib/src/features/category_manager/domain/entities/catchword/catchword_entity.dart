@@ -17,6 +17,7 @@ class CatchwordEntity extends Equatable
     required this.name,
     required this.accountId,
     required this.passcode,
+    required this.note,
     this.isVisible = false,
     DateTime? createdAt,
     DateTime? whenUsed,
@@ -47,6 +48,9 @@ class CatchwordEntity extends Equatable
   /// cant be empty
   final String passcode;
 
+  /// The note
+  final String note;
+
   /// The isVisible
   /// initital value is false
   final bool isVisible;
@@ -63,6 +67,7 @@ class CatchwordEntity extends Equatable
       name,
       accountId,
       passcode,
+      note,
       isVisible,
       createdAt,
       whenUsed,
@@ -72,11 +77,32 @@ class CatchwordEntity extends Equatable
   ///{@macro Catchword}
   ///
   /// returns the updated copy of the instance
+
+  @override
+  CatchwordModel mapToModel() {
+    return CatchwordModel(
+      id: id,
+      name: name,
+      accountId: accountId,
+      passcode: passcode,
+      note: note,
+      createdAt: createdAt,
+      isVisible: isVisible,
+      whenUsed: whenUsed,
+    );
+  }
+
+  @override
+  String toString() {
+    return 'CatchwordEntity(id: $id, name: $name, accountId: $accountId, passcode: $passcode, note: $note, isVisible: $isVisible, createdAt: $createdAt, whenUsed: $whenUsed)';
+  }
+
   CatchwordEntity copyWith({
     int? id,
     String? name,
     String? accountId,
     String? passcode,
+    String? note,
     bool? isVisible,
     DateTime? createdAt,
     DateTime? whenUsed,
@@ -86,27 +112,10 @@ class CatchwordEntity extends Equatable
       name: name ?? this.name,
       accountId: accountId ?? this.accountId,
       passcode: passcode ?? this.passcode,
+      note: note ?? this.note,
       isVisible: isVisible ?? this.isVisible,
       createdAt: createdAt ?? this.createdAt,
       whenUsed: whenUsed ?? this.whenUsed,
     );
-  }
-
-  @override
-  CatchwordModel mapToModel() {
-    return CatchwordModel(
-      id: id,
-      name: name,
-      accountId: accountId,
-      passcode: passcode,
-      createdAt: createdAt,
-      isVisible: isVisible,
-      whenUsed: whenUsed,
-    );
-  }
-
-  @override
-  String toString() {
-    return 'CatchwordEntity(id: $id, name: $name, accountId: $accountId, passcode: $passcode, isVisible: $isVisible, createdAt: $createdAt, whenUsed: $whenUsed)';
   }
 }

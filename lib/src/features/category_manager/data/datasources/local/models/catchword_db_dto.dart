@@ -9,6 +9,7 @@ class CatchwordDbDto {
     required this.name,
     required this.accountId,
     required this.passcode,
+    required this.note,
     required this.dateTime,
     required this.isVisibile,
     this.whenUsed,
@@ -21,6 +22,8 @@ class CatchwordDbDto {
   String accountId;
 
   String passcode;
+
+  String note;
 
   bool isVisibile;
 

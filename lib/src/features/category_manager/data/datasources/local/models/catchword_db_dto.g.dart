@@ -37,13 +37,18 @@ const CatchwordDbDtoSchema = CollectionSchema(
       name: r'name',
       type: IsarType.string,
     ),
-    r'passcode': PropertySchema(
+    r'note': PropertySchema(
       id: 4,
+      name: r'note',
+      type: IsarType.string,
+    ),
+    r'passcode': PropertySchema(
+      id: 5,
       name: r'passcode',
       type: IsarType.string,
     ),
     r'whenUsed': PropertySchema(
-      id: 5,
+      id: 6,
       name: r'whenUsed',
       type: IsarType.dateTime,
     )
@@ -84,6 +89,7 @@ int _catchwordDbDtoEstimateSize(
   var bytesCount = offsets.last;
   bytesCount += 3 + object.accountId.length * 3;
   bytesCount += 3 + object.name.length * 3;
+  bytesCount += 3 + object.note.length * 3;
   bytesCount += 3 + object.passcode.length * 3;
   return bytesCount;
 }
@@ -98,8 +104,9 @@ void _catchwordDbDtoSerialize(
   writer.writeDateTime(offsets[1], object.dateTime);
   writer.writeBool(offsets[2], object.isVisibile);
   writer.writeString(offsets[3], object.name);
-  writer.writeString(offsets[4], object.passcode);
-  writer.writeDateTime(offsets[5], object.whenUsed);
+  writer.writeString(offsets[4], object.note);
+  writer.writeString(offsets[5], object.passcode);
+  writer.writeDateTime(offsets[6], object.whenUsed);
 }
 
 CatchwordDbDto _catchwordDbDtoDeserialize(
@@ -114,8 +121,9 @@ CatchwordDbDto _catchwordDbDtoDeserialize(
     id: id,
     isVisibile: reader.readBool(offsets[2]),
     name: reader.readString(offsets[3]),
-    passcode: reader.readString(offsets[4]),
-    whenUsed: reader.readDateTimeOrNull(offsets[5]),
+    note: reader.readString(offsets[4]),
+    passcode: reader.readString(offsets[5]),
+    whenUsed: reader.readDateTimeOrNull(offsets[6]),
   );
   return object;
 }
@@ -138,6 +146,8 @@ P _catchwordDbDtoDeserializeProp<P>(
     case 4:
       return (reader.readString(offset)) as P;
     case 5:
+      return (reader.readString(offset)) as P;
+    case 6:
       return (reader.readDateTimeOrNull(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
@@ -753,6 +763,142 @@ extension CatchwordDbDtoQueryFilter
   }
 
   QueryBuilder<CatchwordDbDto, CatchwordDbDto, QAfterFilterCondition>
+      noteEqualTo(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'note',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<CatchwordDbDto, CatchwordDbDto, QAfterFilterCondition>
+      noteGreaterThan(
+    String value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'note',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<CatchwordDbDto, CatchwordDbDto, QAfterFilterCondition>
+      noteLessThan(
+    String value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'note',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<CatchwordDbDto, CatchwordDbDto, QAfterFilterCondition>
+      noteBetween(
+    String lower,
+    String upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'note',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<CatchwordDbDto, CatchwordDbDto, QAfterFilterCondition>
+      noteStartsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.startsWith(
+        property: r'note',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<CatchwordDbDto, CatchwordDbDto, QAfterFilterCondition>
+      noteEndsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.endsWith(
+        property: r'note',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<CatchwordDbDto, CatchwordDbDto, QAfterFilterCondition>
+      noteContains(String value, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.contains(
+        property: r'note',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<CatchwordDbDto, CatchwordDbDto, QAfterFilterCondition>
+      noteMatches(String pattern, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.matches(
+        property: r'note',
+        wildcard: pattern,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<CatchwordDbDto, CatchwordDbDto, QAfterFilterCondition>
+      noteIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'note',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<CatchwordDbDto, CatchwordDbDto, QAfterFilterCondition>
+      noteIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        property: r'note',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<CatchwordDbDto, CatchwordDbDto, QAfterFilterCondition>
       passcodeEqualTo(
     String value, {
     bool caseSensitive = true,
@@ -1023,6 +1169,18 @@ extension CatchwordDbDtoQuerySortBy
     });
   }
 
+  QueryBuilder<CatchwordDbDto, CatchwordDbDto, QAfterSortBy> sortByNote() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'note', Sort.asc);
+    });
+  }
+
+  QueryBuilder<CatchwordDbDto, CatchwordDbDto, QAfterSortBy> sortByNoteDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'note', Sort.desc);
+    });
+  }
+
   QueryBuilder<CatchwordDbDto, CatchwordDbDto, QAfterSortBy> sortByPasscode() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'passcode', Sort.asc);
@@ -1116,6 +1274,18 @@ extension CatchwordDbDtoQuerySortThenBy
     });
   }
 
+  QueryBuilder<CatchwordDbDto, CatchwordDbDto, QAfterSortBy> thenByNote() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'note', Sort.asc);
+    });
+  }
+
+  QueryBuilder<CatchwordDbDto, CatchwordDbDto, QAfterSortBy> thenByNoteDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'note', Sort.desc);
+    });
+  }
+
   QueryBuilder<CatchwordDbDto, CatchwordDbDto, QAfterSortBy> thenByPasscode() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'passcode', Sort.asc);
@@ -1172,6 +1342,13 @@ extension CatchwordDbDtoQueryWhereDistinct
     });
   }
 
+  QueryBuilder<CatchwordDbDto, CatchwordDbDto, QDistinct> distinctByNote(
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'note', caseSensitive: caseSensitive);
+    });
+  }
+
   QueryBuilder<CatchwordDbDto, CatchwordDbDto, QDistinct> distinctByPasscode(
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
@@ -1215,6 +1392,12 @@ extension CatchwordDbDtoQueryProperty
   QueryBuilder<CatchwordDbDto, String, QQueryOperations> nameProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'name');
+    });
+  }
+
+  QueryBuilder<CatchwordDbDto, String, QQueryOperations> noteProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'note');
     });
   }
 

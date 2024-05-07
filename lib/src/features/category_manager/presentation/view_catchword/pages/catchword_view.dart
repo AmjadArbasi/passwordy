@@ -47,8 +47,7 @@ class CatchwordView extends StatelessWidget {
                   ),
                   CustomCardInfo(
                     title: 'notesPasswordCard'.tr,
-                    content:
-                        'catchwordaccountIdcatchword.accountIdcatchword.accountIdcatchword.accountIdcatchword.accountId',
+                    content: catchword.note,
                     catchwordEntity: catchword,
                     categoryEntity: category,
                   ),
