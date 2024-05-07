@@ -11,7 +11,9 @@ class Database {
         CategoryDbDtoSchema,
         CatchwordDbDtoSchema,
         CategoriesDbDtoSchema,
-        UserLocalDtoSchema
+        UserLocalDtoSchema,
+        LogActivitiesDbDtoSchema,
+        LogActivityDbDtoSchema
       ],
       directory: dir.path,
     );

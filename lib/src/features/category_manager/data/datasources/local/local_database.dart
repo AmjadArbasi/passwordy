@@ -1,3 +1,4 @@
+import 'package:flutter_application_passmanager/src/core/constants/constants.dart';
 import 'package:flutter_application_passmanager/src/core/services/services.dart';
 import 'package:flutter_application_passmanager/src/features/features.dart';
 import 'package:isar/isar.dart';
@@ -26,11 +27,14 @@ class AppLocalDatabase {
   static const String key = "token";
 
   static const usernameCategories = '__user_categories_cache_key__';
+  static const logsDBuser = '__logs_db_user_cache_key__';
 
   var logger = Logger();
 
   CategoriesDbDto? get categoryListUsername =>
       _cache.read(key: usernameCategories);
+
+  LogActivitiesDbDto? get logsDbUser => _cache.read(key: logsDBuser);
 
   Future<List<CategoryEntity>> loadAllValues() async {
     final token = await _secureStorage.getToken(key);
@@ -46,9 +50,16 @@ class AppLocalDatabase {
             .linkerEqualTo(linker!)
             .findFirst();
 
-        if (usernameLinkedCategories != null) {
+        final logs = await isar.logActivitiesDbDtos
+            .filter()
+            .linkerEqualTo(linker)
+            .findFirst();
+
+        if (usernameLinkedCategories != null && logs != null) {
           _cache.write(
               key: usernameCategories, value: usernameLinkedCategories);
+
+          _cache.write(key: logsDBuser, value: logs);
 
           final categoriesDbDto =
               await usernameLinkedCategories.categories.filter().findAll();
@@ -68,18 +79,49 @@ class AppLocalDatabase {
 
   Future<void> deleteCatchword(int catchwordId, int categoryId) async {
     final category = await isar.categoryDbDtos.get(categoryId);
+    final catchword = await isar.catchwordDbDtos.get(catchwordId);
+
+    final log = LogActivityDbDto()
+      ..name = "Catchword-${catchword?.name}"
+      ..operation = "delete"
+      ..pathImage = ImagesMap.images["delete"]
+      ..dateTime = DateTime.now();
+
     await isar.writeTxn(() async {
       final success = await isar.catchwordDbDtos.delete(catchwordId);
       category?.total -= 1;
       await isar.categoryDbDtos.put(category!);
+
       logger.i('Delete a catchword $success');
+
+      /// logging
+      await isar.logActivityDbDtos.put(log);
+
+      logsDbUser!.logActivities.add(log);
+
+      await logsDbUser!.logActivities.save();
     });
   }
 
   Future<void> deleteCategory(int categoryId) async {
+    final category = await isar.categoryDbDtos.get(categoryId);
+
+    final log = LogActivityDbDto()
+      ..name = "Category-${category?.categoryName}"
+      ..operation = "delete"
+      ..pathImage = ImagesMap.images["delete"]
+      ..dateTime = DateTime.now();
+
     await isar.writeTxn(() async {
       final success = await isar.categoryDbDtos.delete(categoryId);
       logger.i('Delete a category $success');
+
+      /// logging
+      await isar.logActivityDbDtos.put(log);
+
+      logsDbUser!.logActivities.add(log);
+
+      await logsDbUser!.logActivities.save();
     });
   }
 
@@ -98,6 +140,13 @@ class AppLocalDatabase {
     );
 
     final category = await isar.categoryDbDtos.get(categoryModel.id!);
+
+    final log = LogActivityDbDto()
+      ..name = "Catchword-${catchwordModel.name}"
+      ..operation = "add"
+      ..pathImage = ImagesMap.images["create"]
+      ..dateTime = DateTime.now();
+
     await isar.writeTxn(() async {
       // Ensure the new catchword are added
       await isar.catchwordDbDtos.put(newCatchword);
@@ -110,6 +159,13 @@ class AppLocalDatabase {
       await isar.categoryDbDtos.put(category);
       // Save its relation
       await category.catchwords.save();
+
+      /// logging
+      await isar.logActivityDbDtos.put(log);
+
+      logsDbUser!.logActivities.add(log);
+
+      await logsDbUser!.logActivities.save();
     });
     return catchwordDbDtoToModelConverter.convert(newCatchword);
   }
@@ -129,6 +185,13 @@ class AppLocalDatabase {
     );
 
     final category = await isar.categoryDbDtos.get(categoryModel.id!);
+
+    final log = LogActivityDbDto()
+      ..name = "Catchword-${catchwordModel.name}"
+      ..operation = "Edit"
+      ..pathImage = ImagesMap.images["update"]
+      ..dateTime = DateTime.now();
+
     await isar.writeTxn(() async {
       // Ensure the new catchword are added
       await isar.catchwordDbDtos.put(newCatchword);
@@ -139,6 +202,13 @@ class AppLocalDatabase {
       await isar.categoryDbDtos.put(category);
       // Save its relation
       await category.catchwords.save();
+
+      /// logging
+      await isar.logActivityDbDtos.put(log);
+
+      logsDbUser!.logActivities.add(log);
+
+      await logsDbUser!.logActivities.save();
     });
     return catchwordDbDtoToModelConverter.convert(newCatchword);
   }
@@ -151,12 +221,25 @@ class AppLocalDatabase {
     );
     final categoryList = categoryListUsername;
 
+    final log = LogActivityDbDto()
+      ..name = "Category-${category.categoryName}"
+      ..operation = "update"
+      ..pathImage = ImagesMap.images["update"]
+      ..dateTime = DateTime.now();
+
     if (categoryList != null) {
       await isar.writeTxn(() async {
         await isar.categoryDbDtos.put(newCategory);
         categoryList.categories.add(newCategory);
         await isar.categoriesDbDtos.put(categoryList);
         await categoryList.categories.save();
+
+        /// logging
+        await isar.logActivityDbDtos.put(log);
+
+        logsDbUser!.logActivities.add(log);
+
+        await logsDbUser!.logActivities.save();
       });
     }
 

@@ -51,10 +51,20 @@ void main() async {
   final userManagementUsecase =
       UserManagementUsecase(userManagementRepository: userManagementRepository);
 
+  final ILogActivitiesApis apis =
+      LogActivitiesApis(isar: isar, secureStorage: secureStorage);
+
+  final LogActivityRepository activityRepository =
+      LogActivityRepositoryImpl(apis: apis);
+
+  final LogActivityUsecase logActivityUsecase =
+      LogActivityUsecase(activityRepository: activityRepository);
+
   runApp(MainApp(
     generatePassword: generatePassword,
     categoryManagerUsecase: categoryManagerUsecase,
     userManagementUsecase: userManagementUsecase,
+    logActivityUsecase: logActivityUsecase,
   ));
 }
 
@@ -62,12 +72,14 @@ class MainApp extends StatelessWidget {
   final CategoryManagerUsecase categoryManagerUsecase;
   final GeneratePassword generatePassword;
   final UserManagementUsecase userManagementUsecase;
+  final LogActivityUsecase logActivityUsecase;
 
   const MainApp({
     super.key,
     required this.categoryManagerUsecase,
     required this.generatePassword,
     required this.userManagementUsecase,
+    required this.logActivityUsecase,
   });
 
   @override
@@ -77,6 +89,7 @@ class MainApp extends StatelessWidget {
         RepositoryProvider.value(value: categoryManagerUsecase),
         RepositoryProvider.value(value: generatePassword),
         RepositoryProvider.value(value: userManagementUsecase),
+        RepositoryProvider.value(value: logActivityUsecase),
       ],
       child: const App(),
     );
@@ -153,6 +166,12 @@ class App extends StatelessWidget {
 
         /// Provides [Provides Info]
         BlocProvider(create: (context) => AboutCubit()),
+
+        /// Provides [Log Activities]
+        BlocProvider(
+          create: (context) =>
+              LogActitvitiesCubit(usecase: context.read<LogActivityUsecase>()),
+        ),
       ],
       child: const AppView(),
     );

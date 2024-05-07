@@ -5,11 +5,11 @@ class CustomButtonsBuild extends StatelessWidget {
   final Color color;
   final void Function()? onPressed;
   const CustomButtonsBuild({
-    Key? key,
+    super.key,
     required this.title,
     required this.color,
     required this.onPressed,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

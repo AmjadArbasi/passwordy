@@ -50,10 +50,12 @@ class UserManagementApi implements IUserManagementApi {
         createdAt: userLocalModel.createdAt,
       );
       final categories = CategoriesDbDto(linker: linker);
+      final logs = LogActivitiesDbDto()..linker = linker;
       try {
         await _isar.writeTxn(() async {
           await _isar.userLocalDtos.put(user);
           await _isar.categoriesDbDtos.put(categories);
+          await _isar.logActivitiesDbDtos.put(logs);
         });
         await _sharedPreferences.setBool('onboardingCompleted', true);
 
