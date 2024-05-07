@@ -223,11 +223,21 @@ class AppLocalDatabase {
     );
     final categoryList = categoryListUsername;
 
-    final log = LogActivityDbDto()
-      ..name = "Category-${category.categoryName}"
-      ..operation = "update"
-      ..pathImage = ImagesMap.images["update"]
-      ..dateTime = DateTime.now();
+    final LogActivityDbDto log;
+
+    if (category.id == null) {
+      log = LogActivityDbDto()
+        ..name = "Category-${category.categoryName}"
+        ..operation = "add"
+        ..pathImage = ImagesMap.images["create"]
+        ..dateTime = DateTime.now();
+    } else {
+      log = LogActivityDbDto()
+        ..name = "Category-${category.categoryName}"
+        ..operation = "update"
+        ..pathImage = ImagesMap.images["update"]
+        ..dateTime = DateTime.now();
+    }
 
     if (categoryList != null) {
       await isar.writeTxn(() async {
