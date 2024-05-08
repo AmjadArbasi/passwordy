@@ -124,6 +124,32 @@ class AppTranslation extends Translations {
     "resetMasterPasscodeButton": "Reset Master Passcode",
     "resetGoToSignInPage": "Try sign in again!",
     "enterNewPasswordResetMasterPasscode": "Enter your new master passcode",
+
+    /// [Onboarding pages]
+    "page1Titile": "Welcome to Passwordy!",
+    "page1paragraph":
+        "Thank you for choosing Passwordy, where your security is our top priority."
+            "Get ready to take control of your digital life with our simple,"
+            "secure solution to manage all your passwords. We're here to keep "
+            "your information safe and accessible only to you.",
+    "page2Titile": "Your Security, Our Promise",
+    "page2paragraph":
+        "Security isn’t just a feature; it’s our foundation. Passwordy uses "
+            " advanced encryption standards to protect your data at all times."
+            " Learn how our technology ensures that your passwords and personal "
+            "information are shielded from unauthorized access.",
+    "page3Titile": "Simplify Your Life",
+    "page3paragraph":
+        "Gone are the days of forgotten passwords and risky notes."
+            "Discover how Passwordy can store, and generate your passwords"
+            "With just one master password, gain access to"
+            " your accounts safely and swiftly.",
+    "page4Titile": "Start Your Secure Journey",
+    "page4paragraph":
+        "All set to explore the world with Passwordy safeguarding your "
+            "digital keys? Let’s dive in and start your journey to a safer,"
+            "simpler digital life. Securely forward!",
+    "onboardingSkip": "Skip", "onboardingDone": "Done",
   };
   static const Map<String, String> ar = {
     /// [Sign in] Page
@@ -241,7 +267,22 @@ class AppTranslation extends Translations {
     "resetMasterPasscodeTitlePage": "اعادة تعيين كلمة السر",
     "resetMasterPasscodeButton": "اعادة تعيين كلمة السر",
     "resetGoToSignInPage": "تسجيل الدخول!",
-    "enterNewPasswordResetMasterPasscode": "ادخل كلمة السر الجديدة"
+    "enterNewPasswordResetMasterPasscode": "ادخل كلمة السر الجديدة",
+
+    /// [Onboarding pages]
+    "page1Titile": "مرحبا في باسوردي!",
+    "page1paragraph":
+        "شكرا لاختياركم باسوردي, حيث امنكم هو اولويتنا القصوى. مع حلنا البسيط والآمن لادارة جميع كلمات المرور الخاصة بكم. نحن هنا للحفاظ على ملعوماتكم آمنة ومتاحة لكم فقط",
+    "page2Titile": "معاير التشفير المتقدمة ",
+    "page2paragraph":
+        "معايير تشفير متقدمة لحماية بياناتك, الامان ليس مجرد ميزة، بل هو اساسنا، تعرف على كيفية ضمان تقنياتنا لحماية كلمات المرور الخاصة بك من الوصول الغير المصرح به",
+    "page3Titile": "تسهيل حياتك",
+    "page3paragraph":
+        "ولت الايام التي كنت تنسى فيها كلمات المرور وتدوين الملاحضات، من خلال باسوردي يمكنك انشاء كلمات المرور الخاصة بك وتخزينها بطريقة آمنة والوصول اليها من خلال كلمة مرور واحدة فقط",
+    "page4Titile": "ابدا رحلتك الامنة الان",
+    "page4paragraph":
+        "هل انت جاهز لنبدأ رحلتك في باسوردي, حياة رقمية آمنة وسهلة!",
+    "onboardingSkip": "تجاوز", "onboardingDone": "اكتمل",
   };
 
   @override
