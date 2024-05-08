@@ -106,10 +106,6 @@ class AppTranslation extends Translations {
     "passwordTooShortFormz": "Password must be at least 8 characters",
     "passwordTooLong": "Password must be less than 20 characters",
 
-    /// [General]
-    "nameOfGeneral": "Personal Information",
-    "displayNameGeneral": "Display Name",
-
     /// [Secret]
     "hintLabelSecret": "Secret",
     "selectOneSecurityQuestionSecret": "Please select one security question",
@@ -150,6 +146,37 @@ class AppTranslation extends Translations {
             "digital keys? Let’s dive in and start your journey to a safer,"
             "simpler digital life. Securely forward!",
     "onboardingSkip": "Skip", "onboardingDone": "Done",
+
+    /// [Profiles]
+    /// [Personal info]
+    "persInfoButtonSaveChange": "Save Changes",
+    "persInfoButtonSecret": "Secret",
+    "persInfoButtonCurrentPass": "Current Password",
+    "persInfoButtonNewPass": "New Password",
+    "nameOfGeneral": "Personal Information",
+    "displayNameGeneral": "Display Name",
+
+    /// [Profiles]
+    /// [Activities]
+    "activitiesTitlePage": "Activities",
+    "activieiesClearAll": "Clear all",
+    "delete": "DELETE",
+    "hide": "HIDE",
+    "show": "SHOW",
+    "add": "ADD",
+    "edit": "EDIT",
+
+    /// [Profiles]
+    /// [About]
+    "aboutTitlePage": "About",
+    "aboutMessage": "Our password manager app is designed with your security in mind, offering a simple yet robust solution for managing your passwords effortlessly."
+        " We utilize the latest encryption technology to ensure that your sensitive information is securely stored and accessible only to you."
+        " With features tailored for ease of use, including auto-fill and password generation,"
+        " our app aims to streamline your digital life, making it safer and more convenient. "
+        "Trust us to keep your credentials secure and organized, so you can focus on what matters most.",
+    "aboutVersionLoading": "Version: Loading....",
+    "aboutVersionFailed": "Version: -.-.-.-",
+    "aboutVersionSuccess": "Version: ",
   };
   static const Map<String, String> ar = {
     /// [Sign in] Page
@@ -283,6 +310,34 @@ class AppTranslation extends Translations {
     "page4paragraph":
         "هل انت جاهز لنبدأ رحلتك في باسوردي, حياة رقمية آمنة وسهلة!",
     "onboardingSkip": "تجاوز", "onboardingDone": "اكتمل",
+
+    /// [Profiles]
+    /// [Personal info]
+    "persInfoButtonSaveChange": "حفظ التغيرات",
+    "persInfoButtonSecret": "الجواب السري",
+    "persInfoButtonCurrentPass": "الرقم السري الحالي",
+    "persInfoButtonNewPass": "الرقم السري الجديد",
+    "nameOfGeneral": "المعلومات الشخصية",
+    "displayNameGeneral": "اسم العرض",
+
+    /// [Profiles]
+    /// [Activities]
+    "activitiesTitlePage": "سجل النشاطات",
+    "activieiesClearAll": "مسح الكل",
+    "delete": "حذف",
+    "hide": "اخفاء",
+    "show": "عرض",
+    "add": "اضافة",
+    "edit": "تعديل",
+
+    /// [Profiles]
+    /// [About]
+    "aboutTitlePage": "حول",
+    "aboutMessage":
+        "تم تصميم تطبيق إدارة كلمات المرور الخاص بنا مع وضع أمنك في الاعتبار، حيث يقدم حلًا بسيطًا ولكنه قوي لإدارة كلمات المرور الخاصة بك بسهولة. نحن نستخدم أحدث تكنولوجيا التشفير لضمان تخزين معلوماتك الحساسة بأمان وجعلها متاحة لك وحدك. مع ميزات مصممة لسهولة الاستخدام، بما في ذلك التعبئة التلقائية وإنشاء كلمة المرور، يهدف تطبيقنا إلى تبسيط حياتك الرقمية، مما يجعلها أكثر أمانًا وراحة. ثق بنا للحفاظ على أمان بيانات اعتمادك وتنظيمها، حتى تتمكن من التركيز على ما هو الأكثر أهمية.",
+    "aboutVersionLoading": "الاصدار: تحميل ...",
+    "aboutVersionFailed": "الاصدار: -.-.-.",
+    "aboutVersionSuccess": "الاصدار: ",
   };
 
   @override

@@ -82,7 +82,7 @@ class AppLocalDatabase {
     final catchword = await isar.catchwordDbDtos.get(catchwordId);
 
     final log = LogActivityDbDto()
-      ..name = "Catchword-${catchword?.name}"
+      ..name = "Catchword ${catchword?.name}"
       ..operation = "delete"
       ..pathImage = ImagesMap.images["delete"]
       ..dateTime = DateTime.now();
@@ -107,7 +107,7 @@ class AppLocalDatabase {
     final category = await isar.categoryDbDtos.get(categoryId);
 
     final log = LogActivityDbDto()
-      ..name = "Category-${category?.categoryName}"
+      ..name = "Category ${category?.categoryName}"
       ..operation = "delete"
       ..pathImage = ImagesMap.images["delete"]
       ..dateTime = DateTime.now();
@@ -143,7 +143,7 @@ class AppLocalDatabase {
     final category = await isar.categoryDbDtos.get(categoryModel.id!);
 
     final log = LogActivityDbDto()
-      ..name = "Catchword-${catchwordModel.name}"
+      ..name = "Catchword ${catchwordModel.name}"
       ..operation = "add"
       ..pathImage = ImagesMap.images["create"]
       ..dateTime = DateTime.now();
@@ -189,7 +189,7 @@ class AppLocalDatabase {
     final category = await isar.categoryDbDtos.get(categoryModel.id!);
 
     final log = LogActivityDbDto()
-      ..name = "Catchword-${catchwordModel.name}"
+      ..name = "Catchword ${catchwordModel.name}"
       ..operation = "Edit"
       ..pathImage = ImagesMap.images["update"]
       ..dateTime = DateTime.now();
@@ -227,7 +227,7 @@ class AppLocalDatabase {
 
     if (category.id == null) {
       log = LogActivityDbDto()
-        ..name = "Category-${category.categoryName}"
+        ..name = "Category ${category.categoryName}"
         ..operation = "add"
         ..pathImage = ImagesMap.images["create"]
         ..dateTime = DateTime.now();

@@ -133,7 +133,7 @@ class UpdateUserInfoSubmitted extends StatelessWidget {
                   foregroundColor: Theme.of(context).colorScheme.onPrimary,
                   textStyle: Theme.of(context).textTheme.titleMedium,
                 ),
-                child: const Text('Save Changes'),
+                child: Text('persInfoButtonSaveChange'.tr),
               );
       },
     );
@@ -152,7 +152,7 @@ class SecretChangedField extends StatelessWidget {
         return TextFormField(
           keyboardType: TextInputType.name,
           decoration: InputDecoration(
-            labelText: "Secret",
+            labelText: "persInfoButtonSecret".tr,
             border: OutlineInputBorder(
               borderSide: const BorderSide(),
               borderRadius: BorderRadius.circular(10),
@@ -178,7 +178,7 @@ class CurrentPasswordChangedField extends StatelessWidget {
         return TextFormField(
           keyboardType: TextInputType.name,
           decoration: InputDecoration(
-            labelText: "Current Password",
+            labelText: "persInfoButtonCurrentPass".tr,
             border: OutlineInputBorder(
               borderSide: const BorderSide(),
               borderRadius: BorderRadius.circular(10),
@@ -205,7 +205,7 @@ class NewPasswordChangedField extends StatelessWidget {
         return TextFormField(
           keyboardType: TextInputType.name,
           decoration: InputDecoration(
-            labelText: "New Password",
+            labelText: "persInfoButtonNewPass".tr,
             border: OutlineInputBorder(
               borderSide: const BorderSide(),
               borderRadius: BorderRadius.circular(10),

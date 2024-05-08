@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_passmanager/src/core/core.dart';
 import 'package:flutter_application_passmanager/src/features/features.dart';
-import 'package:flutter_application_passmanager/src/features/skeleton/skeleton.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get/get.dart';
 import 'package:lottie/lottie.dart';
 
 class ActivitiesLog extends StatelessWidget {
@@ -11,8 +11,8 @@ class ActivitiesLog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const CustomAppBar(
-        title: "Activities",
+      appBar: CustomAppBar(
+        title: "activitiesTitlePage".tr,
         color: Colors.transparent,
       ),
       body: SingleChildScrollView(
@@ -103,7 +103,7 @@ class LogActivitiesCard extends StatelessWidget {
               context.read<LogActitvitiesCubit>().subscribeRequested();
             },
             child: Text(
-              "Clear all",
+              "activieiesClearAll".tr,
               style: Theme.of(context)
                   .textTheme
                   .titleMedium!
@@ -135,7 +135,7 @@ class LogActivitiesCard extends StatelessWidget {
               ),
               subtitle: Text(log.dateTime),
               leading: Text(
-                log.operation.toUpperCase(),
+                "${IndexOperation.operation[log.operation]}".tr,
                 style: Theme.of(context)
                     .textTheme
                     .titleMedium!
