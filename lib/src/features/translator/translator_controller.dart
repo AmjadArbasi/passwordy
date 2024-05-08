@@ -7,9 +7,15 @@ class TranslatorController extends GetxController {
   late Locale language;
   final internalLocalService = Get.find<InternalLocalService>();
 
+  ThemeData themeApp = TAppTheme.lightThemeEnglish;
+
   void changeLang(String codelang) {
     Locale locale = Locale(codelang);
     internalLocalService.sharedPreferences.setString('languageCode', codelang);
+    themeApp = codelang == "ar"
+        ? TAppTheme.lightThemeArabic
+        : TAppTheme.lightThemeEnglish;
+
     Logger().f(locale);
     Get.updateLocale(locale);
   }
@@ -21,10 +27,13 @@ class TranslatorController extends GetxController {
     Logger().f(languageCode);
     if (languageCode == 'ar') {
       language = const Locale('ar');
+      themeApp = TAppTheme.lightThemeArabic;
     } else if (languageCode == "en") {
       language = const Locale("en");
+      themeApp = TAppTheme.lightThemeEnglish;
     } else {
       language = Locale(Get.deviceLocale!.languageCode);
+      themeApp = TAppTheme.lightThemeEnglish;
     }
     super.onInit();
   }

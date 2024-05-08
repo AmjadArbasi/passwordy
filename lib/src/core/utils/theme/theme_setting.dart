@@ -10,7 +10,7 @@ class TAppTheme {
 
   static const Color success = Color(0xff00b894);
 
-  static ThemeData lightTheme = ThemeData(
+  static ThemeData lightThemeEnglish = ThemeData(
     useMaterial3: true,
     colorScheme: const ColorScheme.light(
       primary: primary,
@@ -29,5 +29,28 @@ class TAppTheme {
         background: Colors.black,
       ),
     ),
+    fontFamily: "OpenSans",
+  );
+
+  static ThemeData lightThemeArabic = ThemeData(
+    useMaterial3: true,
+    colorScheme: const ColorScheme.light(
+      primary: primary,
+      onPrimary: Colors.white,
+      secondary: secondary,
+      onSecondary: Colors.white,
+      tertiary: tertiary,
+      onTertiary: Colors.white,
+    ),
+    iconTheme: const IconThemeData(
+      color: primary,
+    ),
+    buttonTheme: const ButtonThemeData(
+      colorScheme: ColorScheme.light(
+        primary: primary,
+        background: Colors.black,
+      ),
+    ),
+    fontFamily: "Cairo",
   );
 }

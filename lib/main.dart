@@ -189,24 +189,24 @@ class AppView extends StatelessWidget {
       listenWhen: (previous, current) => previous.status != current.status,
       listener: (context, state) {
         logger.f(state.status);
-        // switch (state.status) {
-        //   case AuthStatus.authenticated:
-        //     Get.offAllNamed(AppRoutes.skeleton);
-        //   case AuthStatus.unauthenticated:
-        //     Get.offAllNamed(AppRoutes.signIn);
-        //   case AuthStatus.onboarding:
-        //     Get.offAllNamed(AppRoutes.onBoarding);
-        //   default:
-        //     Get.toNamed(AppRoutes.splash);
-        // }
+        switch (state.status) {
+          case AuthStatus.authenticated:
+            Get.offAllNamed(AppRoutes.skeleton);
+          case AuthStatus.unauthenticated:
+            Get.offAllNamed(AppRoutes.signIn);
+          case AuthStatus.onboarding:
+            Get.offAllNamed(AppRoutes.onBoarding);
+          default:
+            Get.toNamed(AppRoutes.splash);
+        }
       },
       child: GetMaterialApp(
         getPages: Routes.getPages,
-        theme: TAppTheme.lightTheme,
+        theme: controller.themeApp,
         locale: controller.language,
         fallbackLocale: const Locale('en', 'US'),
         translations: AppTranslation(),
-        home: const OnboardingPage(),
+        home: const WelcomePage(),
         defaultTransition: Transition.fade,
       ),
     );
