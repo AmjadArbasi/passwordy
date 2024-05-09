@@ -15,8 +15,6 @@ import 'package:flutter_application_passmanager/src/features/skeleton/bone/bone.
 class SignIn extends StatelessWidget {
   const SignIn({super.key});
 
-  static Page<void> page() => const MaterialPage<void>(child: SignIn());
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -61,6 +59,7 @@ class SignInForm extends StatelessWidget {
         BlocListener<SignInCubit, SignInState>(
           listenWhen: (previous, current) => previous.status != current.status,
           listener: (context, state) {
+            Logger().f(state.status);
             if (state.status.isFailure) {
               ScaffoldMessenger.of(context)
                 ..hideCurrentSnackBar()

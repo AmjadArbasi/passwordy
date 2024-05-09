@@ -71,7 +71,9 @@ class UserManagementApi implements IUserManagementApi {
 
   @override
   Future<Either<Failure, UserLocalModel>> signIn(
-      String masterPassword, String username) async {
+    String masterPassword,
+    String username,
+  ) async {
     final user = await _isar.userLocalDtos
         .filter()
         .usernameEqualTo(username)
@@ -111,7 +113,9 @@ class UserManagementApi implements IUserManagementApi {
           await _secureStorage.storeToken(key, user.token!);
           logger.f(userLocalModel);
           return Right(userLocalModel);
-        } catch (_) {
+        } catch (e) {
+          Logger().e("Something went wrong, bare with us", error: e);
+
           return Left(DatabaseException("Something went wrong, bare with us"));
         }
       } else {
@@ -120,12 +124,11 @@ class UserManagementApi implements IUserManagementApi {
           await _isar.userLocalDtos.put(user);
         });
 
-        return Left(DatabaseException("Username or password incorrect"));
+        return const Right(UserLocalModel.empty);
       }
+    } else {
+      return const Right(UserLocalModel.empty);
     }
-    return Left(
-      DatabaseException("Username does not exist or password incorrect"),
-    );
   }
 
   @override
@@ -257,7 +260,7 @@ class UserManagementApi implements IUserManagementApi {
         );
       }
     } else {
-      return Left(DatabaseException("User not authorzied"));
+      return const Right(UserLocalModel.empty);
     }
   }
 

@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:flutter_application_passmanager/src/features/category_manager/category_manager.dart';
 import 'package:flutter_application_passmanager/src/features/features.dart';
 import 'package:logger/logger.dart';
 
@@ -94,6 +93,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     if (!onboardingCompleted) {
       authStatus = AuthStatus.onboarding;
     }
+
     failureOrUser.fold(
       (failure) {
         emit(state.copyWith(
@@ -102,10 +102,18 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         ));
       },
       (userLocalEntity) {
-        emit(state.copyWith(
-          status: authStatus ?? AuthStatus.authenticated,
-          userLocalEntity: userLocalEntity,
-        ));
+        if (userLocalEntity.isNotEmpty) {
+          emit(state.copyWith(
+            status: authStatus ?? AuthStatus.authenticated,
+            userLocalEntity: userLocalEntity,
+          ));
+        } else {
+          Logger().w("You are not authorized");
+          emit(state.copyWith(
+            errorMessage: "You are not authorized",
+            status: authStatus ?? AuthStatus.unauthenticated,
+          ));
+        }
       },
     );
   }
