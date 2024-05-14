@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_application_passmanager/src/features/features.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
-import 'package:logger/logger.dart';
 
 const List<Widget> pages = [
   Home(),
@@ -24,7 +23,6 @@ class Skeleton extends StatelessWidget {
     final selectedTab = context.select(
       (NavigatorPageCubit cubit) => cubit.state.tab,
     );
-    Logger().f(selectedTab);
     return SafeArea(
       child: Scaffold(
         resizeToAvoidBottomInset: true,

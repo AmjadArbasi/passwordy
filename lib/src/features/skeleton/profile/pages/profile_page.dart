@@ -52,11 +52,6 @@ class Profile extends StatelessWidget {
               title: "langProfile".tr,
               onTap: () => Get.toNamed(AppRoutes.translator),
             ),
-            // CustomTileProfile(
-            //   leadIcon: Icons.new_releases,
-            //   title: "versionProfile".tr,
-            //   onTap: () {},
-            // ),
             const SizedBox(height: 25),
             Builder(
               builder: (context) {
@@ -67,6 +62,8 @@ class Profile extends StatelessWidget {
                       context
                           .read<AuthBloc>()
                           .add(const AuthUserLogoutRequested());
+
+                      context.read<NavigatorPageCubit>().defaultPage();
                     },
                     icon: const Icon(
                       Icons.logout,

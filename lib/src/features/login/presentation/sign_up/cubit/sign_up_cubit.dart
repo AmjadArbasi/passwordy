@@ -73,6 +73,7 @@ class SignUpCubit extends Cubit<SignUpState> {
       securityQuestion: state.securityQuestion,
       createdAt: DateTime.now(),
     );
+
     final failureOrSuccess = await _userManagementUsecase.signUp(user);
     failureOrSuccess.fold((failure) {
       emit(state.copyWith(

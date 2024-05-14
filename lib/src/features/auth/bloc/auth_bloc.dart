@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_application_passmanager/src/features/features.dart';
-import 'package:logger/logger.dart';
 
 part 'auth_event.dart';
 part 'auth_state.dart';
@@ -98,22 +97,14 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       (failure) {
         emit(state.copyWith(
           errorMessage: failure.message,
-          status: authStatus ?? AuthStatus.unauthenticated,
+          status: AuthStatus.unauthenticated,
         ));
       },
       (userLocalEntity) {
-        if (userLocalEntity.isNotEmpty) {
-          emit(state.copyWith(
-            status: authStatus ?? AuthStatus.authenticated,
-            userLocalEntity: userLocalEntity,
-          ));
-        } else {
-          Logger().w("You are not authorized");
-          emit(state.copyWith(
-            errorMessage: "You are not authorized",
-            status: authStatus ?? AuthStatus.unauthenticated,
-          ));
-        }
+        emit(state.copyWith(
+          status: authStatus ?? AuthStatus.authenticated,
+          userLocalEntity: userLocalEntity,
+        ));
       },
     );
   }
@@ -125,7 +116,6 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   ///   The `close()` method is returning a `Future<void>`.
   @override
   Future<void> close() {
-    Logger().f('closeUserSubscription');
     _userSubscription.cancel();
     return super.close();
   }

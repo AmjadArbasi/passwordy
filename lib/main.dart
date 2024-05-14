@@ -178,8 +178,19 @@ class App extends StatelessWidget {
   }
 }
 
-class AppView extends StatelessWidget {
+class AppView extends StatefulWidget {
   const AppView({super.key});
+
+  @override
+  State<AppView> createState() => _AppViewState();
+}
+
+class _AppViewState extends State<AppView> {
+  @override
+  void dispose() {
+    context.read<AuthBloc>().close();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {

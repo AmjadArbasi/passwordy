@@ -49,20 +49,11 @@ class SignInCubit extends Cubit<SignInState> {
         );
       },
       (userLocalEntity) {
-        if (userLocalEntity.isNotEmpty) {
-          emit(state.copyWith(
-            status: FormzSubmissionStatus.success,
-            password: const Password.pure(),
-            isValid: false,
-          ));
-        } else {
-          emit(
-            state.copyWith(
-              status: FormzSubmissionStatus.failure,
-              signInErrorMessage: "Login failed, please check your credentials",
-            ),
-          );
-        }
+        emit(state.copyWith(
+          status: FormzSubmissionStatus.success,
+          password: const Password.pure(),
+          isValid: false,
+        ));
       },
     );
   }

@@ -38,12 +38,11 @@ class ResetMasterPasscodeCubit extends Cubit<ResetMasterPasscodeState> {
         await _userManagementUsecase.checkSecret(username, secret.value);
 
     result.fold((failure) {
-      emit(state.copyWith(secertIsCorrect: true, secret: secret));
-    }, (_) {
       emit(
-        state.copyWith(
-            secertIsCorrect: false, errorMessage: "Username or Secert invalid"),
+        state.copyWith(secertIsCorrect: false, errorMessage: failure.message),
       );
+    }, (_) {
+      emit(state.copyWith(secertIsCorrect: true, secret: secret));
     });
   }
 

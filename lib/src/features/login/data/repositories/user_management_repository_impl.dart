@@ -15,8 +15,14 @@ class UserManagementRepositoryImpl extends UserManagementRepository {
   Stream<UserLocalEntity> get userStream => _behaviorSubject.stream;
 
   @override
+  Future<Either<Failure, Unit>> signUp(UserLocalEntity userLocalEntity) async =>
+      await _api.signUp(userLocalEntity.mapToModel());
+
+  @override
   Future<Either<Failure, UserLocalEntity>> logIn(
-      String masterPassword, String username) async {
+    String masterPassword,
+    String username,
+  ) async {
     final result = await _api.signIn(masterPassword, username);
     return result.fold(
       (failure) => Left(failure),
@@ -26,12 +32,6 @@ class UserManagementRepositoryImpl extends UserManagementRepository {
         return Right(userLocalEntity);
       },
     );
-  }
-
-  @override
-  Future<Either<Failure, Unit>> signUp(UserLocalEntity userLocalEntity) async {
-    final result = await _api.signUp(userLocalEntity.mapToModel());
-    return result.fold((error) => Left(error), (r) => Right(r));
   }
 
   @override
@@ -76,6 +76,7 @@ class UserManagementRepositoryImpl extends UserManagementRepository {
     );
   }
 
+  @override
   bool checkOnboardingCompleted() => _api.checkOnboardingCompleted();
 
   @override

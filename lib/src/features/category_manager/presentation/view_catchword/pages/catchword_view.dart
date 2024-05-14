@@ -58,9 +58,10 @@ class CatchwordView extends StatelessWidget {
                     catchwordEntity: catchword,
                     categoryEntity: category,
                   ),
+                  // TODO: move formatter to data layer
                   CustomCardInfo(
                     title: 'createdAtPasswordCard'.tr,
-                    content: catchword.createdAt.toLocal().toString(),
+                    content: TimeFormatter.dateFormatter(catchword.createdAt),
                     catchwordEntity: catchword,
                     categoryEntity: category,
                   ),
@@ -70,9 +71,7 @@ class CatchwordView extends StatelessWidget {
                     catchwordEntity: catchword,
                     categoryEntity: category,
                   ),
-                  const SizedBox(
-                    height: 10,
-                  ),
+                  const SizedBox(height: 10),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -90,9 +89,7 @@ class CatchwordView extends StatelessWidget {
                           );
                         },
                       ),
-                      const SizedBox(
-                        width: 20,
-                      ),
+                      const SizedBox(width: 20),
                       CustomButtonIcon(
                         icon: Icons.delete,
                         name: 'deletePasswordCard'.tr,
@@ -108,9 +105,7 @@ class CatchwordView extends StatelessWidget {
                       ),
                     ],
                   ),
-                  const SizedBox(
-                    height: 10,
-                  ),
+                  const SizedBox(height: 10),
                 ],
               ),
             );

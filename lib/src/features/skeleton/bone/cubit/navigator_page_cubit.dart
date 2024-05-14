@@ -8,9 +8,7 @@ class NavigatorPageCubit extends Cubit<NavigatorPageState> {
 
   void setTab(NavigatorPageTab tab) => emit(NavigatorPageState(tab: tab));
 
-  @override
-  Future<void> close() {
+  void defaultPage() {
     setTab(NavigatorPageTab.home);
-    return super.close();
   }
 }

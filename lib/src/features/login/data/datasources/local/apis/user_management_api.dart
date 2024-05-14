@@ -1,13 +1,7 @@
-import 'dart:convert';
-import 'dart:math';
-
-import 'package:crypto/crypto.dart';
 import 'package:dartz/dartz.dart';
 import 'package:flutter_application_passmanager/src/core/core.dart';
 import 'package:flutter_application_passmanager/src/features/features.dart';
-import 'package:intl/intl.dart';
 import 'package:isar/isar.dart';
-import 'package:logger/logger.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class UserManagementApi implements IUserManagementApi {
@@ -23,7 +17,8 @@ class UserManagementApi implements IUserManagementApi {
   final SecureStorage _secureStorage;
   final SharedPreferences _sharedPreferences;
 
-  static const String key = "token";
+  final keyToken = GlobalVar.keyToken;
+  final logger = GlobalVar.logger;
 
   @override
   Future<Either<Failure, Unit>> signUp(UserLocalModel userLocalModel) async {
@@ -33,10 +28,13 @@ class UserManagementApi implements IUserManagementApi {
         .findFirst();
 
     if (checkDuplicateUser == null && userLocalModel.username!.isNotEmpty) {
-      final salt = _generateSalt(userLocalModel.masterPassword!.length);
-      final hashedMassterPassword = _hash(userLocalModel.masterPassword!, salt);
-      final hashedSecret = _hash(userLocalModel.secret!, salt);
-      final linker = _hash(userLocalModel.username!, salt);
+      final salt =
+          CryptoLocal.generateSalt(userLocalModel.masterPassword!.length);
+
+      final hashedMassterPassword =
+          CryptoLocal.hash(userLocalModel.masterPassword!, salt);
+      final hashedSecret = CryptoLocal.hash(userLocalModel.secret!, salt);
+      final linker = CryptoLocal.hash(userLocalModel.username!, salt);
 
       final user = UserLocalDto(
         id: userLocalModel.id,
@@ -58,14 +56,13 @@ class UserManagementApi implements IUserManagementApi {
           await _isar.logActivitiesDbDtos.put(logs);
         });
         await _sharedPreferences.setBool('onboardingCompleted', true);
-
         return const Right(unit);
       } catch (e) {
-        return Left(
-            DatabaseException('Failed to add user, please try again later'));
+        logger.e("Something-went-wrong", error: e.toString());
+        return Left(DatabaseException("operation-not-allowed"));
       }
     } else {
-      return Left(DatabaseException('User is already exist!'));
+      return Left(DatabaseException('user-already-in-use'));
     }
   }
 
@@ -80,25 +77,22 @@ class UserManagementApi implements IUserManagementApi {
         .findFirst();
 
     if (user != null) {
-      final hashedPasswprd = _hash(masterPassword, user.salt!);
+      final hashedPasswprd = CryptoLocal.hash(masterPassword, user.salt!);
 
       if (hashedPasswprd == user.masterPassword) {
-        user.token = _generateSalt(16);
+        user.token = CryptoLocal.generateSalt(16);
         user.lastSuccessfulSignIn = DateTime.now();
+
         try {
           await _isar.writeTxn(() async {
             await _isar.userLocalDtos.put(user);
           });
-          String lastSuccessfulSignIn = user.lastSuccessfulSignIn == null
-              ? "n/a"
-              : DateFormat('yyyy-MM-dd–kk:mm').format(
-                  user.lastSuccessfulSignIn!,
-                );
-          String lastUnsuccessfulSignIn = user.lastUnuccessfulSignIn == null
-              ? "n/a"
-              : DateFormat('yyyy-MM-dd–kk:mm').format(
-                  user.lastUnuccessfulSignIn!,
-                );
+
+          final lastSuccessfulSignIn =
+              TimeFormatter.dateFormatter(user.lastSuccessfulSignIn);
+
+          final lastUnsuccessfulSignIn =
+              TimeFormatter.dateFormatter(user.lastUnuccessfulSignIn);
 
           final userLocalModel = UserLocalModel(
             id: user.id,
@@ -110,13 +104,13 @@ class UserManagementApi implements IUserManagementApi {
             createdAt: user.createdAt,
           );
 
-          await _secureStorage.storeToken(key, user.token!);
-          logger.f(userLocalModel);
+          await _secureStorage.storeToken(keyToken, user.token!);
+
           return Right(userLocalModel);
         } catch (e) {
-          Logger().e("Something went wrong, bare with us", error: e);
+          logger.e("something-went-wrong", error: e);
 
-          return Left(DatabaseException("Something went wrong, bare with us"));
+          return Left(DatabaseException("operation-not-allowed"));
         }
       } else {
         user.lastUnuccessfulSignIn = DateTime.now();
@@ -124,10 +118,10 @@ class UserManagementApi implements IUserManagementApi {
           await _isar.userLocalDtos.put(user);
         });
 
-        return const Right(UserLocalModel.empty);
+        return Left(DatabaseException("wrong-password"));
       }
     } else {
-      return const Right(UserLocalModel.empty);
+      return Left(DatabaseException("user-not-found"));
     }
   }
 
@@ -136,7 +130,7 @@ class UserManagementApi implements IUserManagementApi {
       UserLocalModel userLocalModel) async {
     if (userLocalModel.isNotEmpty) {
       try {
-        final token = await _secureStorage.getToken(key);
+        final token = await _secureStorage.getToken(keyToken);
         final user =
             await _isar.userLocalDtos.filter().tokenEqualTo(token).findFirst();
         if (user != null) {
@@ -157,9 +151,10 @@ class UserManagementApi implements IUserManagementApi {
               userLocalModel.masterPassword!.isNotEmpty) {
             logger.f(userLocalModel.masterPassword);
 
-            final salt = _generateSalt(userLocalModel.masterPassword!.length);
+            final salt =
+                CryptoLocal.generateSalt(userLocalModel.masterPassword!.length);
             final hashedMassterPassword =
-                _hash(userLocalModel.masterPassword!, salt);
+                CryptoLocal.hash(userLocalModel.masterPassword!, salt);
             user.masterPassword = hashedMassterPassword;
             user.salt = salt;
           }
@@ -167,16 +162,12 @@ class UserManagementApi implements IUserManagementApi {
             await _isar.writeTxn(() async {
               await _isar.userLocalDtos.put(user);
             });
-            String lastSuccessfulSignIn = user.lastSuccessfulSignIn == null
-                ? "n/a"
-                : DateFormat('yyyy-MM-dd–kk:mm').format(
-                    user.lastSuccessfulSignIn!,
-                  );
-            String lastUnsuccessfulSignIn = user.lastUnuccessfulSignIn == null
-                ? "n/a"
-                : DateFormat('yyyy-MM-dd–kk:mm').format(
-                    user.lastUnuccessfulSignIn!,
-                  );
+
+            String lastSuccessfulSignIn =
+                TimeFormatter.dateFormatter(user.lastSuccessfulSignIn);
+
+            String lastUnsuccessfulSignIn =
+                TimeFormatter.dateFormatter(user.lastUnuccessfulSignIn);
             final userLocalModel = UserLocalModel(
               id: user.id,
               username: user.username,
@@ -187,19 +178,19 @@ class UserManagementApi implements IUserManagementApi {
               lastUnsuccessfulSignIn: lastUnsuccessfulSignIn,
             );
             return Right(userLocalModel);
-          } catch (_) {
-            return Left(DatabaseException(
-                "Something went wrong, Falied to update you information, plase try agian later"));
+          } catch (e) {
+            logger.e("something-went-wrong", error: e);
+            return Left(DatabaseException("something-went-wrong"));
           }
         } else {
-          return Left(DatabaseException("Username does not exit"));
+          return Left(DatabaseException("user-not-found"));
         }
-      } catch (_) {
-        return Left(
-            DatabaseException("Something went wrong, plase try agian later"));
+      } catch (e) {
+        logger.e("something-went-wrong", error: e);
+        return Left(DatabaseException("operation-not-allowed"));
       }
     } else {
-      return Left(DatabaseException("Please check your entries!"));
+      return Left(DatabaseException("invalid-credential"));
     }
   }
 
@@ -213,36 +204,34 @@ class UserManagementApi implements IUserManagementApi {
 
     if (user != null) {
       try {
-        await _secureStorage.deleteToken(key);
+        await _secureStorage.deleteToken(keyToken);
         await _isar.writeTxn(() async {
           _isar.userLocalDtos.deleteByUsername(user.username);
         });
         return const Right(unit);
-      } catch (_) {
-        return Left(DatabaseException("Something went wrong"));
+      } catch (e) {
+        logger.e("something-went-wrong", error: e);
+
+        return Left(DatabaseException("something-went-wrong"));
       }
+    } else {
+      return Left(DatabaseException("user-not-found"));
     }
-    return Left(DatabaseException("User not exist"));
   }
 
   @override
   Future<Either<Failure, UserLocalModel>> reAuthLoggedUser() async {
-    final token = await _secureStorage.getToken(key);
+    final token = await _secureStorage.getToken(keyToken);
 
     final user =
         await _isar.userLocalDtos.filter().tokenEqualTo(token).findFirst();
 
     if (token != null && user != null) {
-      String lastSuccessfulSignIn = user.lastSuccessfulSignIn == null
-          ? "n/a"
-          : DateFormat('yyyy-MM-dd–kk:mm').format(
-              user.lastSuccessfulSignIn!,
-            );
-      String lastUnsuccessfulSignIn = user.lastUnuccessfulSignIn == null
-          ? "n/a"
-          : DateFormat('yyyy-MM-dd–kk:mm').format(
-              user.lastUnuccessfulSignIn!,
-            );
+      final lastSuccessfulSignIn =
+          TimeFormatter.dateFormatter(user.lastSuccessfulSignIn);
+
+      final lastUnsuccessfulSignIn =
+          TimeFormatter.dateFormatter(user.lastUnuccessfulSignIn);
       try {
         final userLocalModel = UserLocalModel(
           id: user.id,
@@ -254,23 +243,24 @@ class UserManagementApi implements IUserManagementApi {
           lastUnsuccessfulSignIn: lastUnsuccessfulSignIn,
         );
         return Right(userLocalModel);
-      } catch (_) {
-        return Left(
-          DatabaseException("Something went wrong, please try again later"),
-        );
+      } catch (e) {
+        logger.e("something-went-wrong", error: e);
+
+        return Left(DatabaseException("something-went-wrong"));
       }
     } else {
-      return const Right(UserLocalModel.empty);
+      return Left(DatabaseException("user-not-found"));
     }
   }
 
   @override
   Future<Either<Failure, Unit>> logOut() async {
     try {
-      await _secureStorage.deleteToken(key);
+      await _secureStorage.deleteToken(keyToken);
       return const Right(unit);
-    } catch (_) {
-      return Left(DatabaseException("Something went wrong"));
+    } catch (e) {
+      logger.e("something-went-wrong", error: e);
+      return Left(DatabaseException("something-went-wrong"));
     }
   }
 
@@ -278,19 +268,20 @@ class UserManagementApi implements IUserManagementApi {
   Future<Either<Failure, Unit>> checkCurrentPassword(
     String masterPassword,
   ) async {
-    final token = await _secureStorage.getToken(key);
+    final token = await _secureStorage.getToken(keyToken);
     final user =
         await _isar.userLocalDtos.filter().tokenEqualTo(token).findFirst();
 
     if (user != null) {
-      final hashedPassword = _hash(masterPassword, user.salt!);
+      final hashedPassword = CryptoLocal.hash(masterPassword, user.salt!);
       if (user.masterPassword == hashedPassword) {
-        Logger().f(user);
-
         return const Right(unit);
+      } else {
+        return Left(DatabaseException("invalid-credential"));
       }
+    } else {
+      return Left(DatabaseException("user-not-found"));
     }
-    return Left(DatabaseException("User not exist"));
   }
 
   @override
@@ -302,13 +293,16 @@ class UserManagementApi implements IUserManagementApi {
         .findFirst();
 
     if (user != null) {
-      final hashedSecret = _hash(secret, user.salt!);
+      final hashedSecret = CryptoLocal.hash(secret, user.salt!);
 
       if (hashedSecret == user.secret) {
         return const Right(unit);
+      } else {
+        return Left(DatabaseException("invalid-credential"));
       }
+    } else {
+      return Left(DatabaseException("user-not-found"));
     }
-    return Left(DatabaseException("User not exist"));
   }
 
   @override
@@ -323,12 +317,12 @@ class UserManagementApi implements IUserManagementApi {
         .findFirst();
 
     if (user != null && secret.isNotEmpty && newPassword.isNotEmpty) {
-      final hashedSecret = _hash(secret, user.salt!);
+      final hashedSecret = CryptoLocal.hash(secret, user.salt!);
 
       if (hashedSecret == user.secret) {
-        final newSalt = _generateSalt(username.length);
-        final newPasswordHashed = _hash(newPassword, newSalt);
-        final secretHashed = _hash(secret, newSalt);
+        final newSalt = CryptoLocal.generateSalt(username.length);
+        final newPasswordHashed = CryptoLocal.hash(newPassword, newSalt);
+        final secretHashed = CryptoLocal.hash(secret, newSalt);
 
         user.salt = newSalt;
         user.secret = secretHashed;
@@ -340,32 +334,15 @@ class UserManagementApi implements IUserManagementApi {
           });
           return const Right(unit);
         } catch (e) {
-          return Left(DatabaseException(e.toString()));
+          logger.e("something-went-wrong", error: e);
+          return Left(DatabaseException("something-went-wrong"));
         }
       } else {
-        return Left(DatabaseException("Secret incorrect"));
+        return Left(DatabaseException("invalid-credential"));
       }
     } else {
-      return Left(
-        DatabaseException("user not found, secret or new password empty"),
-      );
+      return Left(DatabaseException("user-not-found"));
     }
-  }
-
-  String _generateSalt(int length) {
-    final rand = Random.secure();
-    final bytes = List<int>.generate(length, (_) => rand.nextInt(256));
-    return base64Url.encode(bytes);
-  }
-
-  String _hash(String password, String salt) {
-    final key = utf8.encode(password);
-    final saltBytes = utf8.encode(salt);
-
-    final hmacSha256 = Hmac(sha256, saltBytes);
-    final digest = hmacSha256.convert(key);
-
-    return digest.toString();
   }
 
   @override
