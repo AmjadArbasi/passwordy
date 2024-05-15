@@ -30,9 +30,9 @@ class CustomSearchField extends StatelessWidget {
             prefixIconColor: Colors.grey.shade500,
           ),
           onChanged: (value) {
-            context.read<CatchwordBloc>().add(
-                  CatchwordsResultSearchReturned(value: value),
-                );
+            context
+                .read<CatchwordBloc>()
+                .add(CatchwordsResultSearchReturned(value: value));
           },
         ),
       ),

@@ -1,3 +1,5 @@
+import 'package:dartz/dartz.dart';
+import 'package:flutter_application_passmanager/src/core/exceptions/exceptions.dart';
 import 'package:flutter_application_passmanager/src/features/category_manager/category_manager.dart';
 
 /// {@template catchwords_api}
@@ -12,58 +14,41 @@ abstract class CategoryManagerRepositryBase {
   Stream<List<CategoryEntity>> categoriesList();
 
   /// Adds a Catchword
-  Future<void> addCatchword(
+  Future<Either<Failure, CatchwordEntity>> addCatchword(
       CatchwordEntity catchwordEntity, CategoryEntity categoryEntity);
 
   /// Edits a catchword
-  Future<void> editCatchword(
+  Future<Either<Failure, CatchwordEntity>> editCatchword(
       CatchwordEntity catchwordEntity, CategoryEntity categoryEntity);
 
   /// Edit or Add a category
   /// search for the category through that gave
   /// when find it either updated or add
-  Future<void> saveCategory(CategoryEntity category);
+  Future<Either<Failure, CategoryEntity>> saveCategory(CategoryEntity category);
 
   /// Delete a catchword
   /// the catchwords list from given category
   /// delete the catchword then,
   /// updates the given category.
   /// throws an exception if its an empty
-  Future<void> deleteCatchword(int catchwordId, int categoryId);
+  Future<Either<Failure, Unit>> deleteCatchword(
+      int catchwordId, int categoryId);
 
   /// Delete a category
   /// from the stream find related category
   ///
-  Future<void> deleteCategory(int id);
+  Future<Either<Failure, Unit>> deleteCategory(int id);
 
   /// search for a spicific catchword from the catchwords
   /// based on the value => value=Password service name,
   ///  value=Service id
   /// returns null if there is no Catchword match!
-  Future<List<CategoryEntity>> searchCatchword(String value);
+  Future<Either<Failure, List<CategoryEntity>>> searchCatchword(String value);
 
-  Future<void> addWhenUsedDateTime(int catchwordId);
+  Future<Either<Failure, Unit>> addWhenUsedDateTime(int catchwordId);
 
-  List<CategoryEntity> sortCatchwordsCategoriesBasedOnDateTime(
-    List<CategoryEntity> categories,
-  );
+  Either<Failure, List<CategoryEntity>> sortCatchwordsCategoriesBasedOnDateTime(
+      List<CategoryEntity> categories);
 
-  Future<void> refreshData();
+  Future<Either<Failure, Unit>> refreshData();
 }
-
-/// Throws an excpetion if there is no cathword
-final class CatchwordNotFoundException implements Exception {}
-
-/// Throws an excpetion if there is no category
-final class CategoryNotFoundException implements Exception {}
-
-/// Throws an excpetion if there are no match in all categories
-final class CatchwordSearchedResultWasNotFound implements Exception {}
-
-/// Throws an exception if the number of categories equal one
-/// which means there is only one category and you cant delete it
-final class CategoryCantDeleteLastOne implements Exception {}
-
-/// Throws an exception if there is category name already added
-/// Not allowed duplicate category
-final class CategoryCantBeDuplicated implements Exception {}

@@ -1,3 +1,5 @@
+import 'package:dartz/dartz.dart';
+import 'package:flutter_application_passmanager/src/core/core.dart';
 import 'package:flutter_application_passmanager/src/features/category_manager/category_manager.dart';
 import 'package:rxdart/rxdart.dart';
 
@@ -7,32 +9,104 @@ import 'package:rxdart/rxdart.dart';
 class CategoryManagerRepsoitoryImpl extends CategoryManagerRepositryBase {
   /// {@macro category_manager_repository_impl}
   CategoryManagerRepsoitoryImpl({
-    required AppLocalDatabase appLocalDatabase,
-  }) : _appLocalDatabase = appLocalDatabase {
+    required ICategoryManagerApi categoryManagerApi,
+  }) : _categoryManagerApi = categoryManagerApi {
     _init();
   }
 
-  final AppLocalDatabase _appLocalDatabase;
+  final ICategoryManagerApi _categoryManagerApi;
 
   final _categoriesListController = BehaviorSubject<List<CategoryEntity>>();
 
   _init() async {
-    final categories = await _appLocalDatabase.loadAllValues();
-    if (categories.isEmpty) {
-      _categoriesListController.add(const []);
-    } else {
-      _categoriesListController.add(categories);
-    }
+    final result = await _categoryManagerApi.loadAllValues();
+
+    result.fold(
+      (failure) {
+        logger.e(failure.message);
+      },
+      (categories) {
+        final list = categories.map((e) => e.mapToEntity()).toList();
+        if (list.isEmpty) {
+          _categoriesListController.add(const []);
+        } else {
+          _categoriesListController.add(list);
+        }
+      },
+    );
   }
 
   _keepStreamFresh() async {
-    final categories = await _appLocalDatabase.loadAllValues();
-    _categoriesListController.add(categories);
-    logger.f(categories);
+    final failureOrSuccess = await _categoryManagerApi.loadAllValues();
+
+    failureOrSuccess.fold(
+      (failure) {
+        logger.e(failure.message);
+      },
+      (categories) {
+        final list = categories.map((e) => e.mapToEntity()).toList();
+        _categoriesListController.add(list);
+      },
+    );
   }
 
   @override
-  Future<void> refreshData() async => await _keepStreamFresh();
+  Future<Either<Failure, CatchwordEntity>> addCatchword(
+    CatchwordEntity catchwordEntity,
+    CategoryEntity categoryEntity,
+  ) async {
+    await _keepStreamFresh();
+    final categories = [..._categoriesListController.value];
+
+    final indexCategory =
+        categories.indexWhere((category) => category.id == categoryEntity.id);
+    if (indexCategory != -1) {
+      final categoryModel = categoryEntity.mapToModel();
+      final catchwordModel = catchwordEntity.mapToModel();
+
+      await _appLocalDatabase.addCatchword(catchwordModel, categoryModel);
+      await _keepStreamFresh();
+    } else {
+      throw CategoryNotFoundException();
+    }
+  }
+
+  @override
+  Future<Either<Failure, CatchwordEntity>> editCatchword(
+    CatchwordEntity catchwordEntity,
+    CategoryEntity categoryEntity,
+  ) async {
+    await _keepStreamFresh();
+    final categories = [..._categoriesListController.value];
+
+    final indexNewCategory =
+        categories.indexWhere((category) => category.id == categoryEntity.id);
+    final indexOldCategory = categories.indexWhere(
+      (category) =>
+          category.catchwords
+              .any((catchword) => catchword.id == catchwordEntity.id) ==
+          true,
+    );
+    if (indexNewCategory != -1 || indexOldCategory != -1) {
+      final categoryModel = categoryEntity.mapToModel();
+      final catchwordModel = catchwordEntity.mapToModel();
+      if (categories[indexOldCategory].id != categories[indexNewCategory].id) {
+        await _appLocalDatabase.deleteCatchword(
+          catchwordEntity.id!,
+          categories[indexOldCategory].id!,
+        );
+        await _appLocalDatabase.addCatchword(catchwordModel, categoryModel);
+      } else {
+        await _appLocalDatabase.editCatchword(catchwordModel, categoryModel);
+      }
+      await _keepStreamFresh();
+    } else {
+      throw CategoryNotFoundException();
+    }
+  }
+
+  @override
+  Future<Either<Failure, Unit>> refreshData() async => await _keepStreamFresh();
 
   @override
   Stream<List<CategoryEntity>> categoriesList() => _categoriesListController;
@@ -186,61 +260,6 @@ class CategoryManagerRepsoitoryImpl extends CategoryManagerRepositryBase {
         await _appLocalDatabase.deleteCategory(id);
         await _keepStreamFresh();
       }
-    } else {
-      throw CategoryNotFoundException();
-    }
-  }
-
-  @override
-  Future<void> addCatchword(
-    CatchwordEntity catchwordEntity,
-    CategoryEntity categoryEntity,
-  ) async {
-    await _keepStreamFresh();
-    final categories = [..._categoriesListController.value];
-
-    final indexCategory =
-        categories.indexWhere((category) => category.id == categoryEntity.id);
-    if (indexCategory != -1) {
-      final categoryModel = categoryEntity.mapToModel();
-      final catchwordModel = catchwordEntity.mapToModel();
-
-      await _appLocalDatabase.addCatchword(catchwordModel, categoryModel);
-      await _keepStreamFresh();
-    } else {
-      throw CategoryNotFoundException();
-    }
-  }
-
-  @override
-  Future<void> editCatchword(
-    CatchwordEntity catchwordEntity,
-    CategoryEntity categoryEntity,
-  ) async {
-    await _keepStreamFresh();
-    final categories = [..._categoriesListController.value];
-
-    final indexNewCategory =
-        categories.indexWhere((category) => category.id == categoryEntity.id);
-    final indexOldCategory = categories.indexWhere(
-      (category) =>
-          category.catchwords
-              .any((catchword) => catchword.id == catchwordEntity.id) ==
-          true,
-    );
-    if (indexNewCategory != -1 || indexOldCategory != -1) {
-      final categoryModel = categoryEntity.mapToModel();
-      final catchwordModel = catchwordEntity.mapToModel();
-      if (categories[indexOldCategory].id != categories[indexNewCategory].id) {
-        await _appLocalDatabase.deleteCatchword(
-          catchwordEntity.id!,
-          categories[indexOldCategory].id!,
-        );
-        await _appLocalDatabase.addCatchword(catchwordModel, categoryModel);
-      } else {
-        await _appLocalDatabase.editCatchword(catchwordModel, categoryModel);
-      }
-      await _keepStreamFresh();
     } else {
       throw CategoryNotFoundException();
     }

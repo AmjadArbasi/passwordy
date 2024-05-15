@@ -2,7 +2,6 @@ import 'package:flutter_application_passmanager/src/core/constants/constants.dar
 import 'package:flutter_application_passmanager/src/core/services/services.dart';
 import 'package:flutter_application_passmanager/src/features/features.dart';
 import 'package:isar/isar.dart';
-import 'package:logger/logger.dart';
 
 class AppLocalDatabase {
   AppLocalDatabase({
@@ -28,8 +27,6 @@ class AppLocalDatabase {
 
   static const usernameCategories = '__user_categories_cache_key__';
   static const logsDBuser = '__logs_db_user_cache_key__';
-
-  var logger = Logger();
 
   CategoriesDbDto? get categoryListUsername =>
       _cache.read(key: usernameCategories);
