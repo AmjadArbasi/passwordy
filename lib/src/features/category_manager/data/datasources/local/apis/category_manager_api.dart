@@ -11,7 +11,7 @@ class CategoryManagerApi implements ICategoryManagerApi {
     required this.catchwordModelToDbDtoConverter,
     required this.isar,
     required SecureStorage secureStorage,
-    required CacheClient? cache,
+    CacheClient? cache,
   })  : _secureStorage = secureStorage,
         _cache = cache ?? CacheClient();
 
@@ -105,40 +105,44 @@ class CategoryManagerApi implements ICategoryManagerApi {
       whenUsed: catchwordModel.whenUsed,
     );
 
-    final category = await isar.categoryDbDtos.get(categoryModel.id!);
+    if (categoryModel.id != null) {
+      final category = await isar.categoryDbDtos.get(categoryModel.id!);
 
-    final log = LogActivityDbDto()
-      ..name = "Catchword ${catchwordModel.name}"
-      ..operation = "add"
-      ..pathImage = ImagesMap.images["create"]
-      ..dateTime = DateTime.now();
+      final log = LogActivityDbDto()
+        ..name = "Catchword ${catchwordModel.name}"
+        ..operation = "add"
+        ..pathImage = ImagesMap.images["create"]
+        ..dateTime = DateTime.now();
 
-    if (category != null) {
-      try {
-        await isar.writeTxn(() async {
-          // Ensure the new catchword are added
-          await isar.catchwordDbDtos.put(newCatchword);
+      if (category != null) {
+        try {
+          await isar.writeTxn(() async {
+            // Ensure the new catchword are added
+            await isar.catchwordDbDtos.put(newCatchword);
 
-          // Now, add the new catchword /s to the category's existing catchword link
-          category.catchwords.add(newCatchword);
+            // Now, add the new catchword /s to the category's existing catchword link
+            category.catchwords.add(newCatchword);
 
-          category.total += 1;
+            category.total += 1;
 
-          await isar.categoryDbDtos.put(category);
-          // Save its relation
-          await category.catchwords.save();
+            await isar.categoryDbDtos.put(category);
+            // Save its relation
+            await category.catchwords.save();
 
-          /// logging
-          await isar.logActivityDbDtos.put(log);
+            /// logging
+            await isar.logActivityDbDtos.put(log);
 
-          logsDbUser.logActivities.add(log);
+            logsDbUser.logActivities.add(log);
 
-          await logsDbUser.logActivities.save();
-        });
-        return right(catchwordDbDtoToModelConverter.convert(newCatchword));
-      } catch (e) {
-        logger.e("something-went-wrong", error: e);
-        return Left(CategoryManagerException("something-went-wrong"));
+            await logsDbUser.logActivities.save();
+          });
+          return right(catchwordDbDtoToModelConverter.convert(newCatchword));
+        } catch (e) {
+          logger.e("something-went-wrong", error: e);
+          return Left(CategoryManagerException("something-went-wrong"));
+        }
+      } else {
+        return Left(CategoryManagerException("category-not-found"));
       }
     } else {
       return Left(CategoryManagerException("category-not-found"));
@@ -261,25 +265,34 @@ class CategoryManagerApi implements ICategoryManagerApi {
         ..dateTime = DateTime.now();
     }
 
-    try {
-      await isar.writeTxn(() async {
-        await isar.categoryDbDtos.put(newCategory);
-        categoryList.categories.add(newCategory);
-        await isar.categoriesDbDtos.put(categoryList);
-        await categoryList.categories.save();
+    final count = await isar.categoryDbDtos
+        .filter()
+        .categoryNameEqualTo(category.categoryName)
+        .count();
 
-        /// logging
-        await isar.logActivityDbDtos.put(log);
+    if (count == 0) {
+      try {
+        await isar.writeTxn(() async {
+          await isar.categoryDbDtos.put(newCategory);
+          categoryList.categories.add(newCategory);
+          await isar.categoriesDbDtos.put(categoryList);
+          await categoryList.categories.save();
 
-        logsDbUser.logActivities.add(log);
+          /// logging
+          await isar.logActivityDbDtos.put(log);
 
-        await logsDbUser.logActivities.save();
-      });
+          logsDbUser.logActivities.add(log);
 
-      return Right(categoryDbDtoToModelConverter.convert(newCategory));
-    } catch (e) {
-      logger.e("something-went-error", error: e);
-      return Left(CategoryManagerException("something-went-error"));
+          await logsDbUser.logActivities.save();
+        });
+
+        return Right(categoryDbDtoToModelConverter.convert(newCategory));
+      } catch (e) {
+        logger.e("something-went-error", error: e);
+        return Left(CategoryManagerException("something-went-error"));
+      }
+    } else {
+      return Left(CategoryManagerException("category-name-duplicate-found"));
     }
   }
 

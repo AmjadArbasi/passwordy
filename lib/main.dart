@@ -24,7 +24,7 @@ void main() async {
   final categoryDbDtoToModelConverter =
       CategoryDbDtoToModelConverter(catchwordDbDtoToModelConverter);
 
-  final appLocalDatabase = AppLocalDatabase(
+  final categoryManagerApi = CategoryManagerApi(
     categoryModelToDbDtoConverter: categoryModelToDbDtoConverter,
     categoryDbDtoToModelConverter: categoryDbDtoToModelConverter,
     catchwordModelToDbDtoConverter: catchwordModelToDbDtoConverter,
@@ -32,7 +32,8 @@ void main() async {
     isar: isar,
     secureStorage: secureStorage,
   );
-  final api = CategoryManagerRepsoitoryImpl(appLocalDatabase: appLocalDatabase);
+  final api =
+      CategoryManagerRepsoitoryImpl(categoryManagerApi: categoryManagerApi);
   final categoryManagerUsecase = CategoryManagerUsecase(api: api);
   final passGenRepsotiory = PassGenRepsotiory();
   final generatePassword =
@@ -189,6 +190,8 @@ class _AppViewState extends State<AppView> {
   @override
   void dispose() {
     context.read<AuthBloc>().close();
+    logger.close();
+
     super.dispose();
   }
 

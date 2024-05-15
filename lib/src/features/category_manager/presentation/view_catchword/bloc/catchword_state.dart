@@ -12,6 +12,7 @@ final class CatchwordState extends Equatable {
   final CategoryEntity? categoryLinkedDeletedCatchword;
   final String? copiedPasscode;
   final int currentIndex;
+  final String errorMessage;
 
   const CatchwordState({
     this.catchwords = const [],
@@ -23,6 +24,7 @@ final class CatchwordState extends Equatable {
     this.categoryLinkedDeletedCatchword,
     this.copiedPasscode,
     this.currentIndex = -1,
+    this.errorMessage = "",
   });
 
   CatchwordState copyWith({
@@ -35,6 +37,7 @@ final class CatchwordState extends Equatable {
     CategoryEntity? categoryLinkedDeletedCatchword,
     String? copiedPasscode,
     int? currentIndex,
+    String? errorMessage,
   }) {
     return CatchwordState(
       catchwords: catchwords ?? this.catchwords,
@@ -49,6 +52,7 @@ final class CatchwordState extends Equatable {
           categoryLinkedDeletedCatchword ?? this.categoryLinkedDeletedCatchword,
       copiedPasscode: copiedPasscode ?? this.copiedPasscode,
       currentIndex: currentIndex ?? this.currentIndex,
+      errorMessage: errorMessage ?? this.errorMessage,
     );
   }
 
@@ -63,5 +67,6 @@ final class CatchwordState extends Equatable {
         copiedPasscode,
         categoryLinkedDeletedCatchword,
         currentIndex,
+        errorMessage,
       ];
 }

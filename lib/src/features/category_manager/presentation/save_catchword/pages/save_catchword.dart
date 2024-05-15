@@ -5,7 +5,6 @@ import 'package:flutter_application_passmanager/src/features/password_generator/
 import 'package:flutter_application_passmanager/src/features/skeleton/skeleton.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
-import 'package:logger/logger.dart';
 
 class SaveCatchword extends StatelessWidget {
   const SaveCatchword({
@@ -71,12 +70,10 @@ class SaveCatchword extends StatelessWidget {
             },
           ),
           BlocListener<EditCatchwordBloc, EditCatchwordState>(
-            listenWhen: (previous, current) =>
-                previous.valueCopied != current.valueCopied,
             listener: (context, state) {
-              Logger().i(
-                'Copied value => ${context.read<EditCatchwordBloc>().state.valueCopied}',
-              );
+              if (state.status == EditCatchwordStatus.failure) {
+                logger.f(state.errorMessage);
+              }
             },
           )
         ],

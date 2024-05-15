@@ -21,7 +21,7 @@ class CategoryManagerRepsoitoryImpl extends CategoryManagerRepositryBase {
   _init() async {
     final result = await _categoryManagerApi.loadAllValues();
 
-    result.fold(
+    return result.fold(
       (failure) {
         logger.e(failure.message);
       },
@@ -39,7 +39,7 @@ class CategoryManagerRepsoitoryImpl extends CategoryManagerRepositryBase {
   _keepStreamFresh() async {
     final failureOrSuccess = await _categoryManagerApi.loadAllValues();
 
-    failureOrSuccess.fold(
+    return failureOrSuccess.fold(
       (failure) {
         logger.e(failure.message);
       },
@@ -55,20 +55,19 @@ class CategoryManagerRepsoitoryImpl extends CategoryManagerRepositryBase {
     CatchwordEntity catchwordEntity,
     CategoryEntity categoryEntity,
   ) async {
-    await _keepStreamFresh();
-    final categories = [..._categoriesListController.value];
+    final categoryModel = categoryEntity.mapToModel();
+    final catchwordModel = catchwordEntity.mapToModel();
 
-    final indexCategory =
-        categories.indexWhere((category) => category.id == categoryEntity.id);
-    if (indexCategory != -1) {
-      final categoryModel = categoryEntity.mapToModel();
-      final catchwordModel = catchwordEntity.mapToModel();
+    final failureOrSuccess =
+        await _categoryManagerApi.addCatchword(catchwordModel, categoryModel);
 
-      await _appLocalDatabase.addCatchword(catchwordModel, categoryModel);
-      await _keepStreamFresh();
-    } else {
-      throw CategoryNotFoundException();
-    }
+    return failureOrSuccess.fold(
+      (failure) => Left(failure),
+      (category) async {
+        await _keepStreamFresh();
+        return Right(category.mapToEntity());
+      },
+    );
   }
 
   @override
@@ -87,51 +86,66 @@ class CategoryManagerRepsoitoryImpl extends CategoryManagerRepositryBase {
               .any((catchword) => catchword.id == catchwordEntity.id) ==
           true,
     );
-    if (indexNewCategory != -1 || indexOldCategory != -1) {
-      final categoryModel = categoryEntity.mapToModel();
-      final catchwordModel = catchwordEntity.mapToModel();
-      if (categories[indexOldCategory].id != categories[indexNewCategory].id) {
-        await _appLocalDatabase.deleteCatchword(
-          catchwordEntity.id!,
-          categories[indexOldCategory].id!,
-        );
-        await _appLocalDatabase.addCatchword(catchwordModel, categoryModel);
-      } else {
-        await _appLocalDatabase.editCatchword(catchwordModel, categoryModel);
-      }
-      await _keepStreamFresh();
+    final categoryModel = categoryEntity.mapToModel();
+    final catchwordModel = catchwordEntity.mapToModel();
+
+    if (categories[indexOldCategory].id != categories[indexNewCategory].id) {
+      final failureOrSuccess = await _categoryManagerApi.deleteCatchword(
+        catchwordEntity.id!,
+        categories[indexOldCategory].id!,
+      );
+
+      failureOrSuccess.fold(
+        (failure) => logger.e(failure.message),
+        (_) => null,
+      );
+      final result = await _categoryManagerApi.addCatchword(
+        catchwordModel,
+        categoryModel,
+      );
+
+      return result.fold(
+        (failure) => Left(failure),
+        (category) async {
+          await _keepStreamFresh();
+          return Right(category.mapToEntity());
+        },
+      );
     } else {
-      throw CategoryNotFoundException();
+      final failureOrSuccess = await _categoryManagerApi.editCatchword(
+        catchwordModel,
+        categoryModel,
+      );
+
+      return failureOrSuccess.fold(
+        (failure) => Left(failure),
+        (category) async {
+          await _keepStreamFresh();
+          return Right(category.mapToEntity());
+        },
+      );
     }
   }
 
   @override
-  Future<Either<Failure, Unit>> refreshData() async => await _keepStreamFresh();
+  Future<void> refreshData() async => await _keepStreamFresh();
 
   @override
   Stream<List<CategoryEntity>> categoriesList() => _categoriesListController;
 
   @override
-  Future<void> deleteCatchword(int catchwordId, int categoryId) async {
-    await _keepStreamFresh();
-    final categories = [..._categoriesListController.value];
-    final indexCategory =
-        categories.indexWhere((element) => element.id == categoryId);
-    if (indexCategory != -1) {
-      final category = categories[indexCategory];
-      final catchwords = category.catchwords;
-      final indexCatchword =
-          catchwords.indexWhere((element) => element.id == catchwordId);
+  Future<Either<Failure, Unit>> deleteCatchword(
+      int catchwordId, int categoryId) async {
+    final failureOrSuccess =
+        await _categoryManagerApi.deleteCatchword(catchwordId, categoryId);
 
-      if (indexCatchword != -1) {
-        await _appLocalDatabase.deleteCatchword(catchwordId, categoryId);
+    return failureOrSuccess.fold(
+      (failure) => Left(failure),
+      (category) async {
         await _keepStreamFresh();
-      } else {
-        throw CatchwordNotFoundException();
-      }
-    } else {
-      throw CategoryNotFoundException();
-    }
+        return const Right(unit);
+      },
+    );
   }
 
   @override
@@ -183,7 +197,6 @@ class CategoryManagerRepsoitoryImpl extends CategoryManagerRepositryBase {
 
     /// Outputting the sorted list
     for (var entry in catchwordsWithCategories) {
-      logger.f('${entry.key} in ${entry.value}');
       final category = CategoryEntity(
         id: entry.value.id,
         categoryName: entry.value.categoryName,
@@ -196,78 +209,83 @@ class CategoryManagerRepsoitoryImpl extends CategoryManagerRepositryBase {
   }
 
   @override
-  Future<void> saveCategory(CategoryEntity category) async {
-    await _keepStreamFresh();
-    final categories = [..._categoriesListController.value];
-    final duplicateCategoryName = categories.any(
-      (element) => element.categoryName == category.categoryName,
+  Future<Either<Failure, CategoryEntity>> saveCategory(
+      CategoryEntity category) async {
+    final categoryModel = category.mapToModel();
+    final failureOrSuccess =
+        await _categoryManagerApi.saveCategory(categoryModel);
+    return failureOrSuccess.fold(
+      (failure) => Left(failure),
+      (category) async {
+        await _keepStreamFresh();
+        return Right(category.mapToEntity());
+      },
     );
-    if (!duplicateCategoryName) {
-      final categoryModel = category.mapToModel();
-      await _appLocalDatabase.saveCategory(categoryModel);
-      await _keepStreamFresh();
-    } else {
-      throw CategoryCantBeDuplicated();
-    }
   }
 
   @override
-  Future<void> deleteCategory(int id) async {
+  Future<Either<Failure, Unit>> deleteCategory(int id) async {
     await _keepStreamFresh();
     final categories = [..._categoriesListController.value];
     final indexCategory =
         categories.indexWhere((category) => category.id == id);
 
-    if (indexCategory != -1) {
-      /// If the [category] has an empty catchwords just delete it
-      if (categories[indexCategory].catchwords.isEmpty) {
-        await _appLocalDatabase.deleteCategory(id);
-        await _keepStreamFresh();
-        return;
-      } else {
-        /// If the category has catchwords unlinks them from it
-        /// and link them to `uncategorized` category
-        final indexUncateorizedCategory = categories.indexWhere(
-          (element) => element.categoryName.toLowerCase() == 'uncategorized',
-        );
-        // hold up catchwords from deleted category
-        final catchwords = categories[indexCategory].catchwords;
-        // check it the uncategorized exist or not
-        // if exist
-        if (indexUncateorizedCategory != -1) {
-          for (final catchword in catchwords) {
-            /// Adds a catchword to the specified category. Assumes categories index is valid.
-            await addCatchword(
-                catchword, categories[indexUncateorizedCategory]);
-          }
-        } else {
-          // if not exist create it
-          const unCategorized = CategoryEntity();
-          await saveCategory(unCategorized);
-          //. Assuming 'catchwords' is a list of catchword and 'categories' is a list of categories
-          /// 'indexUncategorizedCategoryAfterAdded' is the index of the uncategorized category to which we are adding catchwords
-          final categoriesNew = [..._categoriesListController.value];
-          final indexUncateorizedCategoryAfterAdded = categoriesNew.indexWhere(
-            (category) =>
-                category.categoryName.toLowerCase() == 'uncategorized',
-          );
-          for (final catchword in catchwords) {
-            /// Adds a catchword to the specified category. Assumes categories index is valid.
-            await addCatchword(
-                catchword, categoriesNew[indexUncateorizedCategoryAfterAdded]);
-          }
-        }
-        await _appLocalDatabase.deleteCategory(id);
-        await _keepStreamFresh();
-      }
+    /// If the [category] has an empty catchwords just delete it
+    if (categories[indexCategory].catchwords.isEmpty) {
+      final failureOrSuccess = await _categoryManagerApi.deleteCategory(id);
+      return failureOrSuccess.fold(
+        (failure) => Left(failure),
+        (_) async {
+          await _keepStreamFresh();
+          return const Right(unit);
+        },
+      );
     } else {
-      throw CategoryNotFoundException();
+      /// If the category has catchwords unlinks them from it
+      /// and link them to `uncategorized` category
+      final indexUncateorizedCategory = categories.indexWhere(
+        (element) => element.categoryName.toLowerCase() == 'uncategorized',
+      );
+      // hold up catchwords from deleted category
+      final catchwords = categories[indexCategory].catchwords;
+      // check it the uncategorized exist or not
+      // if exist
+      if (indexUncateorizedCategory != -1) {
+        for (final catchword in catchwords) {
+          /// Adds a catchword to the specified category. Assumes categories index is valid.
+          await addCatchword(catchword, categories[indexUncateorizedCategory]);
+        }
+      } else {
+        // if not exist create it
+        const unCategorized = CategoryEntity();
+        await saveCategory(unCategorized);
+        //. Assuming 'catchwords' is a list of catchword and 'categories' is a list of categories
+        /// 'indexUncategorizedCategoryAfterAdded' is the index of the uncategorized category to which we are adding catchwords
+        final categoriesNew = [..._categoriesListController.value];
+        final indexUncateorizedCategoryAfterAdded = categoriesNew.indexWhere(
+          (category) => category.categoryName.toLowerCase() == 'uncategorized',
+        );
+        for (final catchword in catchwords) {
+          /// Adds a catchword to the specified category. Assumes categories index is valid.
+          await addCatchword(
+            catchword,
+            categoriesNew[indexUncateorizedCategoryAfterAdded],
+          );
+        }
+      }
+      final failureOrSuccess = await _categoryManagerApi.deleteCategory(id);
+      return failureOrSuccess.fold(
+        (failure) => Left(failure),
+        (_) async {
+          await _keepStreamFresh();
+          return const Right(unit);
+        },
+      );
     }
   }
 
   @override
-  Future<void> addWhenUsedDateTime(int catchwordId) async {
-    await _appLocalDatabase.addCurrentDateTimeWhenUsed(catchwordId);
-    await _keepStreamFresh();
+  Future<Either<Failure, Unit>> addWhenUsedDateTime(int catchwordId) async {
+    return await _categoryManagerApi.addCurrentDateTimeWhenUsed(catchwordId);
   }
 }

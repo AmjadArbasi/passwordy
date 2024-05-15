@@ -87,15 +87,39 @@ class EditCatchwordBloc extends Bloc<EditCatchwordEvent, EditCatchwordState> {
       passcode: state.passcode,
       note: state.note,
     );
-    try {
-      if (newCatchword.id == null) {
-        _categoryManagerUsecase.addCatchword(newCatchword, state.category);
-      } else {
-        _categoryManagerUsecase.editCatchword(newCatchword, state.category);
-      }
-      emit(state.copyWith(status: EditCatchwordStatus.success));
-    } catch (e) {
-      emit(state.copyWith(status: EditCatchwordStatus.failure));
+
+    if (newCatchword.id == null) {
+      final failureOrSuccess = await _categoryManagerUsecase.addCatchword(
+        newCatchword,
+        state.category,
+      );
+      return failureOrSuccess.fold(
+        (failure) {
+          emit(state.copyWith(
+            status: EditCatchwordStatus.failure,
+            errorMessage: failure.message,
+          ));
+        },
+        (category) {
+          emit(state.copyWith(status: EditCatchwordStatus.success));
+        },
+      );
+    } else {
+      final failureOrSuccess = await _categoryManagerUsecase.editCatchword(
+        newCatchword,
+        state.category,
+      );
+      return failureOrSuccess.fold(
+        (failure) {
+          emit(state.copyWith(
+            status: EditCatchwordStatus.failure,
+            errorMessage: failure.message,
+          ));
+        },
+        (category) {
+          emit(state.copyWith(status: EditCatchwordStatus.success));
+        },
+      );
     }
   }
 }

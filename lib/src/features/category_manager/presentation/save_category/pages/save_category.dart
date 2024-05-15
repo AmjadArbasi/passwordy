@@ -49,7 +49,11 @@ class SaveCategoryView extends StatelessWidget {
             ],
           ),
           BlocConsumer<ManageCategoryBloc, ManageCategoryState>(
-            listener: (context, state) {},
+            listener: (context, state) {
+              if (state.status == ManageCategoryStatus.failure) {
+                logger.f(state.errorMessage);
+              }
+            },
             builder: (context, state) {
               return ListView.separated(
                 shrinkWrap: true,

@@ -43,12 +43,12 @@ abstract class CategoryManagerRepositryBase {
   /// based on the value => value=Password service name,
   ///  value=Service id
   /// returns null if there is no Catchword match!
-  Future<Either<Failure, List<CategoryEntity>>> searchCatchword(String value);
+  Future<List<CategoryEntity>> searchCatchword(String value);
 
   Future<Either<Failure, Unit>> addWhenUsedDateTime(int catchwordId);
 
-  Either<Failure, List<CategoryEntity>> sortCatchwordsCategoriesBasedOnDateTime(
+  List<CategoryEntity> sortCatchwordsCategoriesBasedOnDateTime(
       List<CategoryEntity> categories);
 
-  Future<Either<Failure, Unit>> refreshData();
+  Future<void> refreshData();
 }

@@ -1,3 +1,5 @@
+import 'package:dartz/dartz.dart';
+import 'package:flutter_application_passmanager/src/core/exceptions/exceptions.dart';
 import 'package:flutter_application_passmanager/src/features/category_manager/category_manager.dart';
 
 /// {@template CategoryApi_repository}
@@ -14,34 +16,37 @@ class CategoryManagerUsecase {
   Stream<List<CategoryEntity>> getCategoriesList() => _api.categoriesList();
 
   ///  add a [catchword]
-  Future<void> addCatchword(
+  Future<Either<Failure, CatchwordEntity>> addCatchword(
           CatchwordEntity catchword, CategoryEntity category) =>
       _api.addCatchword(catchword, category);
 
   /// edit a [catchword]
-  Future<void> editCatchword(
+  Future<Either<Failure, CatchwordEntity>> editCatchword(
           CatchwordEntity catchword, CategoryEntity category) =>
       _api.editCatchword(catchword, category);
 
   /// Edit or add a caterory
-  Future<void> saveCategory(CategoryEntity category) =>
+  Future<Either<Failure, CategoryEntity>> saveCategory(
+          CategoryEntity category) =>
       _api.saveCategory(category);
 
   /// delete a specific catchword based on [categoryId] and [catchwordId]
-  Future<void> deleteCatchword(int catchwordId, int categoryId) =>
+  Future<Either<Failure, Unit>> deleteCatchword(
+          int catchwordId, int categoryId) =>
       _api.deleteCatchword(catchwordId, categoryId);
 
   /// delete a category
   /// when the catchwords contains data
   /// its data will merge to `All` category
   /// otherwise will delete
-  Future<void> deleteCategory(int id) => _api.deleteCategory(id);
+  Future<Either<Failure, Unit>> deleteCategory(int id) =>
+      _api.deleteCategory(id);
 
   /// returns a list of searched catchwords based on [value]
   Future<List<CategoryEntity>> searchCatchword(String value) =>
       _api.searchCatchword(value);
 
-  Future<void> addWhenUsedDateTime(int catchwordId) =>
+  Future<Either<Failure, Unit>> addWhenUsedDateTime(int catchwordId) =>
       _api.addWhenUsedDateTime(catchwordId);
 
   List<CategoryEntity> sortCatchwordsCategoriesBasedOnDateTime(

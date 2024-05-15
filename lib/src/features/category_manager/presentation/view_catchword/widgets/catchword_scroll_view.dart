@@ -40,6 +40,9 @@ class CatchwordScrollView extends StatelessWidget {
           padding: const EdgeInsets.only(bottom: 5.0),
           child: InkWell(
             onTap: () {
+              context
+                  .read<CatchwordBloc>()
+                  .add(CatchwordsUsingTrigger(id: catchword.id!));
               Get.toNamed(
                 AppRoutes.viewCatchword,
                 arguments: {'catchword': catchword, 'category': category},
@@ -66,7 +69,6 @@ class CatchwordScrollView extends StatelessWidget {
       );
       return false;
     } else {
-      logger.w("=> [Delete a catchword] $catchword");
       BlocProvider.of<CatchwordBloc>(context).add(
         CatchwordsDeleteRequested(
           catchword: catchword,

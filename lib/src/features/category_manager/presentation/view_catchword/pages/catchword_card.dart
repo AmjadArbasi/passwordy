@@ -33,7 +33,6 @@ class CatchwordCard extends StatelessWidget {
           listenWhen: (previous, current) =>
               previous.copiedPasscode != current.copiedPasscode,
           listener: (context, state) {
-            logger.f(state.copiedPasscode);
             ScaffoldMessenger.of(context)
               ..hideCurrentSnackBar()
               ..showSnackBar(
@@ -48,6 +47,13 @@ class CatchwordCard extends StatelessWidget {
                   backgroundColor: TAppTheme.success,
                 ),
               );
+          },
+        ),
+        BlocListener<CatchwordBloc, CatchwordState>(
+          listener: (context, state) {
+            if (state.status == CatchwordStatus.failure) {
+              logger.f(state.errorMessage);
+            }
           },
         ),
       ],
@@ -102,16 +108,10 @@ class CatchwordCard extends StatelessWidget {
       action: SnackBarAction(
         label: "undoCatchwordDelete".tr,
         onPressed: () {
-          logger.w(
-            "[undo deleted catchword => ] ${context.read<CatchwordBloc>().state.lastDeletedItem}",
-          );
-          logger.w(
-            "[undo deleted catchword => ] ${context.read<CatchwordBloc>().state.categoryLinkedDeletedCatchword}",
-          );
           ScaffoldMessenger.of(context).hideCurrentSnackBar();
-          context.read<CatchwordBloc>().add(
-                const CatchwrodsUndoDeleteRequested(),
-              );
+          context
+              .read<CatchwordBloc>()
+              .add(const CatchwrodsUndoDeleteRequested());
         },
       ),
     );

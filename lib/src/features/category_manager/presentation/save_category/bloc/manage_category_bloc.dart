@@ -46,12 +46,20 @@ class ManageCategoryBloc
       ManageCategoryDeleted event, Emitter<ManageCategoryState> emit) async {
     emit(state.copyWith(status: ManageCategoryStatus.loading));
 
-    try {
-      _categoryManagerUsecase.deleteCategory(event.categoryId);
-      emit(state.copyWith(status: ManageCategoryStatus.success));
-    } catch (e) {
-      emit(state.copyWith(status: ManageCategoryStatus.failure));
-    }
+    final failureOrSuccess =
+        await _categoryManagerUsecase.deleteCategory(event.categoryId);
+
+    return failureOrSuccess.fold(
+      (failure) {
+        emit(state.copyWith(
+          status: ManageCategoryStatus.failure,
+          errorMessage: failure.message,
+        ));
+      },
+      (_) {
+        emit(state.copyWith(status: ManageCategoryStatus.success));
+      },
+    );
   }
 
   Future<void> _onEdited(
@@ -72,11 +80,19 @@ class ManageCategoryBloc
     logger.f('ManageCategorySubmitted ${state.categoryEdit}');
     final category = (state.categoryEdit ?? const CategoryEntity())
         .copyWith(categoryName: state.categoryName);
-    try {
-      _categoryManagerUsecase.saveCategory(category);
-      emit(state.copyWith(status: ManageCategoryStatus.success));
-    } catch (e) {
-      emit(state.copyWith(status: ManageCategoryStatus.failure));
-    }
+    final failureOrSuccess =
+        await _categoryManagerUsecase.saveCategory(category);
+
+    return failureOrSuccess.fold(
+      (failure) {
+        emit(state.copyWith(
+          status: ManageCategoryStatus.failure,
+          errorMessage: failure.message,
+        ));
+      },
+      (_) {
+        emit(state.copyWith(status: ManageCategoryStatus.success));
+      },
+    );
   }
 }

@@ -7,6 +7,8 @@ part of 'catchword_bloc.dart';
 /// [CatchwordsUpdateCategoriesRequested]: update the categories from Ui
 /// [CatchwordsResultSearchReturned]: returns a list of data
 /// [CatchwordsPasswordVisibilityToggled] : toggles the visibility of the password
+/// [CatchwordsRefreshRequested] : refresh the stream data
+/// [CatchwordsUsingTrigger] : Trigger when catchword was used
 
 sealed class CatchwordEvent extends Equatable {
   const CatchwordEvent();
@@ -78,4 +80,14 @@ final class CatchwordsPasswordVisibilityToggled extends CatchwordEvent {
 
   @override
   List<Object> get props => [catchwordEntity, categoryEntity];
+}
+
+final class CatchwordsRefreshRequested extends CatchwordEvent {
+  const CatchwordsRefreshRequested();
+}
+
+final class CatchwordsUsingTrigger extends CatchwordEvent {
+  const CatchwordsUsingTrigger({required this.id});
+
+  final int id;
 }

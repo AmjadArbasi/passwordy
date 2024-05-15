@@ -12,6 +12,7 @@ final class EditCatchwordState extends Equatable {
   final CategoryEntity category;
   final EditCatchwordStatus status;
   final int currentIndex;
+  final String errorMessage;
 
   const EditCatchwordState({
     this.name = '',
@@ -23,6 +24,7 @@ final class EditCatchwordState extends Equatable {
     required this.category,
     this.status = EditCatchwordStatus.initial,
     this.currentIndex = 0,
+    this.errorMessage = "",
   });
 
   @override
@@ -36,6 +38,7 @@ final class EditCatchwordState extends Equatable {
         status,
         valueCopied,
         currentIndex,
+        errorMessage,
       ];
 
   EditCatchwordState copyWith({
@@ -48,6 +51,7 @@ final class EditCatchwordState extends Equatable {
     CategoryEntity? category,
     EditCatchwordStatus? status,
     int? currentIndex,
+    String? errorMessage,
   }) {
     return EditCatchwordState(
       name: name ?? this.name,
@@ -59,6 +63,7 @@ final class EditCatchwordState extends Equatable {
       category: category ?? this.category,
       status: status ?? this.status,
       currentIndex: currentIndex ?? this.currentIndex,
+      errorMessage: errorMessage ?? this.errorMessage,
     );
   }
 }
