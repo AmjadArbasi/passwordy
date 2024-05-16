@@ -8,9 +8,9 @@ class CategoryScrollSelection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final currentCategoryIndex = context.select(
-      (CatchwordBloc bloc) => bloc.state.currentIndex,
-    );
+    final currentCategoryIndex =
+        context.select((CatchwordBloc bloc) => bloc.state.currentIndex);
+
     return BlocBuilder<CatchwordBloc, CatchwordState>(
       builder: (context, state) {
         return CategoryItemsSelected(

@@ -103,6 +103,7 @@ class CatchwordBloc extends Bloc<CatchwordEvent, CatchwordState> {
       state.copyWith(
         filteredCategories: event.filteredCategories,
         currentIndex: event.currentIndex,
+        searchedCatchwords: () => null,
       ),
     );
   }
@@ -111,7 +112,11 @@ class CatchwordBloc extends Bloc<CatchwordEvent, CatchwordState> {
       Emitter<CatchwordState> emit) async {
     final categories =
         await _categoryManagerUsecase.searchCatchword(event.value);
-    emit(state.copyWith(filteredCategories: categories));
+    if (event.value.isNotEmpty) {
+      emit(state.copyWith(searchedCatchwords: () => categories));
+    } else {
+      emit(state.copyWith(searchedCatchwords: () => null));
+    }
   }
 
   Future<void> _onPasswordVisibilityToggled(

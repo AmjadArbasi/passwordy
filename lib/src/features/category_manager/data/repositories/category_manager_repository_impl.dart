@@ -153,26 +153,28 @@ class CategoryManagerRepsoitoryImpl extends CategoryManagerRepositryBase {
     await _keepStreamFresh();
     final categoriesList = [..._categoriesListController.value];
     final result = <CategoryEntity>[];
-
-    for (final category in categoriesList) {
-      final matchingCatchwords = category.catchwords
-          .where(
-            (element) =>
-                element.name.toLowerCase().contains(value.toLowerCase()) ||
-                element.accountId.toLowerCase().contains(value.toLowerCase()),
-          )
-          .toList();
-      if (matchingCatchwords.isNotEmpty) {
-        result.add(
-          CategoryEntity(
-            id: category.id,
-            categoryName: category.categoryName,
-            catchwords: matchingCatchwords,
-            total: matchingCatchwords.length,
-          ),
-        );
+    if (value.isNotEmpty) {
+      for (final category in categoriesList) {
+        final matchingCatchwords = category.catchwords
+            .where(
+              (element) =>
+                  element.name.toLowerCase().contains(value.toLowerCase()) ||
+                  element.accountId.toLowerCase().contains(value.toLowerCase()),
+            )
+            .toList();
+        if (matchingCatchwords.isNotEmpty) {
+          result.add(
+            CategoryEntity(
+              id: category.id,
+              categoryName: category.categoryName,
+              catchwords: matchingCatchwords,
+              total: matchingCatchwords.length,
+            ),
+          );
+        }
       }
     }
+    logger.f(result);
     return result;
   }
 

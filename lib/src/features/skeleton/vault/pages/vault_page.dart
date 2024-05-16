@@ -17,9 +17,10 @@ class VaultView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final filteredCategorie = context.select(
-      (CatchwordBloc bloc) => bloc.state.filteredCategories,
-    );
+    final searchedCatchwords =
+        context.select((CatchwordBloc bloc) => bloc.state.searchedCatchwords);
+    final filteredCategories =
+        context.select((CatchwordBloc bloc) => bloc.state.filteredCategories);
     final allCategories =
         context.select((CatchwordBloc bloc) => bloc.state.categories);
     final currentIndex =
@@ -40,7 +41,9 @@ class VaultView extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 25),
-          Expanded(child: CatchwordCard(categories: filteredCategorie)),
+          Expanded(
+              child: CatchwordCard(
+                  categories: searchedCatchwords ?? filteredCategories)),
         ],
       ),
     );
