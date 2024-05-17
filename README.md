@@ -31,6 +31,9 @@ Passwordy is a secure password manager app meticulously crafted with Flutter to 
 2. Create a master password.
 3. Start adding your passwords securely.
 
+## Contributing
+Please read [CONTRIBUTING.md](CONTRIBUTING.md) for details on our code of conduct, and the process for submitting pull requests.
+
 ## License
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
