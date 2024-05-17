@@ -23,7 +23,7 @@ class CategoryManagerRepsoitoryImpl extends CategoryManagerRepositryBase {
 
     return result.fold(
       (failure) {
-        logger.e(failure.message);
+        GlobalVar.logger.e(failure.message);
       },
       (categories) {
         final list = categories.map((e) => e.mapToEntity()).toList();
@@ -41,7 +41,7 @@ class CategoryManagerRepsoitoryImpl extends CategoryManagerRepositryBase {
 
     return failureOrSuccess.fold(
       (failure) {
-        logger.e(failure.message);
+        GlobalVar.logger.e(failure.message);
       },
       (categories) {
         final list = categories.map((e) => e.mapToEntity()).toList();
@@ -96,7 +96,7 @@ class CategoryManagerRepsoitoryImpl extends CategoryManagerRepositryBase {
       );
 
       failureOrSuccess.fold(
-        (failure) => logger.e(failure.message),
+        (failure) => GlobalVar.logger.e(failure.message),
         (_) => null,
       );
       final result = await _categoryManagerApi.addCatchword(
@@ -174,7 +174,6 @@ class CategoryManagerRepsoitoryImpl extends CategoryManagerRepositryBase {
         }
       }
     }
-    logger.f(result);
     return result;
   }
 

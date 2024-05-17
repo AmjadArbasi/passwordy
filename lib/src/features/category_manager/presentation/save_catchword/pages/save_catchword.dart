@@ -69,7 +69,7 @@ class SaveCatchword extends StatelessWidget {
                 previous.status != current.status,
             listener: (context, state) {
               if (state.status == EditCatchwordStatus.failure) {
-                logger.f(state.errorMessage);
+                GlobalVar.logger.f(state.errorMessage);
                 CustomDialogs.showDialogWaring(context, state.errorMessage);
               }
               if (state.status == EditCatchwordStatus.success) {

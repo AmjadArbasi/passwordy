@@ -1,6 +1,6 @@
 part of 'manage_category_bloc.dart';
 
-enum ManageCategoryStatus { initial, loading, success, failure }
+enum ManageCategoryStatus { initial, loading, success, failure, cancel }
 
 final class ManageCategoryState extends Equatable {
   const ManageCategoryState({

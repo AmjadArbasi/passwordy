@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_passmanager/src/core/common/common.dart';
 import 'package:flutter_application_passmanager/src/core/constants/dismissible_colors/colors.dart';
+import 'package:flutter_application_passmanager/src/core/core.dart';
 import 'package:flutter_application_passmanager/src/features/category_manager/category_manager.dart';
 import 'package:flutter_application_passmanager/src/features/skeleton/skeleton.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -50,9 +50,12 @@ class SaveCategoryView extends StatelessWidget {
             ],
           ),
           BlocConsumer<ManageCategoryBloc, ManageCategoryState>(
+            listenWhen: (previous, current) =>
+                previous.errorMessage != current.errorMessage,
             listener: (context, state) {
-              if (state.status == ManageCategoryStatus.failure) {
-                logger.f(state.errorMessage);
+              if (state.errorMessage.isNotEmpty) {
+                GlobalVar.logger.f(state.errorMessage);
+                CustomDialogs.showDialogWaring(context, state.errorMessage);
               }
             },
             builder: (context, state) {
@@ -129,103 +132,94 @@ class SaveCategoryView extends StatelessWidget {
       context: context,
       isScrollControlled: true,
       builder: (context) {
-        return BlocListener<ManageCategoryBloc, ManageCategoryState>(
-          listenWhen: (previous, current) => previous.status != current.status,
-          listener: (context, state) {
-            if (ManageCategoryStatus.failure == state.status) {
-              CustomDialogs.showDialogWaring(context, state.errorMessage);
-            }
-          },
-          child: Padding(
-            padding: EdgeInsets.only(
-              bottom: MediaQuery.of(context).viewInsets.bottom,
+        return Padding(
+          padding: EdgeInsets.only(
+            bottom: MediaQuery.of(context).viewInsets.bottom,
+          ),
+          child: Container(
+            margin: const EdgeInsets.symmetric(
+              vertical: 25,
+              horizontal: 20,
             ),
-            child: Container(
-              margin: const EdgeInsets.symmetric(
-                vertical: 25,
-                horizontal: 20,
-              ),
-              height: 250,
-              width: double.infinity,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'addNewCategoryTitleManageCategory'.tr,
-                    style: const TextStyle(
-                      color: Colors.grey,
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
+            height: 250,
+            width: double.infinity,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'addNewCategoryTitleManageCategory'.tr,
+                  style: const TextStyle(
+                    color: Colors.grey,
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const SizedBox(height: 25),
+                ListTile(
+                  leading: const Icon(
+                    Icons.account_tree_rounded,
+                    size: 30,
+                  ),
+                  title: SizedBox(
+                    height: Get.height * 0.09,
+                    width: Get.width * 0.6,
+                    child: TextFormField(
+                      controller: textEditingController,
+                      decoration: InputDecoration(
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                      ),
+                      onChanged: (value) {
+                        context.read<ManageCategoryBloc>().add(
+                              ManageCategoryNameChanged(value),
+                            );
+                      },
                     ),
                   ),
-                  const SizedBox(height: 25),
-                  ListTile(
-                    leading: const Icon(
-                      Icons.account_tree_rounded,
-                      size: 30,
-                    ),
-                    title: SizedBox(
-                      height: Get.height * 0.09,
-                      width: Get.width * 0.6,
-                      child: TextFormField(
-                        controller: textEditingController,
-                        decoration: InputDecoration(
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(20),
-                          ),
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    ElevatedButton(
+                      onPressed: () {
+                        context
+                            .read<ManageCategoryBloc>()
+                            .add(const ManageCategorySubmitted());
+                        // Get.back();
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Theme.of(context).colorScheme.primary,
+                        fixedSize: const Size(120, 40),
+                      ),
+                      child: Text(
+                        'addButtonManageCategory'.tr,
+                        style: TextStyle(
+                          color: Theme.of(context).colorScheme.onPrimary,
                         ),
-                        onChanged: (value) {
-                          context.read<ManageCategoryBloc>().add(
-                                ManageCategoryNameChanged(value),
-                              );
-                        },
                       ),
                     ),
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      ElevatedButton(
-                        onPressed: () {
-                          context
-                              .read<ManageCategoryBloc>()
-                              .add(const ManageCategorySubmitted());
-                          // Get.back();
-                        },
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor:
-                              Theme.of(context).colorScheme.primary,
-                          fixedSize: const Size(120, 40),
-                        ),
-                        child: Text(
-                          'addButtonManageCategory'.tr,
-                          style: TextStyle(
-                            color: Theme.of(context).colorScheme.onPrimary,
-                          ),
+                    const SizedBox(
+                      width: 15,
+                    ),
+                    ElevatedButton(
+                      onPressed: () {
+                        Get.back();
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.grey.shade400,
+                        fixedSize: const Size(120, 40),
+                      ),
+                      child: Text(
+                        'closeButtonManageCategory'.tr,
+                        style: TextStyle(
+                          color: Theme.of(context).colorScheme.onPrimary,
                         ),
                       ),
-                      const SizedBox(
-                        width: 15,
-                      ),
-                      ElevatedButton(
-                        onPressed: () {
-                          Get.back();
-                        },
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.grey.shade400,
-                          fixedSize: const Size(120, 40),
-                        ),
-                        child: Text(
-                          'closeButtonManageCategory'.tr,
-                          style: TextStyle(
-                            color: Theme.of(context).colorScheme.onPrimary,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
+                    ),
+                  ],
+                ),
+              ],
             ),
           ),
         );
@@ -243,103 +237,94 @@ class SaveCategoryView extends StatelessWidget {
       context: context,
       isScrollControlled: true,
       builder: (context) {
-        return BlocListener<ManageCategoryBloc, ManageCategoryState>(
-          listenWhen: (previous, current) => previous.status != current.status,
-          listener: (context, state) {
-            if (ManageCategoryStatus.failure == state.status) {
-              CustomDialogs.showDialogWaring(context, state.errorMessage);
-            }
-          },
-          child: Padding(
-            padding: EdgeInsets.only(
-              bottom: MediaQuery.of(context).viewInsets.bottom,
+        return Padding(
+          padding: EdgeInsets.only(
+            bottom: MediaQuery.of(context).viewInsets.bottom,
+          ),
+          child: Container(
+            margin: const EdgeInsets.symmetric(
+              vertical: 25,
+              horizontal: 20,
             ),
-            child: Container(
-              margin: const EdgeInsets.symmetric(
-                vertical: 25,
-                horizontal: 20,
-              ),
-              height: 250,
-              width: double.infinity,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'editNewCategoryTitleManageCategory'.tr,
-                    style: const TextStyle(
-                      color: Colors.grey,
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
+            height: 250,
+            width: double.infinity,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'editNewCategoryTitleManageCategory'.tr,
+                  style: const TextStyle(
+                    color: Colors.grey,
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                ListTile(
+                  leading: const Icon(
+                    Icons.account_tree_rounded,
+                    size: 30,
+                  ),
+                  trailing: const Icon(Icons.home_work_outlined),
+                  title: SizedBox(
+                    height: Get.height * 0.09,
+                    width: Get.width * 0.6,
+                    child: TextFormField(
+                      controller: textEditingController,
+                      decoration: const InputDecoration(
+                        border: UnderlineInputBorder(
+                          borderRadius: BorderRadius.only(),
+                        ),
+                      ),
+                      onChanged: (value) {
+                        context.read<ManageCategoryBloc>().add(
+                              ManageCategoryNameChanged(value),
+                            );
+                      },
                     ),
                   ),
-                  ListTile(
-                    leading: const Icon(
-                      Icons.account_tree_rounded,
-                      size: 30,
-                    ),
-                    trailing: const Icon(Icons.home_work_outlined),
-                    title: SizedBox(
-                      height: Get.height * 0.09,
-                      width: Get.width * 0.6,
-                      child: TextFormField(
-                        controller: textEditingController,
-                        decoration: const InputDecoration(
-                          border: UnderlineInputBorder(
-                            borderRadius: BorderRadius.only(),
-                          ),
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    ElevatedButton(
+                      onPressed: () {
+                        context
+                            .read<ManageCategoryBloc>()
+                            .add(const ManageCategorySubmitted());
+                        // Get.back();
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Theme.of(context).colorScheme.primary,
+                        fixedSize: const Size(120, 40),
+                      ),
+                      child: Text(
+                        'editButtonManageCategory'.tr,
+                        style: TextStyle(
+                          color: Theme.of(context).colorScheme.onPrimary,
                         ),
-                        onChanged: (value) {
-                          context.read<ManageCategoryBloc>().add(
-                                ManageCategoryNameChanged(value),
-                              );
-                        },
                       ),
                     ),
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      ElevatedButton(
-                        onPressed: () {
-                          context
-                              .read<ManageCategoryBloc>()
-                              .add(const ManageCategorySubmitted());
-                          // Get.back();
-                        },
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor:
-                              Theme.of(context).colorScheme.primary,
-                          fixedSize: const Size(120, 40),
-                        ),
-                        child: Text(
-                          'editButtonManageCategory'.tr,
-                          style: TextStyle(
-                            color: Theme.of(context).colorScheme.onPrimary,
-                          ),
+                    const SizedBox(
+                      width: 15,
+                    ),
+                    ElevatedButton(
+                      onPressed: () {
+                        Get.back();
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.grey.shade400,
+                        fixedSize: const Size(120, 40),
+                      ),
+                      child: Text(
+                        'closeButtonManageCategory'.tr,
+                        style: TextStyle(
+                          color: Theme.of(context).colorScheme.onPrimary,
                         ),
                       ),
-                      const SizedBox(
-                        width: 15,
-                      ),
-                      ElevatedButton(
-                        onPressed: () {
-                          Get.back();
-                        },
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.grey.shade400,
-                          fixedSize: const Size(120, 40),
-                        ),
-                        child: Text(
-                          'closeButtonManageCategory'.tr,
-                          style: TextStyle(
-                            color: Theme.of(context).colorScheme.onPrimary,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
+                    ),
+                  ],
+                ),
+              ],
             ),
           ),
         );

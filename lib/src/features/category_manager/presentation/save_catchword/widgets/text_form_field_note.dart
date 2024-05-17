@@ -44,7 +44,6 @@ class _TextFormFieldNoteState extends State<TextFormFieldNote> {
         ),
       ),
       onChanged: (value) {
-        logger.f(value);
         context.read<EditCatchwordBloc>().add(
               EditCatchwordNoteChanged(note: value),
             );

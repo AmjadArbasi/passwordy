@@ -89,7 +89,7 @@ class AppLocalDatabase {
       category?.total -= 1;
       await isar.categoryDbDtos.put(category!);
 
-      logger.i('Delete a catchword $success');
+      GlobalVar.logger.i('Delete a catchword $success');
 
       /// logging
       await isar.logActivityDbDtos.put(log);
@@ -111,7 +111,7 @@ class AppLocalDatabase {
 
     await isar.writeTxn(() async {
       final success = await isar.categoryDbDtos.delete(categoryId);
-      logger.i('Delete a category $success');
+      GlobalVar.logger.i('Delete a category $success');
 
       /// logging
       await isar.logActivityDbDtos.put(log);

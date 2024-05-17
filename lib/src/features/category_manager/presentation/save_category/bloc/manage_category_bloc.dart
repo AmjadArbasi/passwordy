@@ -25,6 +25,7 @@ class ManageCategoryBloc
     Emitter<ManageCategoryState> emit,
   ) async {
     emit(state.copyWith(status: ManageCategoryStatus.loading));
+
     await emit.forEach<List<CategoryEntity>>(
       _categoryManagerUsecase.getCategoriesList(),
       onData: (data) => state.copyWith(
@@ -52,7 +53,7 @@ class ManageCategoryBloc
     return failureOrSuccess.fold(
       (failure) {
         emit(state.copyWith(
-          status: ManageCategoryStatus.failure,
+          status: ManageCategoryStatus.cancel,
           errorMessage: failure.message,
         ));
       },
@@ -77,7 +78,6 @@ class ManageCategoryBloc
     Emitter<ManageCategoryState> emit,
   ) async {
     emit(state.copyWith(status: ManageCategoryStatus.loading));
-    logger.f('ManageCategorySubmitted ${state.categoryEdit}');
     final category = (state.categoryEdit ?? const CategoryEntity())
         .copyWith(categoryName: state.categoryName);
     final failureOrSuccess =
@@ -86,7 +86,7 @@ class ManageCategoryBloc
     return failureOrSuccess.fold(
       (failure) {
         emit(state.copyWith(
-          status: ManageCategoryStatus.failure,
+          status: ManageCategoryStatus.cancel,
           errorMessage: failure.message,
         ));
       },

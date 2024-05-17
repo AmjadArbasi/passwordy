@@ -78,7 +78,7 @@ class CategoryManagerApi implements ICategoryManagerApi {
 
           return Right(categoriesModel);
         } catch (e) {
-          logger.e("something-went-wrong", error: e);
+          GlobalVar.logger.e("something-went-wrong", error: e);
           return Left(CategoryManagerException("something-went-wrong"));
         }
       } else {
@@ -138,7 +138,7 @@ class CategoryManagerApi implements ICategoryManagerApi {
           });
           return right(catchwordDbDtoToModelConverter.convert(newCatchword));
         } catch (e) {
-          logger.e("something-went-wrong", error: e);
+          GlobalVar.logger.e("something-went-wrong", error: e);
           return Left(CategoryManagerException("something-went-wrong"));
         }
       } else {
@@ -195,7 +195,7 @@ class CategoryManagerApi implements ICategoryManagerApi {
         });
         return Right(catchwordDbDtoToModelConverter.convert(newCatchword));
       } catch (e) {
-        logger.e("something-went-wrong", error: e);
+        GlobalVar.logger.e("something-went-wrong", error: e);
         return Left(CategoryManagerException("something-went-wrong"));
       }
     } else {
@@ -231,7 +231,7 @@ class CategoryManagerApi implements ICategoryManagerApi {
         });
         return const Right(unit);
       } catch (e) {
-        logger.e("something-went-wrong", error: e);
+        GlobalVar.logger.e("something-went-wrong", error: e);
         return Left(CategoryManagerException("something-went-wrong"));
       }
     } else {
@@ -290,7 +290,7 @@ class CategoryManagerApi implements ICategoryManagerApi {
 
           return Right(categoryDbDtoToModelConverter.convert(newCategory));
         } catch (e) {
-          logger.e("something-went-error", error: e);
+          GlobalVar.logger.e("something-went-error", error: e);
           return Left(CategoryManagerException("something-went-error"));
         }
       } else {
@@ -314,7 +314,7 @@ class CategoryManagerApi implements ICategoryManagerApi {
       try {
         await isar.writeTxn(() async {
           final success = await isar.categoryDbDtos.delete(categoryId);
-          logger.i('Delete a category $success');
+          GlobalVar.logger.i('Delete a category $success');
 
           /// logging
           await isar.logActivityDbDtos.put(log);
@@ -325,7 +325,7 @@ class CategoryManagerApi implements ICategoryManagerApi {
         });
         return const Right(unit);
       } catch (e) {
-        logger.e("something-went-error", error: e);
+        GlobalVar.logger.e("something-went-error", error: e);
         return Left(CategoryManagerException("something-went-wrong"));
       }
     } else {

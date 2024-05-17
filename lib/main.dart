@@ -190,7 +190,7 @@ class _AppViewState extends State<AppView> {
   @override
   void dispose() {
     context.read<AuthBloc>().close();
-    logger.close();
+    GlobalVar.logger.close();
 
     super.dispose();
   }
@@ -202,7 +202,7 @@ class _AppViewState extends State<AppView> {
     return BlocListener<AuthBloc, AuthState>(
       listenWhen: (previous, current) => previous.status != current.status,
       listener: (context, state) {
-        logger.f(state.status);
+        GlobalVar.logger.f(state.status);
         switch (state.status) {
           case AuthStatus.authenticated:
             Get.offAllNamed(AppRoutes.skeleton);

@@ -25,7 +25,7 @@ class CategoryScrollView extends StatelessWidget {
             );
           }
           if (state.status == ManageCategoryStatus.failure) {
-            logger.f(state.errorMessage);
+            GlobalVar.logger.f(state.errorMessage);
             return Center(
               child: Lottie.asset(
                 'assets/lottie/error.json',

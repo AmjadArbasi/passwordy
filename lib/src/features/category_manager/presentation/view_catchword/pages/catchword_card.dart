@@ -3,10 +3,7 @@ import 'package:flutter_application_passmanager/src/core/core.dart';
 import 'package:flutter_application_passmanager/src/features/category_manager/category_manager.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
-import 'package:logger/logger.dart';
 import 'package:lottie/lottie.dart';
-
-var logger = Logger();
 
 class CatchwordCard extends StatelessWidget {
   const CatchwordCard({super.key, this.categories});
@@ -52,7 +49,7 @@ class CatchwordCard extends StatelessWidget {
         BlocListener<CatchwordBloc, CatchwordState>(
           listener: (context, state) {
             if (state.status == CatchwordStatus.failure) {
-              logger.f(state.errorMessage);
+              GlobalVar.logger.f(state.errorMessage);
             }
           },
         ),
