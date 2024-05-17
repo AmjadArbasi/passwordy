@@ -59,10 +59,10 @@ Passwordy is a secure password manager app meticulously crafted with Flutter to 
 <img src="screenshots/skeleton_ar_1.png" width="200"/>  <img src="screenshots/skeleton_ar_2.png" width="200"/> <img src="screenshots/skeleton_ar_3.png" width="200"/> <img src="screenshots/skeleton_ar_4.png" width="200"/> <img src="screenshots/skeleton_ar_5.png" width="200"/>
 
 ### Category & Catchword English
-<img src="screenshots/category_manage_en_1.png" width="200"/> <img src="screenshots/category_manage_en_2.png" width="200"/> <img src="screenshots/category_manage_en_3.png" width="200"/> <img src="screenshots/category_manage_en_4.png" width="200"/> <img src="screenshots/category_manage_en_5.png" width="200"/>
+<img src="screenshots/category_manage_en_1.png" width="200"/>  <img src="screenshots/category_manage_en_3.png" width="200"/> <img src="screenshots/category_manage_en_5.png" width="200"/> <img src="screenshots/category_manage_en_2.png" width="200"/>  <img src="screenshots/category_manage_en_4.png" width="200"/>
 
 ### Category & Catchword Arabic
-<img src="screenshots/category_manage_ar_1.png" width="200"/> <img src="screenshots/category_manage_ar_2.png" width="200"/> <img src="screenshots/category_manage_ar_3.png" width="200"/> <img src="screenshots/category_manage_ar_4.png" width="200"/> <img src="screenshots/category_manage_ar_5.png" width="200"/>
+<img src="screenshots/category_manage_ar_1.png" width="200"/> <img src="screenshots/category_manage_ar_3.png" width="200"/> <img src="screenshots/category_manage_ar_4.png" width="200"/>  <img src="screenshots/category_manage_ar_2.png" width="200"/>  <img src="screenshots/category_manage_ar_5.png" width="200"/>
 
 ## Video Demo
 
