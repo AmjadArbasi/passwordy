@@ -13,6 +13,7 @@ class Routes {
     GetPage(name: AppRoutes.saveCategory, page: () => const SaveCategory()),
     GetPage(name: AppRoutes.general, page: () => const General()),
     GetPage(name: AppRoutes.about, page: () => const About()),
+    GetPage(name: AppRoutes.userDeletion, page: () => const UserDeletion()),
     GetPage(name: AppRoutes.activitiesLog, page: () => const ActivitiesLog()),
     GetPage(name: AppRoutes.onBoarding, page: () => const OnboardingPage()),
     GetPage(name: AppRoutes.splash, page: () => const SplashView()),

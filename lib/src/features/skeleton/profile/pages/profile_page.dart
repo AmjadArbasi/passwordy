@@ -43,14 +43,17 @@ class Profile extends StatelessWidget {
             CustomTileProfile(
               leadIcon: Icons.health_and_safety,
               title: "aboutProfile".tr,
-              onTap: () {
-                Get.toNamed(AppRoutes.about);
-              },
+              onTap: () => Get.toNamed(AppRoutes.about),
             ),
             CustomTileProfile(
               leadIcon: Icons.language,
               title: "langProfile".tr,
               onTap: () => Get.toNamed(AppRoutes.translator),
+            ),
+            CustomTileProfile(
+              leadIcon: Icons.dangerous,
+              title: "titleUserDeletion".tr,
+              onTap: () => Get.toNamed(AppRoutes.userDeletion),
             ),
             const SizedBox(height: 25),
             Builder(

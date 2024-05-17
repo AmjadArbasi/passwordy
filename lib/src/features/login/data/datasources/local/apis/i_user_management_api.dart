@@ -11,7 +11,7 @@ abstract class IUserManagementApi {
   Future<Either<Failure, UserLocalModel>> updateUserInfo(
       UserLocalModel userLocalModel);
 
-  Future<Either<Failure, Unit>> deleteUser(UserLocalModel userLocalModel);
+  Future<Either<Failure, Unit>> deleteUser();
 
   Future<Either<Failure, UserLocalModel>> reAuthLoggedUser();
 

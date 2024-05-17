@@ -10,7 +10,7 @@ abstract class UserManagementRepository {
   Future<Either<Failure, UserLocalEntity>> updateInfo(
       UserLocalEntity userLocalEntity);
 
-  Future<Either<Failure, Unit>> deleteUser(UserLocalEntity userLocalEntity);
+  Future<Either<Failure, Unit>> deleteUser();
 
   Future<Either<Failure, UserLocalEntity>> reAuthLoggedUser();
   Future<void> logOut();

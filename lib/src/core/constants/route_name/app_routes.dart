@@ -50,4 +50,6 @@ class AppRoutes {
   static const String welcome = "${root}welcome";
 
   static const String resetPassword = "${root}resetPassword";
+
+  static const String userDeletion = "${root}userDeletion";
 }

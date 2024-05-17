@@ -29,7 +29,21 @@ const LogActivitiesDbDtoSchema = CollectionSchema(
   deserialize: _logActivitiesDbDtoDeserialize,
   deserializeProp: _logActivitiesDbDtoDeserializeProp,
   idName: r'id',
-  indexes: {},
+  indexes: {
+    r'linker': IndexSchema(
+      id: 6223059953983404649,
+      name: r'linker',
+      unique: true,
+      replace: false,
+      properties: [
+        IndexPropertySchema(
+          name: r'linker',
+          type: IndexType.hash,
+          caseSensitive: true,
+        )
+      ],
+    )
+  },
   links: {
     r'logActivities': LinkSchema(
       id: 323679620470816253,
@@ -111,6 +125,61 @@ void _logActivitiesDbDtoAttach(
       col, col.isar.collection<LogActivityDbDto>(), r'logActivities', id);
 }
 
+extension LogActivitiesDbDtoByIndex on IsarCollection<LogActivitiesDbDto> {
+  Future<LogActivitiesDbDto?> getByLinker(String? linker) {
+    return getByIndex(r'linker', [linker]);
+  }
+
+  LogActivitiesDbDto? getByLinkerSync(String? linker) {
+    return getByIndexSync(r'linker', [linker]);
+  }
+
+  Future<bool> deleteByLinker(String? linker) {
+    return deleteByIndex(r'linker', [linker]);
+  }
+
+  bool deleteByLinkerSync(String? linker) {
+    return deleteByIndexSync(r'linker', [linker]);
+  }
+
+  Future<List<LogActivitiesDbDto?>> getAllByLinker(List<String?> linkerValues) {
+    final values = linkerValues.map((e) => [e]).toList();
+    return getAllByIndex(r'linker', values);
+  }
+
+  List<LogActivitiesDbDto?> getAllByLinkerSync(List<String?> linkerValues) {
+    final values = linkerValues.map((e) => [e]).toList();
+    return getAllByIndexSync(r'linker', values);
+  }
+
+  Future<int> deleteAllByLinker(List<String?> linkerValues) {
+    final values = linkerValues.map((e) => [e]).toList();
+    return deleteAllByIndex(r'linker', values);
+  }
+
+  int deleteAllByLinkerSync(List<String?> linkerValues) {
+    final values = linkerValues.map((e) => [e]).toList();
+    return deleteAllByIndexSync(r'linker', values);
+  }
+
+  Future<Id> putByLinker(LogActivitiesDbDto object) {
+    return putByIndex(r'linker', object);
+  }
+
+  Id putByLinkerSync(LogActivitiesDbDto object, {bool saveLinks = true}) {
+    return putByIndexSync(r'linker', object, saveLinks: saveLinks);
+  }
+
+  Future<List<Id>> putAllByLinker(List<LogActivitiesDbDto> objects) {
+    return putAllByIndex(r'linker', objects);
+  }
+
+  List<Id> putAllByLinkerSync(List<LogActivitiesDbDto> objects,
+      {bool saveLinks = true}) {
+    return putAllByIndexSync(r'linker', objects, saveLinks: saveLinks);
+  }
+}
+
 extension LogActivitiesDbDtoQueryWhereSort
     on QueryBuilder<LogActivitiesDbDto, LogActivitiesDbDto, QWhere> {
   QueryBuilder<LogActivitiesDbDto, LogActivitiesDbDto, QAfterWhere> anyId() {
@@ -187,6 +256,73 @@ extension LogActivitiesDbDtoQueryWhere
         upper: upperId,
         includeUpper: includeUpper,
       ));
+    });
+  }
+
+  QueryBuilder<LogActivitiesDbDto, LogActivitiesDbDto, QAfterWhereClause>
+      linkerIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IndexWhereClause.equalTo(
+        indexName: r'linker',
+        value: [null],
+      ));
+    });
+  }
+
+  QueryBuilder<LogActivitiesDbDto, LogActivitiesDbDto, QAfterWhereClause>
+      linkerIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IndexWhereClause.between(
+        indexName: r'linker',
+        lower: [null],
+        includeLower: false,
+        upper: [],
+      ));
+    });
+  }
+
+  QueryBuilder<LogActivitiesDbDto, LogActivitiesDbDto, QAfterWhereClause>
+      linkerEqualTo(String? linker) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IndexWhereClause.equalTo(
+        indexName: r'linker',
+        value: [linker],
+      ));
+    });
+  }
+
+  QueryBuilder<LogActivitiesDbDto, LogActivitiesDbDto, QAfterWhereClause>
+      linkerNotEqualTo(String? linker) {
+    return QueryBuilder.apply(this, (query) {
+      if (query.whereSort == Sort.asc) {
+        return query
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'linker',
+              lower: [],
+              upper: [linker],
+              includeUpper: false,
+            ))
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'linker',
+              lower: [linker],
+              includeLower: false,
+              upper: [],
+            ));
+      } else {
+        return query
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'linker',
+              lower: [linker],
+              includeLower: false,
+              upper: [],
+            ))
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'linker',
+              lower: [],
+              upper: [linker],
+              includeUpper: false,
+            ));
+      }
     });
   }
 }

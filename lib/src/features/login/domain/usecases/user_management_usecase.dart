@@ -9,10 +9,8 @@ class UserManagementUsecase {
 
   final UserManagementRepository _userManagementRepository;
 
-  Future<Either<Failure, Unit>> signUp(UserLocalEntity userLocalEntity) async {
-    final result = await _userManagementRepository.signUp(userLocalEntity);
-    return result.fold((l) => Left(l), (r) => Right(r));
-  }
+  Future<Either<Failure, Unit>> signUp(UserLocalEntity userLocalEntity) async =>
+      _userManagementRepository.signUp(userLocalEntity);
 
   Future<Either<Failure, UserLocalEntity>> logIn(
           String masterPassword, String username) =>
@@ -22,8 +20,8 @@ class UserManagementUsecase {
           UserLocalEntity userLocalEntity) =>
       _userManagementRepository.updateInfo(userLocalEntity);
 
-  Future<Either<Failure, Unit>> deleteUser(UserLocalEntity userLocalEntity) =>
-      _userManagementRepository.deleteUser(userLocalEntity);
+  Future<Either<Failure, Unit>> deleteUser() =>
+      _userManagementRepository.deleteUser();
 
   Future<void> logOut() => _userManagementRepository.logOut();
 

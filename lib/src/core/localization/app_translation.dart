@@ -178,9 +178,18 @@ class AppTranslation extends Translations {
     "aboutVersionFailed": "Version: -.-.-.-",
     "aboutVersionSuccess": "Version: ",
 
-    /// [_showDialog]
+    /// [showDialog]
     "showDialogWaring": "Waring",
     "showDialogClose": "Close",
+
+    /// [User Deletion Request]
+    "titleUserDeletion": "Dangerous Zone",
+    "userDeletionText": "Delete account",
+    "messageDeletiongText":
+        "Deleting your account is a permanent action and cannot be undone. Once your account is deleted, all your saved passwords and data will be permanently erased. You will lose access to all the information stored in the app, and it cannot be recovered. Please ensure that you have securely backed up any important data before proceeding.",
+    "titleShowDialogUserDeletion": "ًWaring!",
+    "messageShowDialogUserDeletion":
+        "Are you sure you want to delete your account?",
   };
   static const Map<String, String> ar = {
     /// [Sign in] Page
@@ -346,6 +355,14 @@ class AppTranslation extends Translations {
     /// [_showDialog]
     "showDialogWaring": "تحذير",
     "showDialogClose": "تجاهل",
+
+    /// [User Deletion Request]
+    "titleUserDeletion": "ادراة الحساب",
+    "userDeletionText": "حذف الحساب",
+    "messageDeletiongText":
+        "حذف حسابك هو إجراء دائم ولا يمكن التراجع عنه. بمجرد حذف حسابك، سيتم مسح جميع كلمات المرور المحفوظة والبيانات بشكل دائم. ستفقد الوصول إلى جميع المعلومات المخزنة في التطبيق، ولا يمكن استردادها. يرجى التأكد من أنك قمت بنسخ جميع البيانات المهمة احتياطيًا بأمان قبل المتابعة.",
+    "titleShowDialogUserDeletion": "تحذير!",
+    "messageShowDialogUserDeletion": "هل انت متاكد من حذف الحساب نهائيا؟",
   };
 
   @override

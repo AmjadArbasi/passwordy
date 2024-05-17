@@ -195,17 +195,48 @@ class UserManagementApi implements IUserManagementApi {
   }
 
   @override
-  Future<Either<Failure, Unit>> deleteUser(
-      UserLocalModel userLocalModel) async {
-    final user = await _isar.userLocalDtos
-        .filter()
-        .usernameEqualTo(userLocalModel.username)
-        .findFirst();
-
-    if (user != null) {
+  Future<Either<Failure, Unit>> deleteUser() async {
+    final token = await _secureStorage.getToken(keyToken);
+    final user =
+        await _isar.userLocalDtos.filter().tokenEqualTo(token).findFirst();
+    if (user != null && token != null) {
       try {
+        final linker = user.linker!;
+
         await _secureStorage.deleteToken(keyToken);
+
+        final categories = await _isar.categoriesDbDtos
+            .filter()
+            .linkerEqualTo(linker)
+            .findFirst();
+
+        final log = await _isar.logActivitiesDbDtos
+            .filter()
+            .linkerEqualTo(linker)
+            .findFirst();
+
+        final categoryList = await categories?.categories.filter().findAll();
+
         await _isar.writeTxn(() async {
+          if (categoryList != null) {
+            for (var categoryDbDto in categoryList) {
+              await categoryDbDto.catchwords.filter().deleteAll();
+            }
+            await categories?.categories.filter().deleteAll();
+            await _isar.categoriesDbDtos
+                .filter()
+                .linkerEqualTo(linker)
+                .deleteFirst();
+          }
+
+          await log?.logActivities.filter().deleteAll();
+
+          await _isar.logActivitiesDbDtos
+              .filter()
+              .linkerEqualTo(linker)
+              .deleteFirst();
+
+          /// Delete the logged user
           _isar.userLocalDtos.deleteByUsername(user.username);
         });
         return const Right(unit);
@@ -215,7 +246,7 @@ class UserManagementApi implements IUserManagementApi {
         return Left(DatabaseException("something-went-wrong"));
       }
     } else {
-      return Left(DatabaseException("user-not-found"));
+      return Left(DatabaseException("user-not-authorized"));
     }
   }
 

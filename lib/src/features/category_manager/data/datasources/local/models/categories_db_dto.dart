@@ -12,7 +12,7 @@ class CategoriesDbDto {
 
   Id? id = Isar.autoIncrement;
 
-  // @Index(unique: true)
+  @Index(unique: true)
   String linker;
 
   final categories = IsarLinks<CategoryDbDto>();

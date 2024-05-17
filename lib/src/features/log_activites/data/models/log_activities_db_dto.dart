@@ -9,7 +9,9 @@ class LogActivitiesDbDto {
 
   Id id = Isar.autoIncrement;
 
+  @Index(unique: true)
   String? linker;
+
   final logActivities = IsarLinks<LogActivityDbDto>();
 
   @override

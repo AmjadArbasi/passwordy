@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_passmanager/src/core/constants/constants.dart';
+import 'package:flutter_application_passmanager/src/core/core.dart';
 import 'package:flutter_application_passmanager/src/features/auth/auth.dart';
 import 'package:flutter_application_passmanager/src/features/user_manager/user_manager.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -16,13 +17,7 @@ class UpdateUserInfoForm extends StatelessWidget {
       listenWhen: (previous, current) => previous.status != current.status,
       listener: (context, state) {
         if (state.status == FormzSubmissionStatus.failure) {
-          ScaffoldMessenger.of(context)
-            ..hideCurrentSnackBar()
-            ..showSnackBar(
-              SnackBar(
-                content: Text(state.errorMessage),
-              ),
-            );
+          CustomDialogs.showDialogWaring(context, state.errorMessage);
         }
       },
       child: Container(

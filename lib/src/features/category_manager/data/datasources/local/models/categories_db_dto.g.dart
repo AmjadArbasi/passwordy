@@ -28,7 +28,21 @@ const CategoriesDbDtoSchema = CollectionSchema(
   deserialize: _categoriesDbDtoDeserialize,
   deserializeProp: _categoriesDbDtoDeserializeProp,
   idName: r'id',
-  indexes: {},
+  indexes: {
+    r'linker': IndexSchema(
+      id: 6223059953983404649,
+      name: r'linker',
+      unique: true,
+      replace: false,
+      properties: [
+        IndexPropertySchema(
+          name: r'linker',
+          type: IndexType.hash,
+          caseSensitive: true,
+        )
+      ],
+    )
+  },
   links: {
     r'categories': LinkSchema(
       id: -7920971862278343551,
@@ -103,6 +117,61 @@ void _categoriesDbDtoAttach(
   object.id = id;
   object.categories
       .attach(col, col.isar.collection<CategoryDbDto>(), r'categories', id);
+}
+
+extension CategoriesDbDtoByIndex on IsarCollection<CategoriesDbDto> {
+  Future<CategoriesDbDto?> getByLinker(String linker) {
+    return getByIndex(r'linker', [linker]);
+  }
+
+  CategoriesDbDto? getByLinkerSync(String linker) {
+    return getByIndexSync(r'linker', [linker]);
+  }
+
+  Future<bool> deleteByLinker(String linker) {
+    return deleteByIndex(r'linker', [linker]);
+  }
+
+  bool deleteByLinkerSync(String linker) {
+    return deleteByIndexSync(r'linker', [linker]);
+  }
+
+  Future<List<CategoriesDbDto?>> getAllByLinker(List<String> linkerValues) {
+    final values = linkerValues.map((e) => [e]).toList();
+    return getAllByIndex(r'linker', values);
+  }
+
+  List<CategoriesDbDto?> getAllByLinkerSync(List<String> linkerValues) {
+    final values = linkerValues.map((e) => [e]).toList();
+    return getAllByIndexSync(r'linker', values);
+  }
+
+  Future<int> deleteAllByLinker(List<String> linkerValues) {
+    final values = linkerValues.map((e) => [e]).toList();
+    return deleteAllByIndex(r'linker', values);
+  }
+
+  int deleteAllByLinkerSync(List<String> linkerValues) {
+    final values = linkerValues.map((e) => [e]).toList();
+    return deleteAllByIndexSync(r'linker', values);
+  }
+
+  Future<Id> putByLinker(CategoriesDbDto object) {
+    return putByIndex(r'linker', object);
+  }
+
+  Id putByLinkerSync(CategoriesDbDto object, {bool saveLinks = true}) {
+    return putByIndexSync(r'linker', object, saveLinks: saveLinks);
+  }
+
+  Future<List<Id>> putAllByLinker(List<CategoriesDbDto> objects) {
+    return putAllByIndex(r'linker', objects);
+  }
+
+  List<Id> putAllByLinkerSync(List<CategoriesDbDto> objects,
+      {bool saveLinks = true}) {
+    return putAllByIndexSync(r'linker', objects, saveLinks: saveLinks);
+  }
 }
 
 extension CategoriesDbDtoQueryWhereSort
@@ -181,6 +250,51 @@ extension CategoriesDbDtoQueryWhere
         upper: upperId,
         includeUpper: includeUpper,
       ));
+    });
+  }
+
+  QueryBuilder<CategoriesDbDto, CategoriesDbDto, QAfterWhereClause>
+      linkerEqualTo(String linker) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IndexWhereClause.equalTo(
+        indexName: r'linker',
+        value: [linker],
+      ));
+    });
+  }
+
+  QueryBuilder<CategoriesDbDto, CategoriesDbDto, QAfterWhereClause>
+      linkerNotEqualTo(String linker) {
+    return QueryBuilder.apply(this, (query) {
+      if (query.whereSort == Sort.asc) {
+        return query
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'linker',
+              lower: [],
+              upper: [linker],
+              includeUpper: false,
+            ))
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'linker',
+              lower: [linker],
+              includeLower: false,
+              upper: [],
+            ));
+      } else {
+        return query
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'linker',
+              lower: [linker],
+              includeLower: false,
+              upper: [],
+            ))
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'linker',
+              lower: [],
+              upper: [linker],
+              includeUpper: false,
+            ));
+      }
     });
   }
 }

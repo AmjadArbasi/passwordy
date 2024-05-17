@@ -158,6 +158,12 @@ class App extends StatelessWidget {
           ),
         ),
 
+        /// Provides [UserDeletionRequest]
+        BlocProvider(
+          create: (context) => UserRequestDeletionCubit(
+              usecase: context.read<UserManagementUsecase>()),
+        ),
+
         /// Provides [Reset Password Qusetion]
         BlocProvider(
           create: (context) => ResetMasterPasscodeCubit(

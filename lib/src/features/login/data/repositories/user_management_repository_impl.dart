@@ -50,9 +50,8 @@ class UserManagementRepositoryImpl extends UserManagementRepository {
   }
 
   @override
-  Future<Either<Failure, Unit>> deleteUser(
-      UserLocalEntity userLocalEntity) async {
-    final result = await _api.deleteUser(userLocalEntity.mapToModel());
+  Future<Either<Failure, Unit>> deleteUser() async {
+    final result = await _api.deleteUser();
 
     return result.fold(
       (failure) => Left(failure),
