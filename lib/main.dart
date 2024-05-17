@@ -215,6 +215,7 @@ class _AppViewState extends State<AppView> {
         }
       },
       child: GetMaterialApp(
+        debugShowCheckedModeBanner: false,
         getPages: Routes.getPages,
         theme: controller.themeApp,
         locale: controller.language,
