@@ -110,8 +110,9 @@ class DropMenuSecurityQuestions extends StatelessWidget {
   Widget build(BuildContext context) {
     final currentQustion =
         context.select((SignUpCubit cubit) => cubit.state.securityQuestion);
-    final validCurrentCategory =
-        Questions.questions.contains(currentQustion) ? currentQustion.tr : null;
+    final validCurrentCategory = Questions.questions.contains(currentQustion)
+        ? currentQustion?.tr
+        : null;
 
     return DropdownButton<String>(
       value: validCurrentCategory,

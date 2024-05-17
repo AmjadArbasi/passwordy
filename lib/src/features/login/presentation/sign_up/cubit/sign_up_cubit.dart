@@ -60,7 +60,7 @@ class SignUpCubit extends Cubit<SignUpState> {
   }
 
   void securityQuestionChanged(String value) {
-    emit(state.copyWith(securityQuestion: value));
+    emit(state.copyWith(securityQuestion: () => value));
   }
 
   Future<void> signUpFormSubmitted() async {
@@ -84,6 +84,7 @@ class SignUpCubit extends Cubit<SignUpState> {
       emit(state.copyWith(
         status: FormzSubmissionStatus.success,
         isValid: false,
+        securityQuestion: () => null,
       ));
       Get.offAllNamed(AppRoutes.signIn);
     });

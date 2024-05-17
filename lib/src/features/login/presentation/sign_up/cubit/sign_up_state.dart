@@ -16,7 +16,7 @@ final class SignUpState extends Equatable {
   final Password password;
   final ConfirmPassword confirmPassword;
   final Secret secret;
-  final String securityQuestion;
+  final String? securityQuestion;
   final FormzSubmissionStatus status;
   final bool isValid;
   final String errorMessage;
@@ -38,7 +38,7 @@ final class SignUpState extends Equatable {
     Password? password,
     ConfirmPassword? confirmPassword,
     Secret? secret,
-    String? securityQuestion,
+    String? Function()? securityQuestion,
     FormzSubmissionStatus? status,
     bool? isValid,
     String? errorMessage,
@@ -48,7 +48,8 @@ final class SignUpState extends Equatable {
       password: password ?? this.password,
       confirmPassword: confirmPassword ?? this.confirmPassword,
       secret: secret ?? this.secret,
-      securityQuestion: securityQuestion ?? this.securityQuestion,
+      securityQuestion:
+          securityQuestion != null ? securityQuestion() : this.securityQuestion,
       status: status ?? this.status,
       isValid: isValid ?? this.isValid,
       errorMessage: errorMessage ?? this.errorMessage,
