@@ -42,6 +42,8 @@ Passwordy is a secure password manager app meticulously crafted with Flutter to 
 
 <img src="screenshots/onboarding_en_1.png" width="200"/>  <img src="screenshots/onboarding_en_2.png" width="200"/> <img src="screenshots/onboarding_en_3.png" width="200"/> <img src="screenshots/onboarding_en_4.png" width="200"/>
 
+### Onboarding pages Arabic
+<img src="screenshots/onboarding_ar_1.png" width="200"/>  <img src="screenshots/onboarding_ar_2.png" width="200"/> <img src="screenshots/onboarding_ar_3.png" width="200"/> <img src="screenshots/onboarding_ar_4.png" width="200"/>
 
 ## Video Demo
 
