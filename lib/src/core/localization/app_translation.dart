@@ -177,6 +177,10 @@ class AppTranslation extends Translations {
     "aboutVersionLoading": "Version: Loading....",
     "aboutVersionFailed": "Version: -.-.-.-",
     "aboutVersionSuccess": "Version: ",
+
+    /// [_showDialog]
+    "showDialogWaring": "Waring",
+    "showDialogClose": "Close",
   };
   static const Map<String, String> ar = {
     /// [Sign in] Page
@@ -338,6 +342,10 @@ class AppTranslation extends Translations {
     "aboutVersionLoading": "الاصدار: تحميل ...",
     "aboutVersionFailed": "الاصدار: -.-.-.",
     "aboutVersionSuccess": "الاصدار: ",
+
+    /// [_showDialog]
+    "showDialogWaring": "تحذير",
+    "showDialogClose": "تجاهل",
   };
 
   @override

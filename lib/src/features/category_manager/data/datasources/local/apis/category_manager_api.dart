@@ -247,52 +247,57 @@ class CategoryManagerApi implements ICategoryManagerApi {
       categoryName: category.categoryName,
       total: category.total,
     );
-    final categoryList = categoryListUsername;
 
-    final LogActivityDbDto log;
+    if (category.categoryName.isNotEmpty) {
+      final categoryList = categoryListUsername;
 
-    if (category.id == null) {
-      log = LogActivityDbDto()
-        ..name = "Category ${category.categoryName}"
-        ..operation = "add"
-        ..pathImage = ImagesMap.images["create"]
-        ..dateTime = DateTime.now();
-    } else {
-      log = LogActivityDbDto()
-        ..name = "Category-${category.categoryName}"
-        ..operation = "update"
-        ..pathImage = ImagesMap.images["update"]
-        ..dateTime = DateTime.now();
-    }
+      final LogActivityDbDto log;
 
-    final count = await isar.categoryDbDtos
-        .filter()
-        .categoryNameEqualTo(category.categoryName)
-        .count();
+      if (category.id == null) {
+        log = LogActivityDbDto()
+          ..name = "Category ${category.categoryName}"
+          ..operation = "add"
+          ..pathImage = ImagesMap.images["create"]
+          ..dateTime = DateTime.now();
+      } else {
+        log = LogActivityDbDto()
+          ..name = "Category-${category.categoryName}"
+          ..operation = "update"
+          ..pathImage = ImagesMap.images["update"]
+          ..dateTime = DateTime.now();
+      }
 
-    if (count == 0) {
-      try {
-        await isar.writeTxn(() async {
-          await isar.categoryDbDtos.put(newCategory);
-          categoryList.categories.add(newCategory);
-          await isar.categoriesDbDtos.put(categoryList);
-          await categoryList.categories.save();
+      final count = await isar.categoryDbDtos
+          .filter()
+          .categoryNameEqualTo(category.categoryName)
+          .count();
 
-          /// logging
-          await isar.logActivityDbDtos.put(log);
+      if (count == 0) {
+        try {
+          await isar.writeTxn(() async {
+            await isar.categoryDbDtos.put(newCategory);
+            categoryList.categories.add(newCategory);
+            await isar.categoriesDbDtos.put(categoryList);
+            await categoryList.categories.save();
 
-          logsDbUser.logActivities.add(log);
+            /// logging
+            await isar.logActivityDbDtos.put(log);
 
-          await logsDbUser.logActivities.save();
-        });
+            logsDbUser.logActivities.add(log);
 
-        return Right(categoryDbDtoToModelConverter.convert(newCategory));
-      } catch (e) {
-        logger.e("something-went-error", error: e);
-        return Left(CategoryManagerException("something-went-error"));
+            await logsDbUser.logActivities.save();
+          });
+
+          return Right(categoryDbDtoToModelConverter.convert(newCategory));
+        } catch (e) {
+          logger.e("something-went-error", error: e);
+          return Left(CategoryManagerException("something-went-error"));
+        }
+      } else {
+        return Left(CategoryManagerException("category-name-duplicate-found"));
       }
     } else {
-      return Left(CategoryManagerException("category-name-duplicate-found"));
+      return Left(CategoryManagerException("category-name-empty"));
     }
   }
 

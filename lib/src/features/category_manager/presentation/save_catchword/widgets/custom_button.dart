@@ -34,7 +34,6 @@ class CustomButtons extends StatelessWidget {
                 context
                     .read<PasswordGeneratorBloc>()
                     .add(const PasswordGeneratorDisposeSubmitted());
-                Get.back();
               },
             );
           },

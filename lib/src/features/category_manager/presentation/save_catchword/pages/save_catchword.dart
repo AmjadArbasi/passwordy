@@ -56,23 +56,24 @@ class SaveCatchword extends StatelessWidget {
                     !state.useNumber ||
                     !state.useUppercase ||
                     !state.useSymbols) {
-                  ScaffoldMessenger.of(context)
-                    ..hideCurrentSnackBar()
-                    ..showSnackBar(
-                      SnackBar(
-                        content: Text(
-                          'WarningPasswordGeneratorSaveCatchword'.tr,
-                        ),
-                      ),
-                    );
+                  CustomDialogs.showDialogWaring(
+                    context,
+                    'WarningPasswordGeneratorSaveCatchword'.tr,
+                  );
                 }
               }
             },
           ),
           BlocListener<EditCatchwordBloc, EditCatchwordState>(
+            listenWhen: (previous, current) =>
+                previous.status != current.status,
             listener: (context, state) {
               if (state.status == EditCatchwordStatus.failure) {
                 logger.f(state.errorMessage);
+                CustomDialogs.showDialogWaring(context, state.errorMessage);
+              }
+              if (state.status == EditCatchwordStatus.success) {
+                Get.back();
               }
             },
           )

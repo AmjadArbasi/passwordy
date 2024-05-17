@@ -68,6 +68,7 @@ class CatchwordCard extends StatelessWidget {
               ),
             );
           } else if (state.status == CatchwordStatus.failure) {
+            CustomDialogs.showDialogWaring(context, state.errorMessage);
             return Center(
               child: Lottie.asset(
                 'assets/lottie/error.json',
