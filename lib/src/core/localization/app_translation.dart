@@ -44,7 +44,7 @@ class AppTranslation extends Translations {
     /// [CatchwordView]
     "nameOfCatchwordView": "View Password Card",
     "namePasswordCard": "Name:",
-    "accountIdPasswordCard": "Account id",
+    "accountIdPasswordCard": "Account id:",
     "notesPasswordCard": "Notes:",
     "passwordPasswordCard": "Password:",
     "createdAtPasswordCard": "Created at:",
