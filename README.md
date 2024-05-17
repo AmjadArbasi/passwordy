@@ -8,3 +8,20 @@ Passwordy is a secure password manager app meticulously crafted with Flutter to 
 - Password generation
 - Easy access and management
 
+## Installation
+1. Clone the repository:
+    ```sh
+    git clone https://github.com/AmjadArbasi/passwordy.git
+    ```
+2. Navigate to the project directory:
+    ```sh
+    cd passwordy
+    ```
+3. Install dependencies:
+    ```sh
+    flutter pub get
+    ```
+4. Run the app:
+    ```sh
+    flutter run
+    ```
