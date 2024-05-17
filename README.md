@@ -53,10 +53,10 @@ Passwordy is a secure password manager app meticulously crafted with Flutter to 
 <img src="screenshots/login_ar_1.png" width="200"/>  <img src="screenshots/login_ar_2.png" width="200"/>
 
 ### Skeleton pages English
-<img src="screenshots/skeleton_en_1.png" width="200"/> <img src="screenshots/skeleton_en_2.png" width="200"/> <img src="screenshots/skeleton_en_3.png" width="200"/> <img src="screenshots/skeleton_en_4.png" width="200"/> <img src="screenshots/skeleton_en_5.png" width="200"/> <img src="screenshots/skeleton_en_6.png" width="200"/> <img src="screenshots/skeleton_en_7.png" width="200"/>  <img src="screenshots/skeleton_en_8.png" width="200"/>  <img src="screenshots/skeleton_en_9.png" width="200"/>
+<img src="screenshots/skeleton_en_1.png" width="200"/>  <img src="screenshots/skeleton_en_8.png" width="200"/>  <img src="screenshots/skeleton_en_9.png" width="200"/> <img src="screenshots/skeleton_en_2.png" width="200"/> <img src="screenshots/skeleton_en_3.png" width="200"/> <img src="screenshots/skeleton_en_4.png" width="200"/> <img src="screenshots/skeleton_en_5.png" width="200"/> <img src="screenshots/skeleton_en_6.png" width="200"/> <img src="screenshots/skeleton_en_7.png" width="200"/> 
 
 ### Skeleton pages Arabic
-<img src="screenshots/skeleton_ar_1.png" width="200"/>  <img src="screenshots/skeleton_ar_2.png" width="200"/> <img src="screenshots/skeleton_ar_3.png" width="200"/> <img src="screenshots/skeleton_ar_4.png" width="200"/> <img src="screenshots/skeleton_ar_5.png" width="200"/>
+<img src="screenshots/skeleton_ar_1.png" width="200"/> <img src="screenshots/skeleton_ar_4.png" width="200"/> <img src="screenshots/skeleton_ar_5.png" width="200"/> <img src="screenshots/skeleton_ar_2.png" width="200"/> <img src="screenshots/skeleton_ar_3.png" width="200"/> 
 
 ### Category & Catchword English
 <img src="screenshots/category_manage_en_1.png" width="200"/>  <img src="screenshots/category_manage_en_3.png" width="200"/> <img src="screenshots/category_manage_en_5.png" width="200"/> <img src="screenshots/category_manage_en_2.png" width="200"/>  <img src="screenshots/category_manage_en_4.png" width="200"/>
