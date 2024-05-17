@@ -40,7 +40,7 @@ Passwordy is a secure password manager app meticulously crafted with Flutter to 
 Please read [CONTRIBUTING.md](CONTRIBUTING.md) for details on our code of conduct, and the process for submitting pull requests.
 
 ## License
-This project is licensed under the GNU GPLv3 License - see the [LICENSE](LICENSE) file for details.
+This project is licensed under the GNU GPLv3 License - see the [LICENSE.md](LICENSE.md) file for details.
 
 ## Contact
 For any inquiries, please contact [amjad.arbas.developer@gmail.com
