@@ -29,8 +29,8 @@ class UpdateUserInfoDropMenuSecurityQuestions extends StatelessWidget {
       icon: const Icon(Icons.security),
       menuMaxHeight: MediaQuery.of(context).size.width * 0.4,
       items: Questions.questions
-          .map<DropdownMenuItem<String>>((item) =>
-              _buildDropDownMenuItem(item['display']!, item['value']!, context))
+          .map<DropdownMenuItem<String>>((item) => _buildDropDownMenuItem(
+              item['display']!, item['value']!.tr, context))
           .toList(),
       style: TextStyle(
         color: Theme.of(context).colorScheme.secondary,
@@ -55,7 +55,7 @@ class UpdateUserInfoDropMenuSecurityQuestions extends StatelessWidget {
           runAlignment: WrapAlignment.end,
           children: [
             Text(
-              display,
+              display.tr,
               overflow: TextOverflow.ellipsis,
               maxLines: 2,
             ),
