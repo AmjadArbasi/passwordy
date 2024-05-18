@@ -262,7 +262,7 @@ class CategoryManagerApi implements ICategoryManagerApi {
       } else {
         log = LogActivityDbDto()
           ..name = "Category-${category.categoryName}"
-          ..operation = "update"
+          ..operation = "edit"
           ..pathImage = ImagesMap.images["update"]
           ..dateTime = DateTime.now();
       }

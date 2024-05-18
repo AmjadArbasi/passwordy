@@ -135,7 +135,7 @@ class LogActivitiesCard extends StatelessWidget {
               ),
               subtitle: Text(log.dateTime),
               leading: Text(
-                "${IndexOperation.operation[log.operation]}".tr,
+                "${IndexOperation.operation[log.operation]}".toLowerCase().tr,
                 style: Theme.of(context)
                     .textTheme
                     .titleMedium!
