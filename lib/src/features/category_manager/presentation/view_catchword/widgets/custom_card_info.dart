@@ -87,7 +87,10 @@ class CustomCardInfo extends StatelessWidget {
                       .read<CatchwordBloc>()
                       .add(CatchwordsValueCopied(value: content));
                 },
-                icon: const Icon(Icons.copy)),
+                icon: Icon(
+                  Icons.copy,
+                  color: Theme.of(context).colorScheme.secondary,
+                )),
           ],
         ),
       ),
