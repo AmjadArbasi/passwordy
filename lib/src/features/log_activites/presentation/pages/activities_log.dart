@@ -37,15 +37,18 @@ class LogActivities extends StatefulWidget {
 class _LogActivitiesState extends State<LogActivities> {
   @override
   void initState() {
-    context.read<LogActitvitiesCubit>().subscribeRequested();
+    context
+        .read<LogActivitiesBloc>()
+        .add(const LogActivitiesRefreshRequested());
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<LogActitvitiesCubit, LogActitvitiesState>(
+    return BlocConsumer<LogActivitiesBloc, LogActivitiesState>(
+      listener: (context, state) {},
       builder: (context, state) {
-        if (state.status == LogActitvitiesStatus.success) {
+        if (state.status == LogActivitiesStatus.success) {
           if (state.logActivitiesEntity == null ||
               state.logActivitiesEntity!.isEmpty) {
             return Center(
@@ -58,7 +61,7 @@ class _LogActivitiesState extends State<LogActivities> {
           } else {
             return LogActivitiesCard(logs: state.logActivitiesEntity!);
           }
-        } else if (state.status == LogActitvitiesStatus.loading) {
+        } else if (state.status == LogActivitiesStatus.loading) {
           return Center(
             child: Lottie.asset(
               'assets/lottie/loading_1.json',
@@ -99,8 +102,9 @@ class LogActivitiesCard extends StatelessWidget {
           padding: const EdgeInsets.all(18.0),
           child: TextButton(
             onPressed: () {
-              context.read<LogActitvitiesCubit>().clearAll();
-              context.read<LogActitvitiesCubit>().subscribeRequested();
+              context
+                  .read<LogActivitiesBloc>()
+                  .add(const LogActivitiesCleared());
             },
             child: Text(
               "activieiesClearAll".tr,

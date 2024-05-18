@@ -177,7 +177,8 @@ class App extends StatelessWidget {
         /// Provides [Log Activities]
         BlocProvider(
           create: (context) =>
-              LogActitvitiesCubit(usecase: context.read<LogActivityUsecase>()),
+              LogActivitiesBloc(usecase: context.read<LogActivityUsecase>())
+                ..add(const LogActivitiesSubscibeRequested()),
         ),
       ],
       child: const AppView(),
@@ -196,6 +197,7 @@ class _AppViewState extends State<AppView> {
   @override
   void dispose() {
     context.read<AuthBloc>().close();
+    context.read<LogActivitiesBloc>().close();
     GlobalVar.logger.close();
 
     super.dispose();

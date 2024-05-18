@@ -9,7 +9,12 @@ class LogActivityUsecase {
   LogActivityUsecase({required LogActivityRepository activityRepository})
       : _activityRepository = activityRepository;
 
-  Future<Either<Failure, List<LogActivityEntity>>> loadAllValues() =>
-      _activityRepository.loadAllValues();
+  Future<Either<Failure, Unit>> refreshData() =>
+      _activityRepository.refreshData();
+
   Future<Either<Failure, Unit>> deleteAll() => _activityRepository.deleteAll();
+
+  Stream<List<LogActivityEntity>> logs() => _activityRepository.logs();
+
+  dispose() => _activityRepository.dispose();
 }

@@ -10,7 +10,7 @@ class LogActivitiesApis implements ILogActivitiesApis {
   final Isar _isar;
   final SecureStorage _secureStorage;
 
-  static const String key = "token";
+  static const String key = GlobalVar.keyToken;
 
   @override
   Future<void> deleteValues() async {
