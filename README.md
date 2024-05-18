@@ -64,6 +64,12 @@ Passwordy is a secure password manager app meticulously crafted with Flutter to 
 ### Category & Catchword Arabic
 <img src="screenshots/category_manage_ar_1.png" width="200"/> <img src="screenshots/category_manage_ar_3.png" width="200"/> <img src="screenshots/category_manage_ar_4.png" width="200"/>  <img src="screenshots/category_manage_ar_2.png" width="200"/>  <img src="screenshots/category_manage_ar_5.png" width="200"/>
 
+### Profile English
+<img src="screenshots/profile_en_1.png" width="200"/> <img src="screenshots/profile_en_2.png" width="200"/> <img src="screenshots/profile_en_3.png" width="200"/>  <img src="screenshots/profile_en_4.png" width="200"/>  <img src="screenshots/profile_en_5.png" width="200"/>
+
+### Profile Arabic
+<img src="screenshots/profile_ar_1.png" width="200"/> <img src="screenshots/profile_ar_2.png" width="200"/> <img src="screenshots/profile_ar_3.png" width="200"/>  <img src="screenshots/profile_ar_4.png" width="200"/>  <img src="screenshots/profile_ar_5.png" width="200"/>
+
 ## Video Demo
 
 ## Contributing
