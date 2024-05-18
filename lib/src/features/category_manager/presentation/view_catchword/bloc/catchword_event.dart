@@ -9,6 +9,7 @@ part of 'catchword_bloc.dart';
 /// [CatchwordsPasswordVisibilityToggled] : toggles the visibility of the password
 /// [CatchwordsRefreshRequested] : refresh the stream data
 /// [CatchwordsUsingTrigger] : Trigger when catchword was used
+/// [CatchwordsValueCopied] : copy to clipboard
 
 sealed class CatchwordEvent extends Equatable {
   const CatchwordEvent();
@@ -69,12 +70,10 @@ final class CatchwordsResultSearchReturned extends CatchwordEvent {
 
 final class CatchwordsPasswordVisibilityToggled extends CatchwordEvent {
   const CatchwordsPasswordVisibilityToggled({
-    // required this.isVisible,
     required this.catchwordEntity,
     required this.categoryEntity,
   });
 
-  // final bool isVisible;
   final CatchwordEntity catchwordEntity;
   final CategoryEntity categoryEntity;
 
@@ -90,4 +89,16 @@ final class CatchwordsUsingTrigger extends CatchwordEvent {
   const CatchwordsUsingTrigger({required this.id});
 
   final int id;
+
+  @override
+  List<Object> get props => [id];
+}
+
+final class CatchwordsValueCopied extends CatchwordEvent {
+  const CatchwordsValueCopied({required this.value});
+
+  final String value;
+
+  @override
+  List<Object> get props => [value];
 }

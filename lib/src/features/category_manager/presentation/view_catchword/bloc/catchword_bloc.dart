@@ -1,5 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_application_passmanager/src/features/category_manager/category_manager.dart';
 
 part 'catchword_event.dart';
@@ -18,6 +19,7 @@ class CatchwordBloc extends Bloc<CatchwordEvent, CatchwordState> {
     on<CatchwordsPasswordVisibilityToggled>(_onPasswordVisibilityToggled);
     on<CatchwordsRefreshRequested>(_onRefreshRequested);
     on<CatchwordsUsingTrigger>(_onUsingTrigger);
+    on<CatchwordsValueCopied>(_onValueCopied);
   }
 
   final CategoryManagerUsecase _categoryManagerUsecase;
@@ -93,6 +95,8 @@ class CatchwordBloc extends Bloc<CatchwordEvent, CatchwordState> {
   ) async {
     final copiedPasscode = event.copiedPasscode;
 
+    Clipboard.setData(ClipboardData(text: copiedPasscode));
+
     emit(state.copyWith(copiedPasscode: copiedPasscode));
   }
 
@@ -161,5 +165,12 @@ class CatchwordBloc extends Bloc<CatchwordEvent, CatchwordState> {
       },
       (_) {},
     );
+  }
+
+  Future<void> _onValueCopied(
+    CatchwordsValueCopied event,
+    Emitter<CatchwordState> emit,
+  ) async {
+    Clipboard.setData(ClipboardData(text: event.value));
   }
 }

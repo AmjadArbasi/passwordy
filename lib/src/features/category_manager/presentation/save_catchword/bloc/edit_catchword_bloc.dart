@@ -1,5 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_application_passmanager/src/features/category_manager/category_manager.dart';
 
 part 'edit_catchword_event.dart';
@@ -61,6 +62,8 @@ class EditCatchwordBloc extends Bloc<EditCatchwordEvent, EditCatchwordState> {
 
   Future<void> _onValueCopied(
       EditCatchwordValueCopied event, Emitter<EditCatchwordState> emit) async {
+    Clipboard.setData(ClipboardData(text: event.valueCopied));
+
     emit(state.copyWith(valueCopied: event.valueCopied));
   }
 

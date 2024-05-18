@@ -40,18 +40,28 @@ class CustomCardInfo extends StatelessWidget {
             ),
             Expanded(
               flex: 1,
-              child: Text(
-                isPassword
-                    ? isVisible
-                        ? content.isEmpty
-                            ? ''
-                            : '********'
-                        : content
-                    : content,
-                style: Theme.of(context)
-                    .textTheme
-                    .bodyLarge!
-                    .copyWith(color: Colors.grey.shade600),
+              child: Align(
+                alignment: Alignment.bottomLeft,
+                child: TextButton(
+                  onPressed: () {
+                    context
+                        .read<CatchwordBloc>()
+                        .add(CatchwordsValueCopied(value: content));
+                  },
+                  child: Text(
+                    isPassword
+                        ? isVisible
+                            ? content.isEmpty
+                                ? ''
+                                : '********'
+                            : content
+                        : content,
+                    style: Theme.of(context)
+                        .textTheme
+                        .bodyLarge!
+                        .copyWith(color: Colors.grey.shade600),
+                  ),
+                ),
               ),
             ),
             isPassword
@@ -71,6 +81,13 @@ class CustomCardInfo extends StatelessWidget {
                         ),
                       )
                 : const Text(''),
+            IconButton(
+                onPressed: () {
+                  context
+                      .read<CatchwordBloc>()
+                      .add(CatchwordsValueCopied(value: content));
+                },
+                icon: const Icon(Icons.copy)),
           ],
         ),
       ),
