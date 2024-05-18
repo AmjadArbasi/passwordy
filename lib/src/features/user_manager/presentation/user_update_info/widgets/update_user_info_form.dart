@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_passmanager/src/core/constants/constants.dart';
 import 'package:flutter_application_passmanager/src/core/core.dart';
-import 'package:flutter_application_passmanager/src/features/auth/auth.dart';
 import 'package:flutter_application_passmanager/src/features/user_manager/user_manager.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:formz/formz.dart';
@@ -37,58 +35,6 @@ class UpdateUserInfoForm extends StatelessWidget {
             CurrentPasswordChangedField(),
             SizedBox(height: 25),
             UpdateUserInfoSubmitted(),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class UpdateUserInfoDropMenuSecurityQuestions extends StatelessWidget {
-  const UpdateUserInfoDropMenuSecurityQuestions({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    final currentQustion = context
-        .select((AuthBloc bloc) => bloc.state.userLocalEntity.securityQuestion);
-    final validCurrentCategory =
-        Questions.questions.contains(currentQustion) ? currentQustion : null;
-
-    return DropdownButton<String>(
-      value: validCurrentCategory,
-      hint: Text("selectOneSecurityQuestionSecret".tr),
-      icon: const Icon(Icons.security),
-      menuMaxHeight: MediaQuery.of(context).size.width * 0.4,
-      items: Questions.questions
-          .map<DropdownMenuItem<String>>(
-              (e) => _buildDropDownMenuItem(e, context))
-          .toList(),
-      style: TextStyle(
-        color: Theme.of(context).colorScheme.secondary,
-        fontSize: 16,
-      ),
-      onChanged: (String? value) => context
-          .read<UserUpdateInfoCubit>()
-          .changeSecurityQuestion(value ?? validCurrentCategory!),
-    );
-  }
-
-  DropdownMenuItem<String> _buildDropDownMenuItem(
-      String e, BuildContext context) {
-    return DropdownMenuItem<String>(
-      value: e,
-      child: Container(
-        padding: const EdgeInsets.all(5.0),
-        width: MediaQuery.of(context).size.width * 0.7,
-        child: Wrap(
-          alignment: WrapAlignment.start,
-          runAlignment: WrapAlignment.end,
-          children: [
-            Text(
-              e,
-              overflow: TextOverflow.ellipsis,
-              maxLines: 2,
-            ),
           ],
         ),
       ),

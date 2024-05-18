@@ -59,8 +59,12 @@ class SignUpCubit extends Cubit<SignUpState> {
     ));
   }
 
-  void securityQuestionChanged(String value) {
-    emit(state.copyWith(securityQuestion: () => value));
+  void securityQuestionChanged(String? value) {
+    if (value == null || value.isEmpty) {
+      emit(state.copyWith(isValid: false));
+    } else {
+      emit(state.copyWith(securityQuestion: () => value));
+    }
   }
 
   Future<void> signUpFormSubmitted() async {

@@ -1,6 +1,5 @@
 import 'package:flutter_application_passmanager/src/core/core.dart';
 import 'package:flutter_application_passmanager/src/features/features.dart';
-import 'package:flutter_application_passmanager/src/features/log_activites/data/apis/i_log_activities_apis.dart';
 import 'package:isar/isar.dart';
 
 class LogActivitiesApis implements ILogActivitiesApis {

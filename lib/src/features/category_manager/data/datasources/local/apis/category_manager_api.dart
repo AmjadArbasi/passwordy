@@ -169,7 +169,7 @@ class CategoryManagerApi implements ICategoryManagerApi {
 
     final log = LogActivityDbDto()
       ..name = "Catchword ${catchwordModel.name}"
-      ..operation = "Edit"
+      ..operation = "edit"
       ..pathImage = ImagesMap.images["update"]
       ..dateTime = DateTime.now();
 

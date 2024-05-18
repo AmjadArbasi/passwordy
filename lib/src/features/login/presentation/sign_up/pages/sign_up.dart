@@ -103,58 +103,6 @@ class SignUpForm extends StatelessWidget {
   }
 }
 
-class DropMenuSecurityQuestions extends StatelessWidget {
-  const DropMenuSecurityQuestions({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    final currentQustion =
-        context.select((SignUpCubit cubit) => cubit.state.securityQuestion);
-    final validCurrentCategory = Questions.questions.contains(currentQustion)
-        ? currentQustion?.tr
-        : null;
-
-    return DropdownButton<String>(
-      value: validCurrentCategory,
-      hint: Text("selectOneSecurityQuestionSecret".tr),
-      icon: const Icon(Icons.security),
-      menuMaxHeight: MediaQuery.of(context).size.width * 0.4,
-      items: Questions.questions
-          .map<DropdownMenuItem<String>>(
-              (e) => _buildDropDownMenuItem(e, context))
-          .toList(),
-      style: TextStyle(
-        color: Theme.of(context).colorScheme.secondary,
-        fontSize: 16,
-      ),
-      onChanged: (String? value) =>
-          context.read<SignUpCubit>().securityQuestionChanged(value ?? ""),
-    );
-  }
-
-  DropdownMenuItem<String> _buildDropDownMenuItem(
-      String e, BuildContext context) {
-    return DropdownMenuItem<String>(
-      value: e,
-      child: Container(
-        padding: const EdgeInsets.all(5.0),
-        width: MediaQuery.of(context).size.width * 0.8,
-        child: Wrap(
-          alignment: WrapAlignment.start,
-          runAlignment: WrapAlignment.end,
-          children: [
-            Text(
-              e,
-              overflow: TextOverflow.ellipsis,
-              maxLines: 2,
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
 class SignInWithRegisterdAccount extends StatelessWidget {
   const SignInWithRegisterdAccount({
     super.key,
