@@ -60,9 +60,9 @@ class CatchwordListTile extends StatelessWidget {
                         context.read<CatchwordBloc>().add(CatchwordsCopyPressed(
                             copiedPasscode: catchword.passcode,
                             catchwordId: catchword.id!));
-                        // context
-                        //     .read<CatchwordBloc>()
-                        //     .add(CatchwordsUsingTrigger(id: catchword.id!));
+                        context
+                            .read<CatchwordBloc>()
+                            .add(CatchwordsUsingTrigger(id: catchword.id!));
                       },
                       icon: const Icon(Icons.copy),
                     ),
@@ -76,6 +76,9 @@ class CatchwordListTile extends StatelessWidget {
                             CatchwordsPasswordVisibilityToggled(
                                 catchwordEntity: catchword,
                                 categoryEntity: category));
+                        context
+                            .read<CatchwordBloc>()
+                            .add(CatchwordsUsingTrigger(id: catchword.id!));
                       },
                       icon: Icon(
                         catchword.isVisible

@@ -10,6 +10,7 @@ part of 'catchword_bloc.dart';
 /// [CatchwordsRefreshRequested] : refresh the stream data
 /// [CatchwordsUsingTrigger] : Trigger when catchword was used
 /// [CatchwordsValueCopied] : copy to clipboard
+/// [CatchwordsSortRequested] : return a sorted list
 
 sealed class CatchwordEvent extends Equatable {
   const CatchwordEvent();
@@ -101,4 +102,8 @@ final class CatchwordsValueCopied extends CatchwordEvent {
 
   @override
   List<Object> get props => [value];
+}
+
+final class CatchwordsSortRequested extends CatchwordEvent {
+  const CatchwordsSortRequested();
 }

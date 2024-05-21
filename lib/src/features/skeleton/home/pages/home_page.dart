@@ -28,16 +28,27 @@ class Home extends StatelessWidget {
   }
 }
 
-class RecentlyCatchwordsUsed extends StatelessWidget {
+class RecentlyCatchwordsUsed extends StatefulWidget {
   const RecentlyCatchwordsUsed({
     super.key,
   });
 
   @override
-  Widget build(BuildContext context) {
-    final recentlyUsedCatchwords = context
-        .select((CatchwordBloc bloc) => bloc.state.recentlyUsedCatchwords);
+  State<RecentlyCatchwordsUsed> createState() => _RecentlyCatchwordsUsedState();
+}
 
+class _RecentlyCatchwordsUsedState extends State<RecentlyCatchwordsUsed> {
+  late List<CategoryEntity> recentlyUsedCatchwords;
+  @override
+  void initState() {
+    context.read<CatchwordBloc>().add(const CatchwordsSortRequested());
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    recentlyUsedCatchwords = context
+        .select((CatchwordBloc bloc) => bloc.state.recentlyUsedCatchwords);
     return Expanded(child: CatchwordCard(categories: recentlyUsedCatchwords));
   }
 }

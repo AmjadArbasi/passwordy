@@ -20,6 +20,7 @@ class CatchwordBloc extends Bloc<CatchwordEvent, CatchwordState> {
     on<CatchwordsRefreshRequested>(_onRefreshRequested);
     on<CatchwordsUsingTrigger>(_onUsingTrigger);
     on<CatchwordsValueCopied>(_onValueCopied);
+    on<CatchwordsSortRequested>(_onSortRequest);
   }
 
   final CategoryManagerUsecase _categoryManagerUsecase;
@@ -36,8 +37,7 @@ class CatchwordBloc extends Bloc<CatchwordEvent, CatchwordState> {
         categories: data,
         catchwords: data.expand((e) => e.catchwords).toList(),
         filteredCategories: data,
-        recentlyUsedCatchwords: _categoryManagerUsecase
-            .sortCatchwordsCategoriesBasedOnDateTime(data),
+        recentlyUsedCatchwords: data,
       ),
       onError: (_, __) => state.copyWith(status: CatchwordStatus.failure),
     );
@@ -172,5 +172,14 @@ class CatchwordBloc extends Bloc<CatchwordEvent, CatchwordState> {
     Emitter<CatchwordState> emit,
   ) async {
     Clipboard.setData(ClipboardData(text: event.value));
+  }
+
+  Future<void> _onSortRequest(
+      CatchwordsSortRequested event, Emitter<CatchwordState> emit) async {
+    final categories = state.recentlyUsedCatchwords;
+    final sortCategories = _categoryManagerUsecase
+        .sortCatchwordsCategoriesBasedOnDateTime(categories);
+
+    emit(state.copyWith(recentlyUsedCatchwords: sortCategories));
   }
 }
