@@ -36,22 +36,24 @@ class CategoryManagerRepsoitoryImpl extends CategoryManagerRepositryBase {
     );
   }
 
-  _keepStreamFresh() async {
+  Future<Either<Failure, List<CategoryModel>>> _keepStreamFresh() async {
     final failureOrSuccess = await _categoryManagerApi.loadAllValues();
 
     return failureOrSuccess.fold(
       (failure) {
         GlobalVar.logger.e(failure.message);
+        return Left(failure);
       },
       (categories) {
         final list = categories.map((e) => e.mapToEntity()).toList();
         _categoriesListController.add(list);
+        return Right(categories);
       },
     );
   }
 
   @override
-  Future<Either<Failure, CatchwordEntity>> addCatchword(
+  Future<Either<Failure, Unit>> addCatchword(
     CatchwordEntity catchwordEntity,
     CategoryEntity categoryEntity,
   ) async {
@@ -65,13 +67,13 @@ class CategoryManagerRepsoitoryImpl extends CategoryManagerRepositryBase {
       (failure) => Left(failure),
       (category) async {
         await _keepStreamFresh();
-        return Right(category.mapToEntity());
+        return const Right(unit);
       },
     );
   }
 
   @override
-  Future<Either<Failure, CatchwordEntity>> editCatchword(
+  Future<Either<Failure, Unit>> editCatchword(
     CatchwordEntity catchwordEntity,
     CategoryEntity categoryEntity,
   ) async {
@@ -108,7 +110,7 @@ class CategoryManagerRepsoitoryImpl extends CategoryManagerRepositryBase {
         (failure) => Left(failure),
         (category) async {
           await _keepStreamFresh();
-          return Right(category.mapToEntity());
+          return const Right(unit);
         },
       );
     } else {
@@ -121,14 +123,15 @@ class CategoryManagerRepsoitoryImpl extends CategoryManagerRepositryBase {
         (failure) => Left(failure),
         (category) async {
           await _keepStreamFresh();
-          return Right(category.mapToEntity());
+          return const Right(unit);
         },
       );
     }
   }
 
   @override
-  Future<void> refreshData() async => await _keepStreamFresh();
+  Future<Either<Failure, List<CategoryModel>>> refreshData() async =>
+      await _keepStreamFresh();
 
   @override
   Stream<List<CategoryEntity>> categoriesList() => _categoriesListController;
@@ -210,8 +213,7 @@ class CategoryManagerRepsoitoryImpl extends CategoryManagerRepositryBase {
   }
 
   @override
-  Future<Either<Failure, CategoryEntity>> saveCategory(
-      CategoryEntity category) async {
+  Future<Either<Failure, Unit>> saveCategory(CategoryEntity category) async {
     final categoryModel = category.mapToModel();
     final failureOrSuccess =
         await _categoryManagerApi.saveCategory(categoryModel);
@@ -219,7 +221,7 @@ class CategoryManagerRepsoitoryImpl extends CategoryManagerRepositryBase {
       (failure) => Left(failure),
       (category) async {
         await _keepStreamFresh();
-        return Right(category.mapToEntity());
+        return const Right(unit);
       },
     );
   }

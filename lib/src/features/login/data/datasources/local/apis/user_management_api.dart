@@ -1,4 +1,5 @@
 import 'package:dartz/dartz.dart';
+import 'package:encrypt/encrypt.dart';
 import 'package:flutter_application_passmanager/src/core/core.dart';
 import 'package:flutter_application_passmanager/src/features/features.dart';
 import 'package:isar/isar.dart';
@@ -9,16 +10,21 @@ class UserManagementApi implements IUserManagementApi {
     required Isar isar,
     required SecureStorage secureStorage,
     required SharedPreferences sharedPreferences,
+    Hash? hash,
   })  : _isar = isar,
         _secureStorage = secureStorage,
-        _sharedPreferences = sharedPreferences;
+        _sharedPreferences = sharedPreferences,
+        _hash = hash ?? Hash();
 
   final Isar _isar;
   final SecureStorage _secureStorage;
   final SharedPreferences _sharedPreferences;
+  final Hash _hash;
 
-  final keyToken = GlobalVar.keyToken;
-  final logger = GlobalVar.logger;
+  static const _keyToken = GlobalVar.keyToken;
+  static const _aesGcmKey = GlobalVar.aesGcmKey;
+  static final _logger = GlobalVar.logger;
+  static const _ivKey = GlobalVar.ivKey;
 
   @override
   Future<Either<Failure, Unit>> signUp(UserLocalModel userLocalModel) async {
@@ -31,10 +37,11 @@ class UserManagementApi implements IUserManagementApi {
       final salt =
           CryptoLocal.generateSalt(userLocalModel.masterPassword!.length);
 
-      final hashedMassterPassword =
-          CryptoLocal.hash(userLocalModel.masterPassword!, salt);
+      final hashedMassterPassword = _hash.hash(userLocalModel.masterPassword!);
+
       final hashedSecret = CryptoLocal.hash(userLocalModel.secret!, salt);
       final linker = CryptoLocal.hash(userLocalModel.username!, salt);
+      final iv = IV.fromSecureRandom(16).base64;
 
       final user = UserLocalDto(
         id: userLocalModel.id,
@@ -43,6 +50,7 @@ class UserManagementApi implements IUserManagementApi {
         salt: salt,
         securityQuestion: userLocalModel.securityQuestion,
         secret: hashedSecret,
+        iv: iv,
         linker: linker,
         masterPassword: hashedMassterPassword,
         createdAt: userLocalModel.createdAt,
@@ -56,9 +64,10 @@ class UserManagementApi implements IUserManagementApi {
           await _isar.logActivitiesDbDtos.put(logs);
         });
         await _sharedPreferences.setBool('onboardingCompleted', true);
+
         return const Right(unit);
       } catch (e) {
-        logger.e("Something-went-wrong", error: e.toString());
+        _logger.e("Something-went-wrong", error: e.toString());
         return Left(DatabaseException("operation-not-allowed"));
       }
     } else {
@@ -71,16 +80,19 @@ class UserManagementApi implements IUserManagementApi {
     String masterPassword,
     String username,
   ) async {
+    await _secureStorage.deleteToken(_aesGcmKey);
+    await _secureStorage.deleteToken(_ivKey);
+
     final user = await _isar.userLocalDtos
         .filter()
         .usernameEqualTo(username)
         .findFirst();
 
     if (user != null) {
-      final hashedPasswprd = CryptoLocal.hash(masterPassword, user.salt!);
+      final hashedPassword = _hash.hash(masterPassword);
 
-      if (hashedPasswprd == user.masterPassword) {
-        user.token = CryptoLocal.generateSalt(16);
+      if (hashedPassword == user.masterPassword) {
+        user.token = _hash.generateSalt(16);
         user.lastSuccessfulSignIn = DateTime.now();
 
         try {
@@ -104,11 +116,15 @@ class UserManagementApi implements IUserManagementApi {
             createdAt: user.createdAt,
           );
 
-          await _secureStorage.storeToken(keyToken, user.token!);
+          await _secureStorage.storeToken(_keyToken, user.token!);
+
+          /// Store key and IV variables localy secure
+          await _secureStorage.storeToken(_aesGcmKey, hashedPassword);
+          await _secureStorage.storeToken(_ivKey, user.iv!);
 
           return Right(userLocalModel);
         } catch (e) {
-          logger.e("something-went-wrong", error: e);
+          _logger.e("something-went-wrong", error: e);
 
           return Left(DatabaseException("operation-not-allowed"));
         }
@@ -130,7 +146,7 @@ class UserManagementApi implements IUserManagementApi {
       UserLocalModel userLocalModel) async {
     if (userLocalModel.isNotEmpty) {
       try {
-        final token = await _secureStorage.getToken(keyToken);
+        final token = await _secureStorage.getToken(_keyToken);
         final user =
             await _isar.userLocalDtos.filter().tokenEqualTo(token).findFirst();
         if (user != null) {
@@ -149,14 +165,11 @@ class UserManagementApi implements IUserManagementApi {
 
           if (userLocalModel.masterPassword != null &&
               userLocalModel.masterPassword!.isNotEmpty) {
-            logger.f(userLocalModel.masterPassword);
+            _logger.f(userLocalModel.masterPassword);
 
-            final salt =
-                CryptoLocal.generateSalt(userLocalModel.masterPassword!.length);
             final hashedMassterPassword =
-                CryptoLocal.hash(userLocalModel.masterPassword!, salt);
+                _hash.hash(userLocalModel.masterPassword!);
             user.masterPassword = hashedMassterPassword;
-            user.salt = salt;
           }
           try {
             await _isar.writeTxn(() async {
@@ -179,14 +192,14 @@ class UserManagementApi implements IUserManagementApi {
             );
             return Right(userLocalModel);
           } catch (e) {
-            logger.e("something-went-wrong", error: e);
+            _logger.e("something-went-wrong", error: e);
             return Left(DatabaseException("something-went-wrong"));
           }
         } else {
           return Left(DatabaseException("user-not-found"));
         }
       } catch (e) {
-        logger.e("something-went-wrong", error: e);
+        _logger.e("something-went-wrong", error: e);
         return Left(DatabaseException("operation-not-allowed"));
       }
     } else {
@@ -196,14 +209,14 @@ class UserManagementApi implements IUserManagementApi {
 
   @override
   Future<Either<Failure, Unit>> deleteUser() async {
-    final token = await _secureStorage.getToken(keyToken);
+    final token = await _secureStorage.getToken(_keyToken);
     final user =
         await _isar.userLocalDtos.filter().tokenEqualTo(token).findFirst();
     if (user != null && token != null) {
       try {
         final linker = user.linker!;
 
-        await _secureStorage.deleteToken(keyToken);
+        await _secureStorage.deleteToken(_keyToken);
 
         final categories = await _isar.categoriesDbDtos
             .filter()
@@ -239,9 +252,14 @@ class UserManagementApi implements IUserManagementApi {
           /// Delete the logged user
           _isar.userLocalDtos.deleteByUsername(user.username);
         });
+
+        await _secureStorage.deleteToken(_keyToken);
+        await _secureStorage.deleteToken(_aesGcmKey);
+        await _secureStorage.deleteToken(_ivKey);
+
         return const Right(unit);
       } catch (e) {
-        logger.e("something-went-wrong", error: e);
+        _logger.e("something-went-wrong", error: e);
 
         return Left(DatabaseException("something-went-wrong"));
       }
@@ -252,7 +270,7 @@ class UserManagementApi implements IUserManagementApi {
 
   @override
   Future<Either<Failure, UserLocalModel>> reAuthLoggedUser() async {
-    final token = await _secureStorage.getToken(keyToken);
+    final token = await _secureStorage.getToken(_keyToken);
 
     final user =
         await _isar.userLocalDtos.filter().tokenEqualTo(token).findFirst();
@@ -275,7 +293,7 @@ class UserManagementApi implements IUserManagementApi {
         );
         return Right(userLocalModel);
       } catch (e) {
-        logger.e("something-went-wrong", error: e);
+        _logger.e("something-went-wrong", error: e);
 
         return Left(DatabaseException("something-went-wrong"));
       }
@@ -287,10 +305,12 @@ class UserManagementApi implements IUserManagementApi {
   @override
   Future<Either<Failure, Unit>> logOut() async {
     try {
-      await _secureStorage.deleteToken(keyToken);
+      await _secureStorage.deleteToken(_keyToken);
+      await _secureStorage.deleteToken(_aesGcmKey);
+      await _secureStorage.deleteToken(_ivKey);
       return const Right(unit);
     } catch (e) {
-      logger.e("something-went-wrong", error: e);
+      _logger.e("something-went-wrong", error: e);
       return Left(DatabaseException("something-went-wrong"));
     }
   }
@@ -299,7 +319,7 @@ class UserManagementApi implements IUserManagementApi {
   Future<Either<Failure, Unit>> checkCurrentPassword(
     String masterPassword,
   ) async {
-    final token = await _secureStorage.getToken(keyToken);
+    final token = await _secureStorage.getToken(_keyToken);
     final user =
         await _isar.userLocalDtos.filter().tokenEqualTo(token).findFirst();
 
@@ -365,7 +385,7 @@ class UserManagementApi implements IUserManagementApi {
           });
           return const Right(unit);
         } catch (e) {
-          logger.e("something-went-wrong", error: e);
+          _logger.e("something-went-wrong", error: e);
           return Left(DatabaseException("something-went-wrong"));
         }
       } else {

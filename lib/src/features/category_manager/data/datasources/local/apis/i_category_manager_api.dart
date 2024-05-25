@@ -5,17 +5,17 @@ import 'package:flutter_application_passmanager/src/features/category_manager/ca
 abstract class ICategoryManagerApi {
   Future<Either<Failure, List<CategoryModel>>> loadAllValues();
 
-  Future<Either<Failure, CatchwordModel>> addCatchword(
+  Future<Either<Failure, Unit>> addCatchword(
     CatchwordModel catchwordModel,
     CategoryModel categoryModel,
   );
 
-  Future<Either<Failure, CatchwordModel>> editCatchword(
+  Future<Either<Failure, Unit>> editCatchword(
     CatchwordModel catchwordModel,
     CategoryModel categoryModel,
   );
 
-  Future<Either<Failure, CategoryModel>> saveCategory(CategoryModel category);
+  Future<Either<Failure, Unit>> saveCategory(CategoryModel category);
 
   Future<Either<Failure, Unit>> deleteCatchword(
       int catchwordId, int categoryId);

@@ -149,7 +149,12 @@ class CatchwordBloc extends Bloc<CatchwordEvent, CatchwordState> {
     CatchwordsRefreshRequested event,
     Emitter<CatchwordState> emit,
   ) async {
-    await _categoryManagerUsecase.refreshData();
+    final result = await _categoryManagerUsecase.refreshData();
+    result.fold(
+      (failure) => emit(state.copyWith(
+          status: CatchwordStatus.failure, errorMessage: failure.message)),
+      (r) => null,
+    );
   }
 
   Future<void> _onUsingTrigger(

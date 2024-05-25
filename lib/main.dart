@@ -18,17 +18,14 @@ void main() async {
   const storage = FlutterSecureStorage();
   final secureStorage = SecureStorage(storage: storage);
 
-  final categoryModelToDbDtoConverter = CategoryModelToDbDtoConverter();
-  final catchwordModelToDbDtoConverter = CatchwordModelToDbDtoConverter();
-  final catchwordDbDtoToModelConverter = CatchwordDbDtoToModelConverter();
-  final categoryDbDtoToModelConverter =
-      CategoryDbDtoToModelConverter(catchwordDbDtoToModelConverter);
+  final catchwordConverterDbDTOModel =
+      CatchwordConverterDbDTOModel(secureStorage: secureStorage);
+  final categoryConverterDbDTOModel =
+      CategoryConverterDbDTOModel(converter: catchwordConverterDbDTOModel);
 
   final categoryManagerApi = CategoryManagerApi(
-    categoryModelToDbDtoConverter: categoryModelToDbDtoConverter,
-    categoryDbDtoToModelConverter: categoryDbDtoToModelConverter,
-    catchwordModelToDbDtoConverter: catchwordModelToDbDtoConverter,
-    catchwordDbDtoToModelConverter: catchwordDbDtoToModelConverter,
+    catchwordConverterDbDTOModel: catchwordConverterDbDTOModel,
+    categoryConverterDbDTOModel: categoryConverterDbDTOModel,
     isar: isar,
     secureStorage: secureStorage,
   );
@@ -46,6 +43,7 @@ void main() async {
     secureStorage: secureStorage,
     sharedPreferences: sharedPreferences,
   );
+
   final userManagementRepository =
       UserManagementRepositoryImpl(api: userManagementApi);
 

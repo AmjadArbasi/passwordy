@@ -22,9 +22,7 @@ class CatchwordView extends StatelessWidget {
 
     return Scaffold(
       resizeToAvoidBottomInset: true,
-      appBar: CustomAppBar(
-        title: 'nameOfCatchwordView'.tr,
-      ),
+      appBar: CustomAppBar(title: 'nameOfCatchwordView'.tr),
       body: SingleChildScrollView(
         child: BlocBuilder<CatchwordBloc, CatchwordState>(
           builder: (context, state) {

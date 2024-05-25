@@ -16,18 +16,17 @@ class CategoryManagerUsecase {
   Stream<List<CategoryEntity>> getCategoriesList() => _api.categoriesList();
 
   ///  add a [catchword]
-  Future<Either<Failure, CatchwordEntity>> addCatchword(
+  Future<Either<Failure, Unit>> addCatchword(
           CatchwordEntity catchword, CategoryEntity category) =>
       _api.addCatchword(catchword, category);
 
   /// edit a [catchword]
-  Future<Either<Failure, CatchwordEntity>> editCatchword(
+  Future<Either<Failure, Unit>> editCatchword(
           CatchwordEntity catchword, CategoryEntity category) =>
       _api.editCatchword(catchword, category);
 
   /// Edit or add a caterory
-  Future<Either<Failure, CategoryEntity>> saveCategory(
-          CategoryEntity category) =>
+  Future<Either<Failure, Unit>> saveCategory(CategoryEntity category) =>
       _api.saveCategory(category);
 
   /// delete a specific catchword based on [categoryId] and [catchwordId]
@@ -54,5 +53,6 @@ class CategoryManagerUsecase {
   ) =>
       _api.sortCatchwordsCategoriesBasedOnDateTime(categories);
 
-  Future<void> refreshData() async => await _api.refreshData();
+  Future<Either<Failure, List<CategoryModel>>> refreshData() async =>
+      await _api.refreshData();
 }

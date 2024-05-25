@@ -33,6 +33,7 @@ dependencies:
   crypto: ^3.0.3
   cupertino_icons: ^1.0.2
   dartz: ^0.10.1
+  encrypt: ^5.0.3
   equatable: ^2.0.5
   flutter:
     sdk: flutter
@@ -49,6 +50,7 @@ dependencies:
   logger: ^2.0.2+1
   lottie: ^3.1.0
   path_provider: ^2.1.2
+  pointycastle: ^3.9.1
   rxdart: ^0.27.7
   shared_preferences: ^2.2.3
 
@@ -95,7 +97,6 @@ flutter:
     #   fonts:
     #     - asset: assets/fonts/Oswald/static/Oswald-Regular.ttf
     #     - asset: assets/fonts/Oswald/static/Oswald-Bold.ttf
-
     - family: OpenSans
       fonts:
         - asset: assets/fonts/Open_Sans/OpenSans-Regular.ttf
@@ -105,6 +106,5 @@ flutter:
     #     - asset: fonts/TrajanPro.ttf
     #     - asset: fonts/TrajanPro_Bold.ttf
     #       weight: 700
-  #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages

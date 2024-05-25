@@ -5,28 +5,24 @@ import 'package:isar/isar.dart';
 
 class CategoryManagerApi implements ICategoryManagerApi {
   CategoryManagerApi({
-    required this.categoryModelToDbDtoConverter,
-    required this.categoryDbDtoToModelConverter,
-    required this.catchwordDbDtoToModelConverter,
-    required this.catchwordModelToDbDtoConverter,
+    required this.categoryConverterDbDTOModel,
+    required this.catchwordConverterDbDTOModel,
     required this.isar,
     required SecureStorage secureStorage,
     CacheClient? cache,
   })  : _secureStorage = secureStorage,
         _cache = cache ?? CacheClient();
 
-  final CategoryModelToDbDtoConverter categoryModelToDbDtoConverter;
-  final CategoryDbDtoToModelConverter categoryDbDtoToModelConverter;
-  final CatchwordModelToDbDtoConverter catchwordModelToDbDtoConverter;
-  final CatchwordDbDtoToModelConverter catchwordDbDtoToModelConverter;
+  final CategoryConverterDbDTOModel categoryConverterDbDTOModel;
+  final CatchwordConverterDbDTOModel catchwordConverterDbDTOModel;
   final Isar isar;
   final SecureStorage _secureStorage;
   final CacheClient _cache;
 
   final keyToken = GlobalVar.keyToken;
 
-  final usernameCategories = GlobalVar.usernameCategories;
-  final logsDBuser = GlobalVar.logsDBuser;
+  static const usernameCategories = GlobalVar.usernameCategories;
+  static const logsDBuser = GlobalVar.logsDBuser;
 
   CategoriesDbDto get categoryListUsername {
     final categoriesDbDto = _cache.read(key: usernameCategories);
@@ -72,13 +68,14 @@ class CategoryManagerApi implements ICategoryManagerApi {
           final categoriesDbDto =
               await usernameLinkedCategories.categories.filter().findAll();
 
-          final categoriesModel = categoriesDbDto
-              .map((e) => categoryDbDtoToModelConverter.convert(e))
-              .toList();
-
+          final categoriesModel = <CategoryModel>[];
+          for (var category in categoriesDbDto) {
+            categoriesModel.add(await categoryConverterDbDTOModel
+                .categoryDbDtoToModel(category));
+          }
           return Right(categoriesModel);
         } catch (e) {
-          GlobalVar.logger.e("something-went-wrong", error: e);
+          GlobalVar.logger.e("something-went-wrong", error: e.toString());
           return Left(CategoryManagerException("something-went-wrong"));
         }
       } else {
@@ -90,20 +87,12 @@ class CategoryManagerApi implements ICategoryManagerApi {
   }
 
   @override
-  Future<Either<Failure, CatchwordModel>> addCatchword(
+  Future<Either<Failure, Unit>> addCatchword(
     CatchwordModel catchwordModel,
     CategoryModel categoryModel,
   ) async {
-    final newCatchword = CatchwordDbDto(
-      id: catchwordModel.id,
-      name: catchwordModel.name,
-      accountId: catchwordModel.accountId,
-      passcode: catchwordModel.passcode,
-      note: catchwordModel.note,
-      dateTime: catchwordModel.createdAt,
-      isVisibile: catchwordModel.isVisible,
-      whenUsed: catchwordModel.whenUsed,
-    );
+    final catchwordDbDto =
+        await catchwordConverterDbDTOModel.convertModelToDbDto(catchwordModel);
 
     if (categoryModel.id != null) {
       final category = await isar.categoryDbDtos.get(categoryModel.id!);
@@ -118,10 +107,10 @@ class CategoryManagerApi implements ICategoryManagerApi {
         try {
           await isar.writeTxn(() async {
             // Ensure the new catchword are added
-            await isar.catchwordDbDtos.put(newCatchword);
+            await isar.catchwordDbDtos.put(catchwordDbDto);
 
             // Now, add the new catchword /s to the category's existing catchword link
-            category.catchwords.add(newCatchword);
+            category.catchwords.add(catchwordDbDto);
 
             category.total += 1;
 
@@ -136,7 +125,8 @@ class CategoryManagerApi implements ICategoryManagerApi {
 
             await logsDbUser.logActivities.save();
           });
-          return right(catchwordDbDtoToModelConverter.convert(newCatchword));
+
+          return const Right(unit);
         } catch (e) {
           GlobalVar.logger.e("something-went-wrong", error: e);
           return Left(CategoryManagerException("something-went-wrong"));
@@ -150,20 +140,12 @@ class CategoryManagerApi implements ICategoryManagerApi {
   }
 
   @override
-  Future<Either<Failure, CatchwordModel>> editCatchword(
+  Future<Either<Failure, Unit>> editCatchword(
     CatchwordModel catchwordModel,
     CategoryModel categoryModel,
   ) async {
-    final newCatchword = CatchwordDbDto(
-      id: catchwordModel.id,
-      name: catchwordModel.name,
-      accountId: catchwordModel.accountId,
-      passcode: catchwordModel.passcode,
-      note: catchwordModel.note,
-      dateTime: catchwordModel.createdAt,
-      isVisibile: catchwordModel.isVisible,
-      whenUsed: catchwordModel.whenUsed,
-    );
+    final catchwordDbDto =
+        await catchwordConverterDbDTOModel.convertModelToDbDto(catchwordModel);
 
     final category = await isar.categoryDbDtos.get(categoryModel.id!);
 
@@ -177,10 +159,10 @@ class CategoryManagerApi implements ICategoryManagerApi {
       try {
         await isar.writeTxn(() async {
           // Ensure the new catchword are added
-          await isar.catchwordDbDtos.put(newCatchword);
+          await isar.catchwordDbDtos.put(catchwordDbDto);
 
           // Now, add the new catchword /s to the category's existing catchword link
-          category.catchwords.add(newCatchword);
+          category.catchwords.add(catchwordDbDto);
 
           await isar.categoryDbDtos.put(category);
           // Save its relation
@@ -193,7 +175,8 @@ class CategoryManagerApi implements ICategoryManagerApi {
 
           await logsDbUser.logActivities.save();
         });
-        return Right(catchwordDbDtoToModelConverter.convert(newCatchword));
+
+        return const Right(unit);
       } catch (e) {
         GlobalVar.logger.e("something-went-wrong", error: e);
         return Left(CategoryManagerException("something-went-wrong"));
@@ -240,8 +223,7 @@ class CategoryManagerApi implements ICategoryManagerApi {
   }
 
   @override
-  Future<Either<Failure, CategoryModel>> saveCategory(
-      CategoryModel category) async {
+  Future<Either<Failure, Unit>> saveCategory(CategoryModel category) async {
     final newCategory = CategoryDbDto(
       id: category.id,
       categoryName: category.categoryName,
@@ -288,7 +270,7 @@ class CategoryManagerApi implements ICategoryManagerApi {
             await logsDbUser.logActivities.save();
           });
 
-          return Right(categoryDbDtoToModelConverter.convert(newCategory));
+          return const Right(unit);
         } catch (e) {
           GlobalVar.logger.e("something-went-error", error: e);
           return Left(CategoryManagerException("something-went-error"));

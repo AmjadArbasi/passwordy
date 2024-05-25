@@ -14,17 +14,17 @@ abstract class CategoryManagerRepositryBase {
   Stream<List<CategoryEntity>> categoriesList();
 
   /// Adds a Catchword
-  Future<Either<Failure, CatchwordEntity>> addCatchword(
+  Future<Either<Failure, Unit>> addCatchword(
       CatchwordEntity catchwordEntity, CategoryEntity categoryEntity);
 
   /// Edits a catchword
-  Future<Either<Failure, CatchwordEntity>> editCatchword(
+  Future<Either<Failure, Unit>> editCatchword(
       CatchwordEntity catchwordEntity, CategoryEntity categoryEntity);
 
   /// Edit or Add a category
   /// search for the category through that gave
   /// when find it either updated or add
-  Future<Either<Failure, CategoryEntity>> saveCategory(CategoryEntity category);
+  Future<Either<Failure, Unit>> saveCategory(CategoryEntity category);
 
   /// Delete a catchword
   /// the catchwords list from given category
@@ -50,5 +50,5 @@ abstract class CategoryManagerRepositryBase {
   List<CategoryEntity> sortCatchwordsCategoriesBasedOnDateTime(
       List<CategoryEntity> categories);
 
-  Future<void> refreshData();
+  Future<Either<Failure, List<CategoryModel>>> refreshData();
 }

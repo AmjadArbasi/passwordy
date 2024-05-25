@@ -1,36 +1,32 @@
-import 'package:flutter_application_passmanager/src/core/utils/converter_db/converter.dart';
 import 'package:flutter_application_passmanager/src/features/category_manager/category_manager.dart';
 
-class CategoryModelToDbDtoConverter
-    implements Converter<CategoryModel, CategoryDbDto> {
-  @override
-  CategoryDbDto convert(CategoryModel model) {
+class CategoryConverterDbDTOModel {
+  CategoryConverterDbDTOModel({required CatchwordConverterDbDTOModel converter})
+      : _converter = converter;
+
+  final CatchwordConverterDbDTOModel _converter;
+
+  CategoryDbDto categoryModelToDbDto(CategoryModel model) {
     return CategoryDbDto(
       id: model.id,
       categoryName: model.categoryName,
       total: model.total,
     );
   }
-}
 
-class CategoryDbDtoToModelConverter
-    implements Converter<CategoryDbDto, CategoryModel> {
-  CategoryDbDtoToModelConverter(this._converter);
+  Future<CategoryModel> categoryDbDtoToModel(
+      CategoryDbDto categoryDbDto) async {
+    final catchwords = <CatchwordModel>[];
 
-  final CatchwordDbDtoToModelConverter _converter;
+    for (var catchword in categoryDbDto.catchwords) {
+      catchwords.add(await _converter.convertDbDtoToModel(catchword));
+    }
 
-  @override
-  CategoryModel convert(CategoryDbDto model) {
-    final catchwords = model.catchwords
-        .map(
-          (e) => _converter.convert(e),
-        )
-        .toList();
     return CategoryModel(
-      id: model.id,
-      categoryName: model.categoryName,
+      id: categoryDbDto.id,
+      categoryName: categoryDbDto.categoryName,
       catchwords: catchwords,
-      total: model.total,
+      total: categoryDbDto.total,
     );
   }
 }
