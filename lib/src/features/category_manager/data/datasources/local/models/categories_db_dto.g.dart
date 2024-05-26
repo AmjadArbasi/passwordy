@@ -16,39 +16,25 @@ extension GetCategoriesDbDtoCollection on Isar {
 const CategoriesDbDtoSchema = CollectionSchema(
   name: r'CategoriesDbDto',
   id: 3841949422973842718,
-  properties: {
-    r'linker': PropertySchema(
-      id: 0,
-      name: r'linker',
-      type: IsarType.string,
-    )
-  },
+  properties: {},
   estimateSize: _categoriesDbDtoEstimateSize,
   serialize: _categoriesDbDtoSerialize,
   deserialize: _categoriesDbDtoDeserialize,
   deserializeProp: _categoriesDbDtoDeserializeProp,
   idName: r'id',
-  indexes: {
-    r'linker': IndexSchema(
-      id: 6223059953983404649,
-      name: r'linker',
-      unique: true,
-      replace: false,
-      properties: [
-        IndexPropertySchema(
-          name: r'linker',
-          type: IndexType.hash,
-          caseSensitive: true,
-        )
-      ],
-    )
-  },
+  indexes: {},
   links: {
     r'categories': LinkSchema(
       id: -7920971862278343551,
       name: r'categories',
       target: r'CategoryDbDto',
       single: false,
+    ),
+    r'user': LinkSchema(
+      id: -8564506958194280524,
+      name: r'user',
+      target: r'UserLocalDto',
+      single: true,
     )
   },
   embeddedSchemas: {},
@@ -64,7 +50,6 @@ int _categoriesDbDtoEstimateSize(
   Map<Type, List<int>> allOffsets,
 ) {
   var bytesCount = offsets.last;
-  bytesCount += 3 + object.linker.length * 3;
   return bytesCount;
 }
 
@@ -73,20 +58,15 @@ void _categoriesDbDtoSerialize(
   IsarWriter writer,
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
-) {
-  writer.writeString(offsets[0], object.linker);
-}
-
+) {}
 CategoriesDbDto _categoriesDbDtoDeserialize(
   Id id,
   IsarReader reader,
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
 ) {
-  final object = CategoriesDbDto(
-    id: id,
-    linker: reader.readString(offsets[0]),
-  );
+  final object = CategoriesDbDto();
+  object.id = id;
   return object;
 }
 
@@ -97,8 +77,6 @@ P _categoriesDbDtoDeserializeProp<P>(
   Map<Type, List<int>> allOffsets,
 ) {
   switch (propertyId) {
-    case 0:
-      return (reader.readString(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
   }
@@ -109,7 +87,7 @@ Id _categoriesDbDtoGetId(CategoriesDbDto object) {
 }
 
 List<IsarLinkBase<dynamic>> _categoriesDbDtoGetLinks(CategoriesDbDto object) {
-  return [object.categories];
+  return [object.categories, object.user];
 }
 
 void _categoriesDbDtoAttach(
@@ -117,61 +95,7 @@ void _categoriesDbDtoAttach(
   object.id = id;
   object.categories
       .attach(col, col.isar.collection<CategoryDbDto>(), r'categories', id);
-}
-
-extension CategoriesDbDtoByIndex on IsarCollection<CategoriesDbDto> {
-  Future<CategoriesDbDto?> getByLinker(String linker) {
-    return getByIndex(r'linker', [linker]);
-  }
-
-  CategoriesDbDto? getByLinkerSync(String linker) {
-    return getByIndexSync(r'linker', [linker]);
-  }
-
-  Future<bool> deleteByLinker(String linker) {
-    return deleteByIndex(r'linker', [linker]);
-  }
-
-  bool deleteByLinkerSync(String linker) {
-    return deleteByIndexSync(r'linker', [linker]);
-  }
-
-  Future<List<CategoriesDbDto?>> getAllByLinker(List<String> linkerValues) {
-    final values = linkerValues.map((e) => [e]).toList();
-    return getAllByIndex(r'linker', values);
-  }
-
-  List<CategoriesDbDto?> getAllByLinkerSync(List<String> linkerValues) {
-    final values = linkerValues.map((e) => [e]).toList();
-    return getAllByIndexSync(r'linker', values);
-  }
-
-  Future<int> deleteAllByLinker(List<String> linkerValues) {
-    final values = linkerValues.map((e) => [e]).toList();
-    return deleteAllByIndex(r'linker', values);
-  }
-
-  int deleteAllByLinkerSync(List<String> linkerValues) {
-    final values = linkerValues.map((e) => [e]).toList();
-    return deleteAllByIndexSync(r'linker', values);
-  }
-
-  Future<Id> putByLinker(CategoriesDbDto object) {
-    return putByIndex(r'linker', object);
-  }
-
-  Id putByLinkerSync(CategoriesDbDto object, {bool saveLinks = true}) {
-    return putByIndexSync(r'linker', object, saveLinks: saveLinks);
-  }
-
-  Future<List<Id>> putAllByLinker(List<CategoriesDbDto> objects) {
-    return putAllByIndex(r'linker', objects);
-  }
-
-  List<Id> putAllByLinkerSync(List<CategoriesDbDto> objects,
-      {bool saveLinks = true}) {
-    return putAllByIndexSync(r'linker', objects, saveLinks: saveLinks);
-  }
+  object.user.attach(col, col.isar.collection<UserLocalDto>(), r'user', id);
 }
 
 extension CategoriesDbDtoQueryWhereSort
@@ -252,51 +176,6 @@ extension CategoriesDbDtoQueryWhere
       ));
     });
   }
-
-  QueryBuilder<CategoriesDbDto, CategoriesDbDto, QAfterWhereClause>
-      linkerEqualTo(String linker) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addWhereClause(IndexWhereClause.equalTo(
-        indexName: r'linker',
-        value: [linker],
-      ));
-    });
-  }
-
-  QueryBuilder<CategoriesDbDto, CategoriesDbDto, QAfterWhereClause>
-      linkerNotEqualTo(String linker) {
-    return QueryBuilder.apply(this, (query) {
-      if (query.whereSort == Sort.asc) {
-        return query
-            .addWhereClause(IndexWhereClause.between(
-              indexName: r'linker',
-              lower: [],
-              upper: [linker],
-              includeUpper: false,
-            ))
-            .addWhereClause(IndexWhereClause.between(
-              indexName: r'linker',
-              lower: [linker],
-              includeLower: false,
-              upper: [],
-            ));
-      } else {
-        return query
-            .addWhereClause(IndexWhereClause.between(
-              indexName: r'linker',
-              lower: [linker],
-              includeLower: false,
-              upper: [],
-            ))
-            .addWhereClause(IndexWhereClause.between(
-              indexName: r'linker',
-              lower: [],
-              upper: [linker],
-              includeUpper: false,
-            ));
-      }
-    });
-  }
 }
 
 extension CategoriesDbDtoQueryFilter
@@ -374,142 +253,6 @@ extension CategoriesDbDtoQueryFilter
       ));
     });
   }
-
-  QueryBuilder<CategoriesDbDto, CategoriesDbDto, QAfterFilterCondition>
-      linkerEqualTo(
-    String value, {
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'linker',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<CategoriesDbDto, CategoriesDbDto, QAfterFilterCondition>
-      linkerGreaterThan(
-    String value, {
-    bool include = false,
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        include: include,
-        property: r'linker',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<CategoriesDbDto, CategoriesDbDto, QAfterFilterCondition>
-      linkerLessThan(
-    String value, {
-    bool include = false,
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.lessThan(
-        include: include,
-        property: r'linker',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<CategoriesDbDto, CategoriesDbDto, QAfterFilterCondition>
-      linkerBetween(
-    String lower,
-    String upper, {
-    bool includeLower = true,
-    bool includeUpper = true,
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.between(
-        property: r'linker',
-        lower: lower,
-        includeLower: includeLower,
-        upper: upper,
-        includeUpper: includeUpper,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<CategoriesDbDto, CategoriesDbDto, QAfterFilterCondition>
-      linkerStartsWith(
-    String value, {
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.startsWith(
-        property: r'linker',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<CategoriesDbDto, CategoriesDbDto, QAfterFilterCondition>
-      linkerEndsWith(
-    String value, {
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.endsWith(
-        property: r'linker',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<CategoriesDbDto, CategoriesDbDto, QAfterFilterCondition>
-      linkerContains(String value, {bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.contains(
-        property: r'linker',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<CategoriesDbDto, CategoriesDbDto, QAfterFilterCondition>
-      linkerMatches(String pattern, {bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.matches(
-        property: r'linker',
-        wildcard: pattern,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<CategoriesDbDto, CategoriesDbDto, QAfterFilterCondition>
-      linkerIsEmpty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'linker',
-        value: '',
-      ));
-    });
-  }
-
-  QueryBuilder<CategoriesDbDto, CategoriesDbDto, QAfterFilterCondition>
-      linkerIsNotEmpty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        property: r'linker',
-        value: '',
-      ));
-    });
-  }
 }
 
 extension CategoriesDbDtoQueryObject
@@ -577,23 +320,24 @@ extension CategoriesDbDtoQueryLinks
           r'categories', lower, includeLower, upper, includeUpper);
     });
   }
+
+  QueryBuilder<CategoriesDbDto, CategoriesDbDto, QAfterFilterCondition> user(
+      FilterQuery<UserLocalDto> q) {
+    return QueryBuilder.apply(this, (query) {
+      return query.link(q, r'user');
+    });
+  }
+
+  QueryBuilder<CategoriesDbDto, CategoriesDbDto, QAfterFilterCondition>
+      userIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(r'user', 0, true, 0, true);
+    });
+  }
 }
 
 extension CategoriesDbDtoQuerySortBy
-    on QueryBuilder<CategoriesDbDto, CategoriesDbDto, QSortBy> {
-  QueryBuilder<CategoriesDbDto, CategoriesDbDto, QAfterSortBy> sortByLinker() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'linker', Sort.asc);
-    });
-  }
-
-  QueryBuilder<CategoriesDbDto, CategoriesDbDto, QAfterSortBy>
-      sortByLinkerDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'linker', Sort.desc);
-    });
-  }
-}
+    on QueryBuilder<CategoriesDbDto, CategoriesDbDto, QSortBy> {}
 
 extension CategoriesDbDtoQuerySortThenBy
     on QueryBuilder<CategoriesDbDto, CategoriesDbDto, QSortThenBy> {
@@ -608,42 +352,16 @@ extension CategoriesDbDtoQuerySortThenBy
       return query.addSortBy(r'id', Sort.desc);
     });
   }
-
-  QueryBuilder<CategoriesDbDto, CategoriesDbDto, QAfterSortBy> thenByLinker() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'linker', Sort.asc);
-    });
-  }
-
-  QueryBuilder<CategoriesDbDto, CategoriesDbDto, QAfterSortBy>
-      thenByLinkerDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'linker', Sort.desc);
-    });
-  }
 }
 
 extension CategoriesDbDtoQueryWhereDistinct
-    on QueryBuilder<CategoriesDbDto, CategoriesDbDto, QDistinct> {
-  QueryBuilder<CategoriesDbDto, CategoriesDbDto, QDistinct> distinctByLinker(
-      {bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'linker', caseSensitive: caseSensitive);
-    });
-  }
-}
+    on QueryBuilder<CategoriesDbDto, CategoriesDbDto, QDistinct> {}
 
 extension CategoriesDbDtoQueryProperty
     on QueryBuilder<CategoriesDbDto, CategoriesDbDto, QQueryProperty> {
   QueryBuilder<CategoriesDbDto, int, QQueryOperations> idProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'id');
-    });
-  }
-
-  QueryBuilder<CategoriesDbDto, String, QQueryOperations> linkerProperty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addPropertyName(r'linker');
     });
   }
 }

@@ -1,22 +1,18 @@
-import 'package:flutter_application_passmanager/src/features/category_manager/data/datasources/local/models/models.dart';
+import 'package:flutter_application_passmanager/src/features/category_manager/category_manager.dart';
+import 'package:flutter_application_passmanager/src/features/login/login.dart';
 import 'package:isar/isar.dart';
 
 part 'categories_db_dto.g.dart';
 
 @collection
 class CategoriesDbDto {
-  CategoriesDbDto({
-    this.id,
-    required this.linker,
-  });
+  CategoriesDbDto();
 
   Id? id = Isar.autoIncrement;
 
-  @Index(unique: true)
-  String linker;
-
   final categories = IsarLinks<CategoryDbDto>();
+  final user = IsarLink<UserLocalDto>();
 
   @override
-  String toString() => 'CategoriesDbDto(id: $id, linker: $linker)';
+  String toString() => 'CategoriesDbDto(id: $id)';
 }

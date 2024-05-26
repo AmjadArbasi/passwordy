@@ -3,7 +3,7 @@ import 'package:logger/logger.dart';
 class GlobalVar {
   GlobalVar._();
 
-  static const String keyToken = "token";
+  static const String keySession = "session";
   static final logger = Logger();
 
   static const usernameCategories = '__user_categories_cache_key__';

@@ -17,39 +17,25 @@ extension GetLogActivitiesDbDtoCollection on Isar {
 const LogActivitiesDbDtoSchema = CollectionSchema(
   name: r'LogActivitiesDbDto',
   id: -8315986051855367965,
-  properties: {
-    r'linker': PropertySchema(
-      id: 0,
-      name: r'linker',
-      type: IsarType.string,
-    )
-  },
+  properties: {},
   estimateSize: _logActivitiesDbDtoEstimateSize,
   serialize: _logActivitiesDbDtoSerialize,
   deserialize: _logActivitiesDbDtoDeserialize,
   deserializeProp: _logActivitiesDbDtoDeserializeProp,
   idName: r'id',
-  indexes: {
-    r'linker': IndexSchema(
-      id: 6223059953983404649,
-      name: r'linker',
-      unique: true,
-      replace: false,
-      properties: [
-        IndexPropertySchema(
-          name: r'linker',
-          type: IndexType.hash,
-          caseSensitive: true,
-        )
-      ],
-    )
-  },
+  indexes: {},
   links: {
     r'logActivities': LinkSchema(
       id: 323679620470816253,
       name: r'logActivities',
       target: r'LogActivityDbDto',
       single: false,
+    ),
+    r'user': LinkSchema(
+      id: 263790393147810667,
+      name: r'user',
+      target: r'UserLocalDto',
+      single: true,
     )
   },
   embeddedSchemas: {},
@@ -65,12 +51,6 @@ int _logActivitiesDbDtoEstimateSize(
   Map<Type, List<int>> allOffsets,
 ) {
   var bytesCount = offsets.last;
-  {
-    final value = object.linker;
-    if (value != null) {
-      bytesCount += 3 + value.length * 3;
-    }
-  }
   return bytesCount;
 }
 
@@ -79,10 +59,7 @@ void _logActivitiesDbDtoSerialize(
   IsarWriter writer,
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
-) {
-  writer.writeString(offsets[0], object.linker);
-}
-
+) {}
 LogActivitiesDbDto _logActivitiesDbDtoDeserialize(
   Id id,
   IsarReader reader,
@@ -91,7 +68,6 @@ LogActivitiesDbDto _logActivitiesDbDtoDeserialize(
 ) {
   final object = LogActivitiesDbDto();
   object.id = id;
-  object.linker = reader.readStringOrNull(offsets[0]);
   return object;
 }
 
@@ -102,8 +78,6 @@ P _logActivitiesDbDtoDeserializeProp<P>(
   Map<Type, List<int>> allOffsets,
 ) {
   switch (propertyId) {
-    case 0:
-      return (reader.readStringOrNull(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
   }
@@ -115,7 +89,7 @@ Id _logActivitiesDbDtoGetId(LogActivitiesDbDto object) {
 
 List<IsarLinkBase<dynamic>> _logActivitiesDbDtoGetLinks(
     LogActivitiesDbDto object) {
-  return [object.logActivities];
+  return [object.logActivities, object.user];
 }
 
 void _logActivitiesDbDtoAttach(
@@ -123,61 +97,7 @@ void _logActivitiesDbDtoAttach(
   object.id = id;
   object.logActivities.attach(
       col, col.isar.collection<LogActivityDbDto>(), r'logActivities', id);
-}
-
-extension LogActivitiesDbDtoByIndex on IsarCollection<LogActivitiesDbDto> {
-  Future<LogActivitiesDbDto?> getByLinker(String? linker) {
-    return getByIndex(r'linker', [linker]);
-  }
-
-  LogActivitiesDbDto? getByLinkerSync(String? linker) {
-    return getByIndexSync(r'linker', [linker]);
-  }
-
-  Future<bool> deleteByLinker(String? linker) {
-    return deleteByIndex(r'linker', [linker]);
-  }
-
-  bool deleteByLinkerSync(String? linker) {
-    return deleteByIndexSync(r'linker', [linker]);
-  }
-
-  Future<List<LogActivitiesDbDto?>> getAllByLinker(List<String?> linkerValues) {
-    final values = linkerValues.map((e) => [e]).toList();
-    return getAllByIndex(r'linker', values);
-  }
-
-  List<LogActivitiesDbDto?> getAllByLinkerSync(List<String?> linkerValues) {
-    final values = linkerValues.map((e) => [e]).toList();
-    return getAllByIndexSync(r'linker', values);
-  }
-
-  Future<int> deleteAllByLinker(List<String?> linkerValues) {
-    final values = linkerValues.map((e) => [e]).toList();
-    return deleteAllByIndex(r'linker', values);
-  }
-
-  int deleteAllByLinkerSync(List<String?> linkerValues) {
-    final values = linkerValues.map((e) => [e]).toList();
-    return deleteAllByIndexSync(r'linker', values);
-  }
-
-  Future<Id> putByLinker(LogActivitiesDbDto object) {
-    return putByIndex(r'linker', object);
-  }
-
-  Id putByLinkerSync(LogActivitiesDbDto object, {bool saveLinks = true}) {
-    return putByIndexSync(r'linker', object, saveLinks: saveLinks);
-  }
-
-  Future<List<Id>> putAllByLinker(List<LogActivitiesDbDto> objects) {
-    return putAllByIndex(r'linker', objects);
-  }
-
-  List<Id> putAllByLinkerSync(List<LogActivitiesDbDto> objects,
-      {bool saveLinks = true}) {
-    return putAllByIndexSync(r'linker', objects, saveLinks: saveLinks);
-  }
+  object.user.attach(col, col.isar.collection<UserLocalDto>(), r'user', id);
 }
 
 extension LogActivitiesDbDtoQueryWhereSort
@@ -258,73 +178,6 @@ extension LogActivitiesDbDtoQueryWhere
       ));
     });
   }
-
-  QueryBuilder<LogActivitiesDbDto, LogActivitiesDbDto, QAfterWhereClause>
-      linkerIsNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addWhereClause(IndexWhereClause.equalTo(
-        indexName: r'linker',
-        value: [null],
-      ));
-    });
-  }
-
-  QueryBuilder<LogActivitiesDbDto, LogActivitiesDbDto, QAfterWhereClause>
-      linkerIsNotNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addWhereClause(IndexWhereClause.between(
-        indexName: r'linker',
-        lower: [null],
-        includeLower: false,
-        upper: [],
-      ));
-    });
-  }
-
-  QueryBuilder<LogActivitiesDbDto, LogActivitiesDbDto, QAfterWhereClause>
-      linkerEqualTo(String? linker) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addWhereClause(IndexWhereClause.equalTo(
-        indexName: r'linker',
-        value: [linker],
-      ));
-    });
-  }
-
-  QueryBuilder<LogActivitiesDbDto, LogActivitiesDbDto, QAfterWhereClause>
-      linkerNotEqualTo(String? linker) {
-    return QueryBuilder.apply(this, (query) {
-      if (query.whereSort == Sort.asc) {
-        return query
-            .addWhereClause(IndexWhereClause.between(
-              indexName: r'linker',
-              lower: [],
-              upper: [linker],
-              includeUpper: false,
-            ))
-            .addWhereClause(IndexWhereClause.between(
-              indexName: r'linker',
-              lower: [linker],
-              includeLower: false,
-              upper: [],
-            ));
-      } else {
-        return query
-            .addWhereClause(IndexWhereClause.between(
-              indexName: r'linker',
-              lower: [linker],
-              includeLower: false,
-              upper: [],
-            ))
-            .addWhereClause(IndexWhereClause.between(
-              indexName: r'linker',
-              lower: [],
-              upper: [linker],
-              includeUpper: false,
-            ));
-      }
-    });
-  }
 }
 
 extension LogActivitiesDbDtoQueryFilter
@@ -381,160 +234,6 @@ extension LogActivitiesDbDtoQueryFilter
         includeLower: includeLower,
         upper: upper,
         includeUpper: includeUpper,
-      ));
-    });
-  }
-
-  QueryBuilder<LogActivitiesDbDto, LogActivitiesDbDto, QAfterFilterCondition>
-      linkerIsNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNull(
-        property: r'linker',
-      ));
-    });
-  }
-
-  QueryBuilder<LogActivitiesDbDto, LogActivitiesDbDto, QAfterFilterCondition>
-      linkerIsNotNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNotNull(
-        property: r'linker',
-      ));
-    });
-  }
-
-  QueryBuilder<LogActivitiesDbDto, LogActivitiesDbDto, QAfterFilterCondition>
-      linkerEqualTo(
-    String? value, {
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'linker',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<LogActivitiesDbDto, LogActivitiesDbDto, QAfterFilterCondition>
-      linkerGreaterThan(
-    String? value, {
-    bool include = false,
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        include: include,
-        property: r'linker',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<LogActivitiesDbDto, LogActivitiesDbDto, QAfterFilterCondition>
-      linkerLessThan(
-    String? value, {
-    bool include = false,
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.lessThan(
-        include: include,
-        property: r'linker',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<LogActivitiesDbDto, LogActivitiesDbDto, QAfterFilterCondition>
-      linkerBetween(
-    String? lower,
-    String? upper, {
-    bool includeLower = true,
-    bool includeUpper = true,
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.between(
-        property: r'linker',
-        lower: lower,
-        includeLower: includeLower,
-        upper: upper,
-        includeUpper: includeUpper,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<LogActivitiesDbDto, LogActivitiesDbDto, QAfterFilterCondition>
-      linkerStartsWith(
-    String value, {
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.startsWith(
-        property: r'linker',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<LogActivitiesDbDto, LogActivitiesDbDto, QAfterFilterCondition>
-      linkerEndsWith(
-    String value, {
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.endsWith(
-        property: r'linker',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<LogActivitiesDbDto, LogActivitiesDbDto, QAfterFilterCondition>
-      linkerContains(String value, {bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.contains(
-        property: r'linker',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<LogActivitiesDbDto, LogActivitiesDbDto, QAfterFilterCondition>
-      linkerMatches(String pattern, {bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.matches(
-        property: r'linker',
-        wildcard: pattern,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<LogActivitiesDbDto, LogActivitiesDbDto, QAfterFilterCondition>
-      linkerIsEmpty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'linker',
-        value: '',
-      ));
-    });
-  }
-
-  QueryBuilder<LogActivitiesDbDto, LogActivitiesDbDto, QAfterFilterCondition>
-      linkerIsNotEmpty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        property: r'linker',
-        value: '',
       ));
     });
   }
@@ -605,24 +304,24 @@ extension LogActivitiesDbDtoQueryLinks
           r'logActivities', lower, includeLower, upper, includeUpper);
     });
   }
+
+  QueryBuilder<LogActivitiesDbDto, LogActivitiesDbDto, QAfterFilterCondition>
+      user(FilterQuery<UserLocalDto> q) {
+    return QueryBuilder.apply(this, (query) {
+      return query.link(q, r'user');
+    });
+  }
+
+  QueryBuilder<LogActivitiesDbDto, LogActivitiesDbDto, QAfterFilterCondition>
+      userIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(r'user', 0, true, 0, true);
+    });
+  }
 }
 
 extension LogActivitiesDbDtoQuerySortBy
-    on QueryBuilder<LogActivitiesDbDto, LogActivitiesDbDto, QSortBy> {
-  QueryBuilder<LogActivitiesDbDto, LogActivitiesDbDto, QAfterSortBy>
-      sortByLinker() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'linker', Sort.asc);
-    });
-  }
-
-  QueryBuilder<LogActivitiesDbDto, LogActivitiesDbDto, QAfterSortBy>
-      sortByLinkerDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'linker', Sort.desc);
-    });
-  }
-}
+    on QueryBuilder<LogActivitiesDbDto, LogActivitiesDbDto, QSortBy> {}
 
 extension LogActivitiesDbDtoQuerySortThenBy
     on QueryBuilder<LogActivitiesDbDto, LogActivitiesDbDto, QSortThenBy> {
@@ -639,43 +338,16 @@ extension LogActivitiesDbDtoQuerySortThenBy
       return query.addSortBy(r'id', Sort.desc);
     });
   }
-
-  QueryBuilder<LogActivitiesDbDto, LogActivitiesDbDto, QAfterSortBy>
-      thenByLinker() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'linker', Sort.asc);
-    });
-  }
-
-  QueryBuilder<LogActivitiesDbDto, LogActivitiesDbDto, QAfterSortBy>
-      thenByLinkerDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'linker', Sort.desc);
-    });
-  }
 }
 
 extension LogActivitiesDbDtoQueryWhereDistinct
-    on QueryBuilder<LogActivitiesDbDto, LogActivitiesDbDto, QDistinct> {
-  QueryBuilder<LogActivitiesDbDto, LogActivitiesDbDto, QDistinct>
-      distinctByLinker({bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'linker', caseSensitive: caseSensitive);
-    });
-  }
-}
+    on QueryBuilder<LogActivitiesDbDto, LogActivitiesDbDto, QDistinct> {}
 
 extension LogActivitiesDbDtoQueryProperty
     on QueryBuilder<LogActivitiesDbDto, LogActivitiesDbDto, QQueryProperty> {
   QueryBuilder<LogActivitiesDbDto, int, QQueryOperations> idProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'id');
-    });
-  }
-
-  QueryBuilder<LogActivitiesDbDto, String?, QQueryOperations> linkerProperty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addPropertyName(r'linker');
     });
   }
 }

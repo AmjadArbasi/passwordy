@@ -19,10 +19,10 @@ class CategoryManagerApi implements ICategoryManagerApi {
   final SecureStorage _secureStorage;
   final CacheClient _cache;
 
-  final keyToken = GlobalVar.keyToken;
-
+  static const keySession = GlobalVar.keySession;
   static const usernameCategories = GlobalVar.usernameCategories;
   static const logsDBuser = GlobalVar.logsDBuser;
+  static const authUser = "auth_user";
 
   CategoriesDbDto get categoryListUsername {
     final categoriesDbDto = _cache.read(key: usernameCategories);
@@ -43,40 +43,45 @@ class CategoryManagerApi implements ICategoryManagerApi {
 
   @override
   Future<Either<Failure, List<CategoryModel>>> loadAllValues() async {
-    final token = await _secureStorage.getToken(keyToken);
-    final user =
-        await isar.userLocalDtos.filter().tokenEqualTo(token).findFirst();
+    final session = await _secureStorage.getToken(keySession);
 
-    if (user != null && token != null) {
-      final linker = user.linker;
-      final usernameLinkedCategories = await isar.categoriesDbDtos
-          .filter()
-          .linkerEqualTo(linker!)
-          .findFirst();
+    if (session != null) {
+      final user = await isar.userLocalDtos.getByUsername(session);
 
-      final logs = await isar.logActivitiesDbDtos
-          .filter()
-          .linkerEqualTo(linker)
-          .findFirst();
+      if (user != null) {
+        _cache.write(key: authUser, value: user);
 
-      if (usernameLinkedCategories != null && logs != null) {
-        _cache.write(key: usernameCategories, value: usernameLinkedCategories);
+        final userLinkedCategories = await isar.categoriesDbDtos
+            .filter()
+            .user((q) => q.idEqualTo(user.id))
+            .findFirst();
 
-        _cache.write(key: logsDBuser, value: logs);
+        final userLinkedLogs = await isar.logActivitiesDbDtos
+            .filter()
+            .user((q) => q.idEqualTo(user.id))
+            .findFirst();
 
-        try {
-          final categoriesDbDto =
-              await usernameLinkedCategories.categories.filter().findAll();
+        if (userLinkedCategories != null && userLinkedLogs != null) {
+          _cache.write(key: usernameCategories, value: userLinkedCategories);
+          _cache.write(key: logsDBuser, value: userLinkedLogs);
 
-          final categoriesModel = <CategoryModel>[];
-          for (var category in categoriesDbDto) {
-            categoriesModel.add(await categoryConverterDbDTOModel
-                .categoryDbDtoToModel(category));
+          try {
+            final categoriesDbDto =
+                await userLinkedCategories.categories.filter().findAll();
+
+            final categoriesModel = <CategoryModel>[];
+
+            for (var category in categoriesDbDto) {
+              categoriesModel.add(await categoryConverterDbDTOModel
+                  .categoryDbDtoToModel(category));
+            }
+            return Right(categoriesModel);
+          } catch (e) {
+            GlobalVar.logger.e("something-went-wrong", error: e.toString());
+            return Left(CategoryManagerException("something-went-wrong"));
           }
-          return Right(categoriesModel);
-        } catch (e) {
-          GlobalVar.logger.e("something-went-wrong", error: e.toString());
-          return Left(CategoryManagerException("something-went-wrong"));
+        } else {
+          return Left(CategoryManagerException("operation-not-allowed"));
         }
       } else {
         return Left(CategoryManagerException("operation-not-allowed"));
@@ -259,14 +264,13 @@ class CategoryManagerApi implements ICategoryManagerApi {
           await isar.writeTxn(() async {
             await isar.categoryDbDtos.put(newCategory);
             categoryList.categories.add(newCategory);
+
             await isar.categoriesDbDtos.put(categoryList);
             await categoryList.categories.save();
 
             /// logging
             await isar.logActivityDbDtos.put(log);
-
             logsDbUser.logActivities.add(log);
-
             await logsDbUser.logActivities.save();
           });
 

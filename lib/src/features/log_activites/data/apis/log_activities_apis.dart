@@ -10,28 +10,32 @@ class LogActivitiesApis implements ILogActivitiesApis {
   final Isar _isar;
   final SecureStorage _secureStorage;
 
-  static const String key = GlobalVar.keyToken;
+  static const _keySession = GlobalVar.keySession;
 
   @override
   Future<void> deleteValues() async {
     try {
-      final token = await _secureStorage.getToken(key);
-      final user =
-          await _isar.userLocalDtos.filter().tokenEqualTo(token).findFirst();
-      if (user != null) {
-        final linker = user.linker;
-        final logs = await _isar.logActivitiesDbDtos
-            .filter()
-            .linkerEqualTo(linker)
-            .findFirst();
-        if (logs != null) {
-          try {
-            await _isar.writeTxn(() async {
-              final count = await logs.logActivities.filter().deleteAll();
-              return count;
-            });
-          } catch (e) {
-            throw LogActivitiesException("Something went wrong");
+      final session = await _secureStorage.getToken(_keySession);
+      if (session != null) {
+        final user = await _isar.userLocalDtos.getByUsername(session);
+
+        if (user != null) {
+          final logs = await _isar.logActivitiesDbDtos
+              .filter()
+              .idEqualTo(user.id!)
+              .findFirst();
+
+          if (logs != null) {
+            try {
+              await _isar.writeTxn(() async {
+                final count = await logs.logActivities.filter().deleteAll();
+                return count;
+              });
+            } catch (e) {
+              throw LogActivitiesException("Something went wrong");
+            }
+          } else {
+            throw LogActivitiesException("User not authorzied");
           }
         } else {
           throw LogActivitiesException("User not authorzied");
@@ -47,19 +51,24 @@ class LogActivitiesApis implements ILogActivitiesApis {
   @override
   Future<List<LogActivityDbDto>> loadValues() async {
     try {
-      final token = await _secureStorage.getToken(key);
-      final user =
-          await _isar.userLocalDtos.filter().tokenEqualTo(token).findFirst();
-      if (user != null) {
-        final linker = user.linker;
-        final logs = await _isar.logActivitiesDbDtos
-            .filter()
-            .linkerEqualTo(linker)
-            .findFirst();
-        if (logs != null) {
-          final result = await logs.logActivities.filter().findAll();
-          result.sort((a, b) => b.dateTime!.compareTo(a.dateTime!));
-          return result;
+      final session = await _secureStorage.getToken(_keySession);
+
+      if (session != null) {
+        final user = await _isar.userLocalDtos.getByUsername(session);
+
+        if (user != null) {
+          final logs = await _isar.logActivitiesDbDtos
+              .filter()
+              .idEqualTo(user.id!)
+              .findFirst();
+
+          if (logs != null) {
+            final result = await logs.logActivities.filter().findAll();
+            result.sort((a, b) => b.dateTime!.compareTo(a.dateTime!));
+            return result;
+          } else {
+            throw LogActivitiesException("User not authorzied");
+          }
         } else {
           throw LogActivitiesException("User not authorzied");
         }
