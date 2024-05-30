@@ -1,9 +1,10 @@
 import 'package:dartz/dartz.dart';
 import 'package:encrypt/encrypt.dart';
-import 'package:flutter_application_passmanager/src/core/core.dart';
-import 'package:flutter_application_passmanager/src/features/features.dart';
 import 'package:isar/isar.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+import 'package:flutter_application_passmanager/src/core/core.dart';
+import 'package:flutter_application_passmanager/src/features/features.dart';
 
 class UserManagementApi implements IUserManagementApi {
   UserManagementApi({
