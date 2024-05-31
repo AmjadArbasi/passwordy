@@ -69,13 +69,12 @@ class CategoryManagerApi implements ICategoryManagerApi {
             final categoriesDbDto =
                 await userLinkedCategories.categories.filter().findAll();
 
-            final categoriesModel = <CategoryModel>[];
+            final categoriesModel = categoriesDbDto
+                .map((e) async =>
+                    await categoryConverterDbDTOModel.categoryDbDtoToModel(e))
+                .toList();
 
-            for (var category in categoriesDbDto) {
-              categoriesModel.add(await categoryConverterDbDTOModel
-                  .categoryDbDtoToModel(category));
-            }
-            return Right(categoriesModel);
+            return Right(await Future.wait(categoriesModel));
           } catch (e) {
             GlobalVar.logger.e("something-went-wrong", error: e.toString());
             return Left(CategoryManagerException("something-went-wrong"));
@@ -96,8 +95,18 @@ class CategoryManagerApi implements ICategoryManagerApi {
     CatchwordModel catchwordModel,
     CategoryModel categoryModel,
   ) async {
+    final cipher = Cipher(secureStorage: _secureStorage);
+    await cipher.init();
+
+    final encryptedModel = catchwordModel.copyWith(
+      name: cipher.encrypt(catchwordModel.name),
+      accountId: cipher.encrypt(catchwordModel.accountId),
+      passcode: cipher.encrypt(catchwordModel.passcode),
+      note: cipher.encrypt(catchwordModel.note),
+    );
+
     final catchwordDbDto =
-        await catchwordConverterDbDTOModel.convertModelToDbDto(catchwordModel);
+        catchwordConverterDbDTOModel.convertModelToDbDto(encryptedModel);
 
     if (categoryModel.id != null) {
       final category = await isar.categoryDbDtos.get(categoryModel.id!);
@@ -150,7 +159,7 @@ class CategoryManagerApi implements ICategoryManagerApi {
     CategoryModel categoryModel,
   ) async {
     final catchwordDbDto =
-        await catchwordConverterDbDTOModel.convertModelToDbDto(catchwordModel);
+        catchwordConverterDbDTOModel.convertModelToDbDto(catchwordModel);
 
     final category = await isar.categoryDbDtos.get(categoryModel.id!);
 

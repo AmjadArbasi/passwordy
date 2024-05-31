@@ -1,8 +1,9 @@
 import 'package:flutter_application_passmanager/src/features/category_manager/category_manager.dart';
 
 class CategoryConverterDbDTOModel {
-  CategoryConverterDbDTOModel({required CatchwordConverterDbDTOModel converter})
-      : _converter = converter;
+  CategoryConverterDbDTOModel({
+    required CatchwordConverterDbDTOModel converter,
+  }) : _converter = converter;
 
   final CatchwordConverterDbDTOModel _converter;
 
@@ -16,16 +17,14 @@ class CategoryConverterDbDTOModel {
 
   Future<CategoryModel> categoryDbDtoToModel(
       CategoryDbDto categoryDbDto) async {
-    final catchwords = <CatchwordModel>[];
-
-    for (var catchword in categoryDbDto.catchwords) {
-      catchwords.add(await _converter.convertDbDtoToModel(catchword));
-    }
+    final catchwords = categoryDbDto.catchwords
+        .map((e) async => await _converter.convertDbDtoToModel(e))
+        .toList();
 
     return CategoryModel(
       id: categoryDbDto.id,
       categoryName: categoryDbDto.categoryName,
-      catchwords: catchwords,
+      catchwords: await Future.wait(catchwords),
       total: categoryDbDto.total,
     );
   }

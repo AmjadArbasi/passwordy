@@ -35,4 +35,26 @@ class CatchwordModel extends DataMapperEntity<CatchwordEntity> {
       isVisible: isVisible,
     );
   }
+
+  CatchwordModel copyWith({
+    int? id,
+    String? name,
+    String? accountId,
+    String? passcode,
+    String? note,
+    DateTime? createdAt,
+    DateTime? whenUsed,
+    bool? isVisible,
+  }) {
+    return CatchwordModel(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      accountId: accountId ?? this.accountId,
+      passcode: passcode ?? this.passcode,
+      note: note ?? this.note,
+      createdAt: createdAt ?? this.createdAt,
+      whenUsed: whenUsed ?? this.whenUsed,
+      isVisible: isVisible ?? this.isVisible,
+    );
+  }
 }

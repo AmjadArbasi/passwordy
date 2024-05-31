@@ -23,18 +23,18 @@ class Cipher {
     /// Retrieve key securely
     final storedKey = await _secureStorage.getToken(_aesGcmKey);
 
-    /// Retrieve key securely
+    /// Retrieve IV securely
     final storedIV = await _secureStorage.getToken(_ivKey);
 
     final deriveKey = _deriveKey(storedKey!, 16);
     key = Key(Uint8List.fromList(deriveKey));
     _iv = IV.fromBase64(storedIV!);
-    GlobalVar.logger.f(storedIV);
     // Create an encrypter with AES-GCM algorithm
     _encrypter = Encrypter(AES(key, mode: AESMode.gcm, padding: 'PKCS7'));
   }
 
   String encrypt(String plainText) {
+    GlobalVar.logger.f("Try to encrypt this $plainText");
     final encrypted = _encrypter.encrypt(plainText, iv: _iv);
     return encrypted.base64;
   }
