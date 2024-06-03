@@ -135,7 +135,7 @@ class CategoryManagerRepsoitoryImpl extends CategoryManagerRepositryBase {
 
   @override
   Future<Either<Failure, List<CategoryModel>>> refreshData() async =>
-      await _keepStreamFresh();
+      await _categoryManagerApi.loadAllValues();
 
   @override
   Future<Either<Failure, Unit>> deleteCatchword(
@@ -292,4 +292,8 @@ class CategoryManagerRepsoitoryImpl extends CategoryManagerRepositryBase {
   Future<Either<Failure, Unit>> addWhenUsedDateTime(int catchwordId) async {
     return await _categoryManagerApi.addCurrentDateTimeWhenUsed(catchwordId);
   }
+
+  @override
+  Future<Either<Failure, Unit>> changeEncryptionKey(String username) =>
+      _categoryManagerApi.changeEncryptionKey(username);
 }

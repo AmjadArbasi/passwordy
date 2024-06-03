@@ -23,9 +23,8 @@ class UserManagementApi implements IUserManagementApi {
   final Hash _hash;
 
   static const _keySession = GlobalVar.keySession;
-  static const _aesGcmKey = GlobalVar.aesGcmKey;
   static final _logger = GlobalVar.logger;
-  static const _ivKey = GlobalVar.ivKey;
+  static const _oldKey = GlobalVar.oldKey;
 
   @override
   Future<Either<Failure, Unit>> signUp(UserLocalModel userLocalModel) async {
@@ -87,9 +86,6 @@ class UserManagementApi implements IUserManagementApi {
     String masterPassword,
     String username,
   ) async {
-    await _secureStorage.deleteToken(_aesGcmKey);
-    await _secureStorage.deleteToken(_ivKey);
-
     final user = await _isar.userLocalDtos
         .filter()
         .usernameEqualTo(username)
@@ -125,10 +121,6 @@ class UserManagementApi implements IUserManagementApi {
           final session = user.username!;
 
           await _secureStorage.storeToken(_keySession, session);
-
-          /// Store key and IV variables localy secure
-          await _secureStorage.storeToken(_aesGcmKey, hashedPassword);
-          await _secureStorage.storeToken(_ivKey, user.iv!);
 
           return Right(userLocalModel);
         } catch (e) {
@@ -175,7 +167,7 @@ class UserManagementApi implements IUserManagementApi {
 
             if (userLocalModel.masterPassword != null &&
                 userLocalModel.masterPassword!.isNotEmpty) {
-              _logger.f(userLocalModel.masterPassword);
+              await _secureStorage.storeToken(_oldKey, user.masterPassword!);
 
               final hashedMassterPassword =
                   _hash.hash(userLocalModel.masterPassword!);
@@ -269,9 +261,6 @@ class UserManagementApi implements IUserManagementApi {
           });
 
           await _secureStorage.deleteToken(_keySession);
-          await _secureStorage.deleteToken(_aesGcmKey);
-          await _secureStorage.deleteToken(_ivKey);
-
           return const Right(unit);
         } catch (e) {
           _logger.e("something-went-wrong", error: e);
@@ -326,8 +315,6 @@ class UserManagementApi implements IUserManagementApi {
   Future<Either<Failure, Unit>> logOut() async {
     try {
       await _secureStorage.deleteToken(_keySession);
-      await _secureStorage.deleteToken(_aesGcmKey);
-      await _secureStorage.deleteToken(_ivKey);
       return const Right(unit);
     } catch (e) {
       _logger.e("something-went-wrong", error: e);
@@ -394,10 +381,9 @@ class UserManagementApi implements IUserManagementApi {
       final hashedSecret = _hash.hash(secret);
 
       if (hashedSecret == user.secret) {
-        final newPasswordHashed = _hash.hash(newPassword);
-        final secretHashed = _hash.hash(secret);
+        await _secureStorage.storeToken(_oldKey, user.masterPassword!);
 
-        user.secret = secretHashed;
+        final newPasswordHashed = _hash.hash(newPassword);
         user.masterPassword = newPasswordHashed;
 
         try {

@@ -11,7 +11,7 @@ class CatchwordDbDto {
     required this.passcode,
     required this.note,
     required this.dateTime,
-    required this.isVisibile,
+    required this.isVisible,
     this.whenUsed,
   });
 
@@ -25,7 +25,7 @@ class CatchwordDbDto {
 
   String note;
 
-  bool isVisibile;
+  bool isVisible;
 
   DateTime? whenUsed;
 

@@ -15,16 +15,16 @@ class CategoryConverterDbDTOModel {
     );
   }
 
-  Future<CategoryModel> categoryDbDtoToModel(
-      CategoryDbDto categoryDbDto) async {
+  CategoryModel categoryDbDtoToModel(
+      CategoryDbDto categoryDbDto, String key, String iv) {
     final catchwords = categoryDbDto.catchwords
-        .map((e) async => await _converter.convertDbDtoToModel(e))
+        .map((e) => _converter.convertDbDtoToModel(e, key, iv))
         .toList();
 
     return CategoryModel(
       id: categoryDbDto.id,
       categoryName: categoryDbDto.categoryName,
-      catchwords: await Future.wait(catchwords),
+      catchwords: (catchwords),
       total: categoryDbDto.total,
     );
   }

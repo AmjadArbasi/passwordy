@@ -23,6 +23,7 @@ class CategoryManagerApi implements ICategoryManagerApi {
   static const usernameCategories = GlobalVar.usernameCategories;
   static const logsDBuser = GlobalVar.logsDBuser;
   static const authUser = GlobalVar.authUser;
+  static const _oldKey = GlobalVar.oldKey;
 
   CategoriesDbDto get categoryListUsername {
     final categoriesDbDto = _cache.read(key: usernameCategories);
@@ -39,6 +40,15 @@ class CategoryManagerApi implements ICategoryManagerApi {
       throw CategoryManagerException("logs-not-allowed");
     }
     return logActivitiesDbDto as LogActivitiesDbDto;
+  }
+
+  UserLocalDto get loggedUser {
+    final loggedUserDbDto = _cache.read(key: authUser);
+
+    if (loggedUserDbDto == null) {
+      throw CategoryManagerException("user-not-authorized");
+    }
+    return loggedUserDbDto as UserLocalDto;
   }
 
   @override
@@ -70,11 +80,12 @@ class CategoryManagerApi implements ICategoryManagerApi {
                 await userLinkedCategories.categories.filter().findAll();
 
             final categoriesModel = categoriesDbDto
-                .map((e) async =>
-                    await categoryConverterDbDTOModel.categoryDbDtoToModel(e))
+                .map(
+                  (e) => categoryConverterDbDTOModel.categoryDbDtoToModel(
+                      e, user.masterPassword!, user.iv!),
+                )
                 .toList();
-            final categories = await Future.wait(categoriesModel);
-            return Right(categories);
+            return Right(categoriesModel);
           } catch (e) {
             GlobalVar.logger.e("something-went-wrong", error: e.toString());
             return Left(CategoryManagerException("something-went-wrong"));
@@ -95,18 +106,11 @@ class CategoryManagerApi implements ICategoryManagerApi {
     CatchwordModel catchwordModel,
     CategoryModel categoryModel,
   ) async {
-    final cipher = Cipher(secureStorage: _secureStorage);
-    await cipher.init();
-
-    final encryptedModel = catchwordModel.copyWith(
-      name: cipher.encrypt(catchwordModel.name),
-      accountId: cipher.encrypt(catchwordModel.accountId),
-      passcode: cipher.encrypt(catchwordModel.passcode),
-      note: cipher.encrypt(catchwordModel.note),
+    final catchwordDbDto = catchwordConverterDbDTOModel.convertModelToDbDto(
+      catchwordModel,
+      loggedUser.masterPassword!,
+      loggedUser.iv!,
     );
-
-    final catchwordDbDto =
-        catchwordConverterDbDTOModel.convertModelToDbDto(encryptedModel);
 
     if (categoryModel.id != null) {
       final category = await isar.categoryDbDtos.get(categoryModel.id!);
@@ -158,8 +162,11 @@ class CategoryManagerApi implements ICategoryManagerApi {
     CatchwordModel catchwordModel,
     CategoryModel categoryModel,
   ) async {
-    final catchwordDbDto =
-        catchwordConverterDbDTOModel.convertModelToDbDto(catchwordModel);
+    final catchwordDbDto = catchwordConverterDbDTOModel.convertModelToDbDto(
+      catchwordModel,
+      loggedUser.masterPassword!,
+      loggedUser.iv!,
+    );
 
     final category = await isar.categoryDbDtos.get(categoryModel.id!);
 
@@ -335,6 +342,57 @@ class CategoryManagerApi implements ICategoryManagerApi {
       return const Right(unit);
     } else {
       return Left(CategoryManagerException("catchword-not-found"));
+    }
+  }
+
+  @override
+  Future<Either<Failure, Unit>> changeEncryptionKey(String username) async {
+    final user =
+        await isar.userLocalDtos.filter().usernameEqualTo(username).findFirst();
+
+    final oldKey = await _secureStorage.getToken(_oldKey);
+
+    if (oldKey != null && user != null) {
+      final encDecCathchwords = EncDecCathchwords(
+        oldKey: oldKey,
+        newKey: user.masterPassword!,
+        iv: user.iv!,
+      );
+
+      final categories =
+          await categoryListUsername.categories.filter().findAll();
+
+      final catchwordWithCategory = <MapEntry<CatchwordDbDto, CategoryDbDto>>[];
+
+      for (var category in categories) {
+        for (var catchword in category.catchwords) {
+          catchwordWithCategory
+              .add(MapEntry(encDecCathchwords.dec(catchword), category));
+        }
+      }
+
+      for (var entry in catchwordWithCategory) {
+        final category = await isar.categoryDbDtos.get(entry.value.id!);
+        GlobalVar.logger.f(entry.key);
+
+        final catchword = encDecCathchwords.enc(entry.key);
+
+        await isar.writeTxn(() async {
+          // Ensure the new catchword are added
+          await isar.catchwordDbDtos.put(catchword);
+
+          // Now, add the new catchword /s to the category's existing catchword link
+          category?.catchwords.add(catchword);
+
+          await isar.categoryDbDtos.put(category!);
+          // Save its relation
+          await category.catchwords.save();
+        });
+      }
+      await _secureStorage.deleteToken(_oldKey);
+      return const Right(unit);
+    } else {
+      return Left(CategoryManagerException("cant-change-mastercode"));
     }
   }
 }

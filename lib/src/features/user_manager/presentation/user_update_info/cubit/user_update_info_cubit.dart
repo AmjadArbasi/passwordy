@@ -1,5 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter_application_passmanager/src/core/constants/constants.dart';
+import 'package:flutter_application_passmanager/src/features/category_manager/category_manager.dart';
 import 'package:flutter_application_passmanager/src/features/form_inputs/form_inputs.dart';
 import 'package:flutter_application_passmanager/src/features/login/login.dart';
 import 'package:formz/formz.dart';
@@ -7,10 +9,13 @@ import 'package:formz/formz.dart';
 part 'user_update_info_state.dart';
 
 class UserUpdateInfoCubit extends Cubit<UserUpdateInfoState> {
-  UserUpdateInfoCubit({required this.userManagementUsecase})
+  UserUpdateInfoCubit(
+      {required this.userManagementUsecase,
+      required this.categoryManagerUsecase})
       : super(const UserUpdateInfoState());
 
   final UserManagementUsecase userManagementUsecase;
+  final CategoryManagerUsecase categoryManagerUsecase;
 
   void displayNameChanged(String value) {
     final displayName = Username.dirty(value);
@@ -53,7 +58,7 @@ class UserUpdateInfoCubit extends Cubit<UserUpdateInfoState> {
     });
   }
 
-  Future<void> updateUserInfoSubmitted() async {
+  Future<void> updateUserInfoSubmitted(String username) async {
     if (state.isValid && state.checkCurrentPassword) {
       emit(state.copyWith(status: FormzSubmissionStatus.inProgress));
 
@@ -76,11 +81,20 @@ class UserUpdateInfoCubit extends Cubit<UserUpdateInfoState> {
             ),
           );
         },
-        (userLocalEntity) {
+        (userLocalEntity) async {
           emit(state.copyWith(
             status: FormzSubmissionStatus.success,
             isValid: false,
           ));
+          if (state.newPassword.value.isNotEmpty) {
+            GlobalVar.logger.f("state.currentPassword.value.isNotEmpty");
+            final changeEncryptionKey =
+                await categoryManagerUsecase.changeEncryptionKey(username);
+            changeEncryptionKey.fold(
+              (failure) => emit(state.copyWith(errorMessage: failure.message)),
+              (_) => null,
+            );
+          }
         },
       );
     } else {

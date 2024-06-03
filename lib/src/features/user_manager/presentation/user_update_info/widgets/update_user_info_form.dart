@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_passmanager/src/core/core.dart';
+import 'package:flutter_application_passmanager/src/features/auth/auth.dart';
 import 'package:flutter_application_passmanager/src/features/user_manager/user_manager.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:formz/formz.dart';
@@ -49,6 +50,8 @@ class UpdateUserInfoSubmitted extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final username = context.read<AuthBloc>().state.userLocalEntity.username;
+
     return BlocBuilder<UserUpdateInfoCubit, UserUpdateInfoState>(
       builder: (context, state) {
         return state.status.isInProgress
@@ -65,7 +68,7 @@ class UpdateUserInfoSubmitted extends StatelessWidget {
                     ? () {
                         context
                             .read<UserUpdateInfoCubit>()
-                            .updateUserInfoSubmitted();
+                            .updateUserInfoSubmitted(username!);
                       }
                     : null,
                 style: ElevatedButton.styleFrom(

@@ -2,18 +2,20 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_application_passmanager/src/features/features.dart';
 import 'package:flutter_application_passmanager/src/features/form_inputs/form_inputs.dart';
-import 'package:flutter_application_passmanager/src/features/login/login.dart';
 import 'package:formz/formz.dart';
 
 part 'reset_master_passcode_state.dart';
 
 class ResetMasterPasscodeCubit extends Cubit<ResetMasterPasscodeState> {
   ResetMasterPasscodeCubit(
-      {required UserManagementUsecase userManagementUsecase})
+      {required UserManagementUsecase userManagementUsecase,
+      required CategoryManagerUsecase categoryManagerUsecase})
       : _userManagementUsecase = userManagementUsecase,
+        _categoryManagerUsecase = categoryManagerUsecase,
         super(const ResetMasterPasscodeState());
 
   final UserManagementUsecase _userManagementUsecase;
+  final CategoryManagerUsecase _categoryManagerUsecase;
 
   void usernameChanged(String value) {
     final username = Username.dirty(value);
@@ -96,16 +98,23 @@ class ResetMasterPasscodeCubit extends Cubit<ResetMasterPasscodeState> {
       state.secret.value,
       state.newPassword.value,
     );
+
     result.fold((failure) {
       emit(state.copyWith(
         status: FormzSubmissionStatus.failure,
         errorMessage: failure.message,
       ));
-    }, (_) {
+    }, (_) async {
       emit(state.copyWith(
         status: FormzSubmissionStatus.success,
         isValid: false,
       ));
+      final changeEncryptionKey = await _categoryManagerUsecase
+          .changeEncryptionKey(state.username.value);
+      changeEncryptionKey.fold(
+        (failure) => emit(state.copyWith(errorMessage: failure.message)),
+        (_) => null,
+      );
     });
   }
 }

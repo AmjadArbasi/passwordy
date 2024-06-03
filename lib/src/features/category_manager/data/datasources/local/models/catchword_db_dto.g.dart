@@ -27,9 +27,9 @@ const CatchwordDbDtoSchema = CollectionSchema(
       name: r'dateTime',
       type: IsarType.dateTime,
     ),
-    r'isVisibile': PropertySchema(
+    r'isVisible': PropertySchema(
       id: 2,
-      name: r'isVisibile',
+      name: r'isVisible',
       type: IsarType.bool,
     ),
     r'name': PropertySchema(
@@ -102,7 +102,7 @@ void _catchwordDbDtoSerialize(
 ) {
   writer.writeString(offsets[0], object.accountId);
   writer.writeDateTime(offsets[1], object.dateTime);
-  writer.writeBool(offsets[2], object.isVisibile);
+  writer.writeBool(offsets[2], object.isVisible);
   writer.writeString(offsets[3], object.name);
   writer.writeString(offsets[4], object.note);
   writer.writeString(offsets[5], object.passcode);
@@ -119,7 +119,7 @@ CatchwordDbDto _catchwordDbDtoDeserialize(
     accountId: reader.readString(offsets[0]),
     dateTime: reader.readDateTime(offsets[1]),
     id: id,
-    isVisibile: reader.readBool(offsets[2]),
+    isVisible: reader.readBool(offsets[2]),
     name: reader.readString(offsets[3]),
     note: reader.readString(offsets[4]),
     passcode: reader.readString(offsets[5]),
@@ -617,10 +617,10 @@ extension CatchwordDbDtoQueryFilter
   }
 
   QueryBuilder<CatchwordDbDto, CatchwordDbDto, QAfterFilterCondition>
-      isVisibileEqualTo(bool value) {
+      isVisibleEqualTo(bool value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'isVisibile',
+        property: r'isVisible',
         value: value,
       ));
     });
@@ -1143,17 +1143,16 @@ extension CatchwordDbDtoQuerySortBy
     });
   }
 
-  QueryBuilder<CatchwordDbDto, CatchwordDbDto, QAfterSortBy>
-      sortByIsVisibile() {
+  QueryBuilder<CatchwordDbDto, CatchwordDbDto, QAfterSortBy> sortByIsVisible() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'isVisibile', Sort.asc);
+      return query.addSortBy(r'isVisible', Sort.asc);
     });
   }
 
   QueryBuilder<CatchwordDbDto, CatchwordDbDto, QAfterSortBy>
-      sortByIsVisibileDesc() {
+      sortByIsVisibleDesc() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'isVisibile', Sort.desc);
+      return query.addSortBy(r'isVisible', Sort.desc);
     });
   }
 
@@ -1248,17 +1247,16 @@ extension CatchwordDbDtoQuerySortThenBy
     });
   }
 
-  QueryBuilder<CatchwordDbDto, CatchwordDbDto, QAfterSortBy>
-      thenByIsVisibile() {
+  QueryBuilder<CatchwordDbDto, CatchwordDbDto, QAfterSortBy> thenByIsVisible() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'isVisibile', Sort.asc);
+      return query.addSortBy(r'isVisible', Sort.asc);
     });
   }
 
   QueryBuilder<CatchwordDbDto, CatchwordDbDto, QAfterSortBy>
-      thenByIsVisibileDesc() {
+      thenByIsVisibleDesc() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'isVisibile', Sort.desc);
+      return query.addSortBy(r'isVisible', Sort.desc);
     });
   }
 
@@ -1329,9 +1327,9 @@ extension CatchwordDbDtoQueryWhereDistinct
   }
 
   QueryBuilder<CatchwordDbDto, CatchwordDbDto, QDistinct>
-      distinctByIsVisibile() {
+      distinctByIsVisible() {
     return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'isVisibile');
+      return query.addDistinctBy(r'isVisible');
     });
   }
 
@@ -1383,9 +1381,9 @@ extension CatchwordDbDtoQueryProperty
     });
   }
 
-  QueryBuilder<CatchwordDbDto, bool, QQueryOperations> isVisibileProperty() {
+  QueryBuilder<CatchwordDbDto, bool, QQueryOperations> isVisibleProperty() {
     return QueryBuilder.apply(this, (query) {
-      return query.addPropertyName(r'isVisibile');
+      return query.addPropertyName(r'isVisible');
     });
   }
 

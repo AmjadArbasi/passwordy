@@ -23,4 +23,6 @@ abstract class ICategoryManagerApi {
   Future<Either<Failure, Unit>> deleteCategory(int categoryId);
 
   Future<Either<Failure, Unit>> addCurrentDateTimeWhenUsed(int id);
+
+  Future<Either<Failure, Unit>> changeEncryptionKey(String username);
 }

@@ -55,4 +55,7 @@ class CategoryManagerUsecase {
 
   Future<Either<Failure, List<CategoryModel>>> refreshData() async =>
       await _api.refreshData();
+
+  Future<Either<Failure, Unit>> changeEncryptionKey(String username) =>
+      _api.changeEncryptionKey(username);
 }

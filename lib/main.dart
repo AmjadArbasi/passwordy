@@ -18,8 +18,7 @@ void main() async {
   const storage = FlutterSecureStorage();
   final secureStorage = SecureStorage(storage: storage);
 
-  final catchwordConverterDbDTOModel =
-      CatchwordConverterDbDTOModel(secureStorage: secureStorage);
+  final catchwordConverterDbDTOModel = CatchwordConverterDbDTOModel();
   final categoryConverterDbDTOModel =
       CategoryConverterDbDTOModel(converter: catchwordConverterDbDTOModel);
 
@@ -153,6 +152,7 @@ class App extends StatelessWidget {
         BlocProvider(
           create: (context) => UserUpdateInfoCubit(
             userManagementUsecase: context.read<UserManagementUsecase>(),
+            categoryManagerUsecase: context.read<CategoryManagerUsecase>(),
           ),
         ),
 
@@ -166,6 +166,7 @@ class App extends StatelessWidget {
         BlocProvider(
           create: (context) => ResetMasterPasscodeCubit(
             userManagementUsecase: context.read<UserManagementUsecase>(),
+            categoryManagerUsecase: context.read<CategoryManagerUsecase>(),
           ),
         ),
 

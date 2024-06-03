@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:flutter_application_passmanager/src/core/core.dart';
 import 'package:flutter_application_passmanager/src/features/features.dart';
 
 part 'auth_event.dart';
@@ -86,8 +85,6 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     final failureOrUser = await userManagementUsecase.reAuthLoggedUser();
     final onboardingCompleted =
         userManagementUsecase.checkOnboardingCompleted();
-
-    GlobalVar.logger.f(onboardingCompleted);
 
     await categoryManagerUsecase.refreshData();
 

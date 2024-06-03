@@ -51,4 +51,6 @@ abstract class CategoryManagerRepositryBase {
       List<CategoryEntity> categories);
 
   Future<Either<Failure, List<CategoryModel>>> refreshData();
+
+  Future<Either<Failure, Unit>> changeEncryptionKey(String username);
 }
