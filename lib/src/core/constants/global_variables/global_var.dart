@@ -10,4 +10,5 @@ class GlobalVar {
   static const logsDBuser = '__logs_db_user_cache_key__';
   static const aesGcmKey = 'aes_gcm_key';
   static const ivKey = 'iv_key';
+  static const authUser = "auth_user";
 }

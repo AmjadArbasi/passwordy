@@ -22,7 +22,7 @@ class CategoryManagerApi implements ICategoryManagerApi {
   static const keySession = GlobalVar.keySession;
   static const usernameCategories = GlobalVar.usernameCategories;
   static const logsDBuser = GlobalVar.logsDBuser;
-  static const authUser = "auth_user";
+  static const authUser = GlobalVar.authUser;
 
   CategoriesDbDto get categoryListUsername {
     final categoriesDbDto = _cache.read(key: usernameCategories);
@@ -73,8 +73,8 @@ class CategoryManagerApi implements ICategoryManagerApi {
                 .map((e) async =>
                     await categoryConverterDbDTOModel.categoryDbDtoToModel(e))
                 .toList();
-
-            return Right(await Future.wait(categoriesModel));
+            final categories = await Future.wait(categoriesModel);
+            return Right(categories);
           } catch (e) {
             GlobalVar.logger.e("something-went-wrong", error: e.toString());
             return Left(CategoryManagerException("something-went-wrong"));
@@ -238,11 +238,8 @@ class CategoryManagerApi implements ICategoryManagerApi {
 
   @override
   Future<Either<Failure, Unit>> saveCategory(CategoryModel category) async {
-    final newCategory = CategoryDbDto(
-      id: category.id,
-      categoryName: category.categoryName,
-      total: category.total,
-    );
+    final newCategory =
+        categoryConverterDbDTOModel.categoryModelToDbDto(category);
 
     if (category.categoryName.isNotEmpty) {
       final categoryList = categoryListUsername;

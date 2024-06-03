@@ -18,12 +18,16 @@ class CategoryManagerRepsoitoryImpl extends CategoryManagerRepositryBase {
 
   final _categoriesListController = BehaviorSubject<List<CategoryEntity>>();
 
+  @override
+  Stream<List<CategoryEntity>> categoriesList() => _categoriesListController;
+
   _init() async {
     final result = await _categoryManagerApi.loadAllValues();
 
-    return result.fold(
+    result.fold(
       (failure) {
         GlobalVar.logger.e(failure.message);
+        _categoriesListController.add(const []);
       },
       (categories) {
         final list = categories.map((e) => e.mapToEntity()).toList();
@@ -99,7 +103,7 @@ class CategoryManagerRepsoitoryImpl extends CategoryManagerRepositryBase {
 
       failureOrSuccess.fold(
         (failure) => GlobalVar.logger.e(failure.message),
-        (_) => null,
+        (_) => const Right(unit),
       );
       final result = await _categoryManagerApi.addCatchword(
         catchwordModel,
@@ -132,9 +136,6 @@ class CategoryManagerRepsoitoryImpl extends CategoryManagerRepositryBase {
   @override
   Future<Either<Failure, List<CategoryModel>>> refreshData() async =>
       await _keepStreamFresh();
-
-  @override
-  Stream<List<CategoryEntity>> categoriesList() => _categoriesListController;
 
   @override
   Future<Either<Failure, Unit>> deleteCatchword(
