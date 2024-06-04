@@ -25,6 +25,15 @@ class CategoryManagerApi implements ICategoryManagerApi {
   static const authUser = GlobalVar.authUser;
   static const _oldKey = GlobalVar.oldKey;
 
+  // final _controller = BehaviorSubject<List<CategoryEntity>>();
+
+  // // @override
+  // // Stream<List<CategoryEntity>> get myModelStream => _controller.stream;
+
+  // // @override
+  // // BehaviorSubject<List<CategoryEntity>> get listCategoriesController =>
+  // //     _controller;
+
   CategoriesDbDto get categoryListUsername {
     final categoriesDbDto = _cache.read(key: usernameCategories);
 
@@ -85,6 +94,29 @@ class CategoryManagerApi implements ICategoryManagerApi {
                       e, user.masterPassword!, user.iv!),
                 )
                 .toList();
+
+            // /// add the fetched categories to the stream
+            // _controller
+            //     .add(categoriesModel.map((e) => e.mapToEntity()).toList());
+
+            // /// Set up the watcher for future changes
+            // isar.categoryDbDtos.watchObject(user.id!).listen((_) async {
+            //   final categoriesDbDto =
+            //       await userLinkedCategories.categories.filter().findAll();
+
+            //   final categoriesModel = categoriesDbDto
+            //       .map(
+            //         (e) => categoryConverterDbDTOModel.categoryDbDtoToModel(
+            //             e, user.masterPassword!, user.iv!),
+            //       )
+            //       .toList();
+            //   GlobalVar.logger.f("$categoriesModel");
+
+            //   /// add the fetched categories to the stream
+            //   _controller
+            //       .add(categoriesModel.map((e) => e.mapToEntity()).toList());
+            // });
+
             return Right(categoriesModel);
           } catch (e) {
             GlobalVar.logger.e("something-went-wrong", error: e.toString());

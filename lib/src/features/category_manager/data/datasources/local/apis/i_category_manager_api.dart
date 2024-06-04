@@ -25,4 +25,8 @@ abstract class ICategoryManagerApi {
   Future<Either<Failure, Unit>> addCurrentDateTimeWhenUsed(int id);
 
   Future<Either<Failure, Unit>> changeEncryptionKey(String username);
+
+  // BehaviorSubject<List<CategoryEntity>> get listCategoriesController;
+
+  // Stream<List<CategoryEntity>> get myModelStream;
 }

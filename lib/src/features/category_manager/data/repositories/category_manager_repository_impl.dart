@@ -23,7 +23,6 @@ class CategoryManagerRepsoitoryImpl extends CategoryManagerRepositryBase {
 
   _init() async {
     final result = await _categoryManagerApi.loadAllValues();
-
     result.fold(
       (failure) {
         GlobalVar.logger.e(failure.message);
