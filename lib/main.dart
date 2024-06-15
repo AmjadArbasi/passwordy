@@ -58,11 +58,17 @@ void main() async {
   final LogActivityUsecase logActivityUsecase =
       LogActivityUsecase(activityRepository: activityRepository);
 
+  final InfoAboutRepository infoAboutRepository = InfoAboutRepositoryImpl();
+
+  final GetLocalInfoUsecase getLocalInfoUsecase =
+      GetLocalInfoUsecase(infoAboutRepository: infoAboutRepository);
+
   runApp(MainApp(
     generatePassword: generatePassword,
     categoryManagerUsecase: categoryManagerUsecase,
     userManagementUsecase: userManagementUsecase,
     logActivityUsecase: logActivityUsecase,
+    getLocalInfoUsecase: getLocalInfoUsecase,
   ));
 }
 
@@ -71,6 +77,7 @@ class MainApp extends StatelessWidget {
   final GeneratePassword generatePassword;
   final UserManagementUsecase userManagementUsecase;
   final LogActivityUsecase logActivityUsecase;
+  final GetLocalInfoUsecase getLocalInfoUsecase;
 
   const MainApp({
     super.key,
@@ -78,6 +85,7 @@ class MainApp extends StatelessWidget {
     required this.generatePassword,
     required this.userManagementUsecase,
     required this.logActivityUsecase,
+    required this.getLocalInfoUsecase,
   });
 
   @override
@@ -88,6 +96,7 @@ class MainApp extends StatelessWidget {
         RepositoryProvider.value(value: generatePassword),
         RepositoryProvider.value(value: userManagementUsecase),
         RepositoryProvider.value(value: logActivityUsecase),
+        RepositoryProvider.value(value: getLocalInfoUsecase),
       ],
       child: const App(),
     );
@@ -171,7 +180,10 @@ class App extends StatelessWidget {
         ),
 
         /// Provides [Provides Info]
-        BlocProvider(create: (context) => AboutCubit()),
+        BlocProvider(
+            create: (context) => AboutCubit(
+                  getLocalInfoUsecase: context.read<GetLocalInfoUsecase>(),
+                )),
 
         /// Provides [Log Activities]
         BlocProvider(

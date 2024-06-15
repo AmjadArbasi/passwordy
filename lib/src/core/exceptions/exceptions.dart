@@ -1,3 +1,4 @@
+export 'about_exception.dart';
 export 'category_manager_exception.dart';
 export 'database_exception.dart';
 export 'failure.dart';
