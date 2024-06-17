@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_passmanager/src/core/core.dart';
+import 'package:flutter_application_passmanager/src/features/auth/auth.dart';
 import 'package:flutter_bloc/flutter_bloc.dart' hide Transition;
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get/get.dart';
 
-import 'package:flutter_application_passmanager/src/features/auth/bloc/auth_bloc.dart';
 import 'package:flutter_application_passmanager/src/features/features.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -63,12 +63,27 @@ void main() async {
   final GetLocalInfoUsecase getLocalInfoUsecase =
       GetLocalInfoUsecase(infoAboutRepository: infoAboutRepository);
 
+  final IAuthApis iAuthApis =
+      AuthApis(isar: isar, secureStorage: secureStorage);
+  final IAuthRepository iAuthRepository =
+      AuthRepositoryImpl(iAuthApis: iAuthApis);
+
+  final LogInUsecase logInUsecase =
+      LogInUsecase(iAuthRepository: iAuthRepository);
+  final LogOutUsecase logOutUsecase =
+      LogOutUsecase(iAuthRepository: iAuthRepository);
+  final GetStreamUsecase streamUsecase =
+      GetStreamUsecase(iAuthRepository: iAuthRepository);
+
   runApp(MainApp(
     generatePassword: generatePassword,
     categoryManagerUsecase: categoryManagerUsecase,
     userManagementUsecase: userManagementUsecase,
     logActivityUsecase: logActivityUsecase,
     getLocalInfoUsecase: getLocalInfoUsecase,
+    logInUsecase: logInUsecase,
+    logOutUsecase: logOutUsecase,
+    streamUsecase: streamUsecase,
   ));
 }
 
@@ -79,6 +94,10 @@ class MainApp extends StatelessWidget {
   final LogActivityUsecase logActivityUsecase;
   final GetLocalInfoUsecase getLocalInfoUsecase;
 
+  final LogInUsecase logInUsecase;
+  final LogOutUsecase logOutUsecase;
+  final GetStreamUsecase streamUsecase;
+
   const MainApp({
     super.key,
     required this.categoryManagerUsecase,
@@ -86,6 +105,9 @@ class MainApp extends StatelessWidget {
     required this.userManagementUsecase,
     required this.logActivityUsecase,
     required this.getLocalInfoUsecase,
+    required this.logInUsecase,
+    required this.logOutUsecase,
+    required this.streamUsecase,
   });
 
   @override
@@ -97,6 +119,9 @@ class MainApp extends StatelessWidget {
         RepositoryProvider.value(value: userManagementUsecase),
         RepositoryProvider.value(value: logActivityUsecase),
         RepositoryProvider.value(value: getLocalInfoUsecase),
+        RepositoryProvider.value(value: logInUsecase),
+        RepositoryProvider.value(value: logOutUsecase),
+        RepositoryProvider.value(value: streamUsecase),
       ],
       child: const App(),
     );
@@ -135,9 +160,8 @@ class App extends StatelessWidget {
 
         /// Provides [SignInCubit]
         BlocProvider(
-          create: (context) => SignInCubit(
-            userManagementUsecase: context.read<UserManagementUsecase>(),
-          ),
+          create: (context) =>
+              SignInCubit(logInUsecase: context.read<LogInUsecase>()),
         ),
 
         /// Provides [SignUpCubit]
@@ -152,6 +176,8 @@ class App extends StatelessWidget {
           create: (context) => AuthBloc(
             userManagementUsecase: context.read<UserManagementUsecase>(),
             categoryManagerUsecase: context.read<CategoryManagerUsecase>(),
+            logOutUsecase: context.read<LogOutUsecase>(),
+            streamUsecase: context.read<GetStreamUsecase>(),
           )..add(
               const AuthCheckingStatusRequested(),
             ),

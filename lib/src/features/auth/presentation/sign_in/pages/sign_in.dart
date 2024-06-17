@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_passmanager/src/features/auth/bloc/auth_bloc.dart';
+import 'package:flutter_application_passmanager/src/features/auth/presentation/auth_bloc/bloc/auth_bloc.dart';
 import 'package:flutter_application_passmanager/src/features/form_inputs/form_inputs.dart';
 import 'package:flutter_application_passmanager/src/features/login/login.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';

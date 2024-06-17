@@ -2,7 +2,11 @@ import 'dart:async';
 
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:flutter_application_passmanager/src/features/features.dart';
+import 'package:flutter_application_passmanager/src/core/core.dart';
+import 'package:flutter_application_passmanager/src/features/auth/auth.dart';
+import 'package:flutter_application_passmanager/src/features/auth/domain/domain.dart';
+import 'package:flutter_application_passmanager/src/features/category_manager/category_manager.dart';
+import 'package:flutter_application_passmanager/src/features/login/login.dart';
 
 part 'auth_event.dart';
 part 'auth_state.dart';
@@ -16,17 +20,24 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   AuthBloc({
     required this.userManagementUsecase,
     required this.categoryManagerUsecase,
-  }) : super(const AuthState()) {
+    required LogOutUsecase logOutUsecase,
+    required GetStreamUsecase streamUsecase,
+  })  : _logOutUsecase = logOutUsecase,
+        _streamUsecase = streamUsecase,
+        super(const AuthState()) {
     on<AuthUserLogoutRequested>(_onUserLogoutRequested);
     on<AuthCheckingStatusRequested>(_onCheckingStatusRequested);
     on<AuthUserStatusChanged>(_onUserStatusChanged);
-    _userSubscription = userManagementUsecase.stream.listen(
+    _userSubscription = _streamUsecase.stream.listen(
       (user) => add(AuthUserStatusChanged(userLocalEntity: user)),
     );
   }
 
   final UserManagementUsecase userManagementUsecase;
   final CategoryManagerUsecase categoryManagerUsecase;
+  final LogOutUsecase _logOutUsecase;
+  final GetStreamUsecase _streamUsecase;
+
   late final StreamSubscription<UserLocalEntity> _userSubscription;
 
   /// The function `_onUserStatusChanged` updates the authentication state based on the user status change
@@ -65,7 +76,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     AuthUserLogoutRequested event,
     Emitter<AuthState> emit,
   ) async {
-    await userManagementUsecase.logOut();
+    await _logOutUsecase.call(NoParams());
     emit(state.copyWith(status: AuthStatus.unauthenticated));
   }
 

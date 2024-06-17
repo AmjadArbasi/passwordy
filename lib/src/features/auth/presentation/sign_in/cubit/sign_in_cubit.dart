@@ -1,17 +1,17 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter_application_passmanager/src/features/auth/auth.dart';
 import 'package:flutter_application_passmanager/src/features/form_inputs/form_inputs.dart';
-import 'package:flutter_application_passmanager/src/features/login/login.dart';
 import 'package:formz/formz.dart';
 
 part 'sign_in_state.dart';
 
 class SignInCubit extends Cubit<SignInState> {
-  SignInCubit({required UserManagementUsecase userManagementUsecase})
-      : _userManagementUsecase = userManagementUsecase,
+  SignInCubit({required LogInUsecase logInUsecase})
+      : _logInUsecase = logInUsecase,
         super(const SignInState());
 
-  final UserManagementUsecase _userManagementUsecase;
+  final LogInUsecase _logInUsecase;
 
   void usernameChanged(String value) {
     final username = Username.dirty(value);
@@ -35,10 +35,13 @@ class SignInCubit extends Cubit<SignInState> {
     if (!state.isValid) return;
     emit(state.copyWith(status: FormzSubmissionStatus.inProgress));
 
-    final failureOrUser = await _userManagementUsecase.logIn(
-      state.password.value,
-      state.username.value,
+    final loginParms = LoginParms(
+      username: state.username.value,
+      password: state.password.value,
     );
+
+    final failureOrUser = await _logInUsecase.call(loginParms);
+
     failureOrUser.fold(
       (failure) {
         emit(
@@ -48,7 +51,7 @@ class SignInCubit extends Cubit<SignInState> {
           ),
         );
       },
-      (userLocalEntity) {
+      (_) {
         emit(state.copyWith(
           status: FormzSubmissionStatus.success,
           password: const Password.pure(),
