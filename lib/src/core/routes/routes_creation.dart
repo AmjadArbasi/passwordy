@@ -19,7 +19,7 @@ class Routes {
     GetPage(name: AppRoutes.splash, page: () => const SplashView()),
     GetPage(name: AppRoutes.translator, page: () => const TranslatorPage()),
     GetPage(name: AppRoutes.signIn, page: () => const SignIn()),
-    GetPage(name: AppRoutes.signUp, page: () => const SignUp()),
+    GetPage(name: AppRoutes.signUp, page: () => const CreateUser()),
     GetPage(name: AppRoutes.welcome, page: () => const WelcomePage()),
     GetPage(
         name: AppRoutes.resetPassword, page: () => const ResetMasterPasscode()),

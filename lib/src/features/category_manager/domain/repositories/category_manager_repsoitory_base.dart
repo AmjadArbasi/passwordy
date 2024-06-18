@@ -13,6 +13,9 @@ abstract class CategoryManagerRepositryBase {
   /// a id, name_category, catchwords have (CatchwordEntity) and total
   Stream<List<CategoryEntity>> categoriesList();
 
+  /// Load all categories
+  Future<void> loadAllCategories();
+
   /// Adds a Catchword
   Future<Either<Failure, Unit>> addCatchword(
       CatchwordEntity catchwordEntity, CategoryEntity categoryEntity);

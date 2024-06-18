@@ -12,6 +12,9 @@ class CategoryManagerUsecase {
 
   final CategoryManagerRepositryBase _api;
 
+  /// load all categories
+  Future<void> loadAllCategories() => _api.loadAllCategories();
+
   /// provides a [Stream] of all catchwords
   Stream<List<CategoryEntity>> getCategoriesList() => _api.categoriesList();
 

@@ -6,7 +6,7 @@ import 'package:flutter_application_passmanager/src/core/core.dart';
 import 'package:flutter_application_passmanager/src/features/auth/auth.dart';
 import 'package:flutter_application_passmanager/src/features/auth/domain/domain.dart';
 import 'package:flutter_application_passmanager/src/features/category_manager/category_manager.dart';
-import 'package:flutter_application_passmanager/src/features/login/login.dart';
+import 'package:flutter_application_passmanager/src/features/user_manager/user_manager.dart';
 
 part 'auth_event.dart';
 part 'auth_state.dart';
@@ -18,27 +18,34 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   /// doing:
 
   AuthBloc({
-    required this.userManagementUsecase,
     required this.categoryManagerUsecase,
     required LogOutUsecase logOutUsecase,
     required GetStreamUsecase streamUsecase,
+    required DisposeUsecase disposeUsecase,
+    required CheckSessionUsecase checkSessionUsecase,
+    required CheckOnboardingUsecase checkOnboardingUsecase,
   })  : _logOutUsecase = logOutUsecase,
         _streamUsecase = streamUsecase,
+        _disposeUsecase = disposeUsecase,
+        _checkSessionUsecase = checkSessionUsecase,
+        _checkOnboardingUsecase = checkOnboardingUsecase,
         super(const AuthState()) {
     on<AuthUserLogoutRequested>(_onUserLogoutRequested);
     on<AuthCheckingStatusRequested>(_onCheckingStatusRequested);
     on<AuthUserStatusChanged>(_onUserStatusChanged);
-    _userSubscription = _streamUsecase.stream.listen(
+    _streamUsecase.streamController.listen(
       (user) => add(AuthUserStatusChanged(userLocalEntity: user)),
     );
   }
 
-  final UserManagementUsecase userManagementUsecase;
   final CategoryManagerUsecase categoryManagerUsecase;
   final LogOutUsecase _logOutUsecase;
   final GetStreamUsecase _streamUsecase;
+  final DisposeUsecase _disposeUsecase;
+  final CheckSessionUsecase _checkSessionUsecase;
+  final CheckOnboardingUsecase _checkOnboardingUsecase;
 
-  late final StreamSubscription<UserLocalEntity> _userSubscription;
+  // late final StreamSubscription<UserLocalEntity> _userSubscription;
 
   /// The function `_onUserStatusChanged` updates the authentication state based on the user status change
   /// event.
@@ -53,7 +60,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     AuthUserStatusChanged event,
     Emitter<AuthState> emit,
   ) async {
-    await categoryManagerUsecase.refreshData();
+    // await categoryManagerUsecase.refreshData();
     emit(
       event.userLocalEntity.isNotEmpty
           ? state.copyWith(
@@ -89,32 +96,30 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   /// `Emitter<AuthState>` type. It is used to emit a new state after processing the authentication status
   /// check. In this case, the function emits a new state with updated authentication status and user
   /// information based on the result
+
   Future<void> _onCheckingStatusRequested(
     AuthCheckingStatusRequested event,
     Emitter<AuthState> emit,
   ) async {
-    final failureOrUser = await userManagementUsecase.reAuthLoggedUser();
-    final onboardingCompleted =
-        userManagementUsecase.checkOnboardingCompleted();
+    final failureOrUser = await _checkSessionUsecase.call(NoParams());
+    final onboardingCompletion = _checkOnboardingUsecase.call(NoParams());
 
-    await categoryManagerUsecase.refreshData();
+    AuthStatus? onBoarding;
 
-    AuthStatus? authStatus;
-
-    if (!onboardingCompleted) {
-      authStatus = AuthStatus.onboarding;
+    if (!onboardingCompletion) {
+      onBoarding = AuthStatus.onboarding;
     }
 
     failureOrUser.fold(
       (failure) {
         emit(state.copyWith(
           errorMessage: failure.message,
-          status: authStatus ?? AuthStatus.unauthenticated,
+          status: onBoarding ?? AuthStatus.unauthenticated,
         ));
       },
       (userLocalEntity) {
         emit(state.copyWith(
-          status: authStatus ?? AuthStatus.authenticated,
+          status: onBoarding ?? AuthStatus.authenticated,
           userLocalEntity: userLocalEntity,
         ));
       },
@@ -128,7 +133,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   ///   The `close()` method is returning a `Future<void>`.
   @override
   Future<void> close() {
-    _userSubscription.cancel();
+    // _userSubscription.cancel();
+    _disposeUsecase.call(NoParams());
     return super.close();
   }
 }

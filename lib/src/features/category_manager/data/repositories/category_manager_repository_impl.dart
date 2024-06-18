@@ -10,9 +10,7 @@ class CategoryManagerRepsoitoryImpl extends CategoryManagerRepositryBase {
   /// {@macro category_manager_repository_impl}
   CategoryManagerRepsoitoryImpl({
     required ICategoryManagerApi categoryManagerApi,
-  }) : _categoryManagerApi = categoryManagerApi {
-    _init();
-  }
+  }) : _categoryManagerApi = categoryManagerApi;
 
   final ICategoryManagerApi _categoryManagerApi;
 
@@ -21,7 +19,8 @@ class CategoryManagerRepsoitoryImpl extends CategoryManagerRepositryBase {
   @override
   Stream<List<CategoryEntity>> categoriesList() => _categoriesListController;
 
-  _init() async {
+  @override
+  Future<void> loadAllCategories() async {
     final result = await _categoryManagerApi.loadAllValues();
     result.fold(
       (failure) {

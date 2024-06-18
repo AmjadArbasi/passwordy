@@ -25,7 +25,7 @@ class ManageCategoryBloc
     Emitter<ManageCategoryState> emit,
   ) async {
     emit(state.copyWith(status: ManageCategoryStatus.loading));
-
+    await _categoryManagerUsecase.loadAllCategories();
     await emit.forEach<List<CategoryEntity>>(
       _categoryManagerUsecase.getCategoriesList(),
       onData: (data) => state.copyWith(

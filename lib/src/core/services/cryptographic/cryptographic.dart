@@ -1,2 +1,2 @@
 export 'cipher.dart';
-export 'hash.dart';
+export 'passwordy_hash.dart';

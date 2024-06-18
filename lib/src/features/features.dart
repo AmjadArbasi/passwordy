@@ -6,7 +6,7 @@ export 'skeleton/skeleton.dart';
 export 'splash/splash.dart';
 export 'translator/translator.dart';
 export 'user_manager/user_manager.dart';
-export 'login/login.dart';
 export 'welcome/welcome.dart';
 export 'about/about.dart';
 export 'log_activites/log_activites.dart';
+export 'auth/auth.dart';

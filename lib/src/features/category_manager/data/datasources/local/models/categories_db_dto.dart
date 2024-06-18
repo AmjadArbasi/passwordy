@@ -1,5 +1,5 @@
 import 'package:flutter_application_passmanager/src/features/category_manager/category_manager.dart';
-import 'package:flutter_application_passmanager/src/features/login/login.dart';
+import 'package:flutter_application_passmanager/src/features/user_manager/user_manager.dart';
 import 'package:isar/isar.dart';
 
 part 'categories_db_dto.g.dart';
@@ -14,5 +14,6 @@ class CategoriesDbDto {
   final user = IsarLink<UserLocalDto>();
 
   @override
-  String toString() => 'CategoriesDbDto(id: $id)';
+  String toString() =>
+      'CategoriesDbDto(id: $id, categories: $categories, user: $user)';
 }

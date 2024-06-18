@@ -2,21 +2,25 @@ import 'dart:async';
 
 import 'package:flutter_application_passmanager/src/core/core.dart';
 import 'package:flutter_application_passmanager/src/features/auth/data/datasources/local/i_auth_apis.dart';
-import 'package:flutter_application_passmanager/src/features/login/login.dart';
+import 'package:flutter_application_passmanager/src/features/user_manager/user_manager.dart';
 import 'package:isar/isar.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class AuthApis implements IAuthApis {
   AuthApis({
     required Isar isar,
     required SecureStorage secureStorage,
-    Hash? hash,
+    required SharedPreferences sharedPreferences,
+    PasswordyHash? passwordyHash,
   })  : _isar = isar,
         _secureStorage = secureStorage,
-        _hash = hash ?? Hash();
+        _sharedPreferences = sharedPreferences,
+        _passwordyHash = passwordyHash ?? PasswordyHash();
 
   final Isar _isar;
   final SecureStorage _secureStorage;
-  final Hash _hash;
+  final PasswordyHash _passwordyHash;
+  final SharedPreferences _sharedPreferences;
 
   static const _keySession = GlobalVar.keySession;
 
@@ -28,7 +32,7 @@ class AuthApis implements IAuthApis {
         .findFirst();
 
     if (user != null) {
-      final hashedPassword = _hash.hash(password);
+      final hashedPassword = _passwordyHash.hash(password);
 
       if (hashedPassword == user.masterPassword) {
         user.lastSuccessfulSignIn = DateTime.now();
@@ -52,6 +56,7 @@ class AuthApis implements IAuthApis {
             lastSuccessfulSignIn: lastSuccessfulSignIn,
             lastUnsuccessfulSignIn: lastUnsuccessfulSignIn,
             createdAt: user.createdAt,
+            onboardingCompleted: user.onboardingCompleted,
           );
 
           final session = user.username!;
@@ -82,5 +87,46 @@ class AuthApis implements IAuthApis {
     } catch (_) {
       throw DatabaseException("something-went-wrong");
     }
+  }
+
+  @override
+  Future<UserLocalModel> checkSession() async {
+    final session = await _secureStorage.getToken(_keySession);
+
+    if (session != null) {
+      final user = await _isar.userLocalDtos.getByUsername(session);
+
+      if (user != null) {
+        final lastSuccessfulSignIn =
+            TimeFormatter.dateFormatter(user.lastSuccessfulSignIn);
+
+        final lastUnsuccessfulSignIn =
+            TimeFormatter.dateFormatter(user.lastUnuccessfulSignIn);
+
+        final userModel = UserLocalModel(
+          id: user.id,
+          displayName: user.displayName,
+          username: user.username,
+          securityQuestion: user.securityQuestion,
+          createdAt: user.createdAt,
+          lastSuccessfulSignIn: lastSuccessfulSignIn,
+          lastUnsuccessfulSignIn: lastUnsuccessfulSignIn,
+          onboardingCompleted: user.onboardingCompleted,
+        );
+        return userModel;
+      } else {
+        throw DatabaseException("uesr-not-authorized");
+      }
+    } else {
+      throw DatabaseException("invalid-session");
+    }
+  }
+
+  @override
+  bool checkOnboardingCompleted() {
+    final onboardingCompleted =
+        _sharedPreferences.getBool('onboardingCompleted') ?? false;
+
+    return onboardingCompleted;
   }
 }

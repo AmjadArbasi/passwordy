@@ -1,19 +1,21 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:flutter_application_passmanager/src/features/login/login.dart';
+import 'package:flutter_application_passmanager/src/core/core.dart';
+import 'package:flutter_application_passmanager/src/features/user_manager/user_manager.dart';
 
 part 'user_request_deletion_state.dart';
 
 class UserRequestDeletionCubit extends Cubit<UserRequestDeletionState> {
-  UserRequestDeletionCubit({required UserManagementUsecase usecase})
-      : _usecase = usecase,
+  UserRequestDeletionCubit({required DeleteUserUsecase deleteUserUsecase})
+      : _deleteUserUsecase = deleteUserUsecase,
         super(const UserRequestDeletionState());
 
-  final UserManagementUsecase _usecase;
+  final DeleteUserUsecase _deleteUserUsecase;
 
   Future<void> deleteUserAccountReqeusted() async {
-    state.copyWith(status: UserRequestDeletionStatus.loading);
-    final failureOrSuccess = await _usecase.deleteUser();
+    emit(state.copyWith(status: UserRequestDeletionStatus.loading));
+
+    final failureOrSuccess = await _deleteUserUsecase.call(NoParams());
 
     failureOrSuccess.fold(
       (failure) => emit(state.copyWith(

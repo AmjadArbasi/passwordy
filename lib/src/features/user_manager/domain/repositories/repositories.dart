@@ -1,1 +1,1 @@
-export 'user_manager_repository.dart';
+export 'i_user_manager_repository.dart';

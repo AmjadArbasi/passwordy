@@ -9,7 +9,6 @@ final class UserUpdateInfoState extends Equatable {
     this.secret = const Secret.pure(),
     this.newPassword = const Password.pure(),
     this.isValid = false,
-    this.checkCurrentPassword = false,
     this.errorMessage = "",
   });
 
@@ -20,7 +19,6 @@ final class UserUpdateInfoState extends Equatable {
   final Secret secret;
   final Password newPassword;
   final bool isValid;
-  final bool checkCurrentPassword;
   final String errorMessage;
 
   @override
@@ -32,7 +30,6 @@ final class UserUpdateInfoState extends Equatable {
         secret,
         newPassword,
         isValid,
-        checkCurrentPassword,
         errorMessage,
       ];
 
@@ -40,22 +37,21 @@ final class UserUpdateInfoState extends Equatable {
     FormzSubmissionStatus? status,
     Username? displayName,
     Password? currentPassword,
-    String? securityQuestion,
+    String? Function()? securityQuestion,
     Secret? secret,
     Password? newPassword,
     bool? isValid,
-    bool? checkCurrentPassword,
     String? errorMessage,
   }) {
     return UserUpdateInfoState(
       status: status ?? this.status,
       displayName: displayName ?? this.displayName,
       currentPassword: currentPassword ?? this.currentPassword,
-      securityQuestion: securityQuestion ?? this.securityQuestion,
+      securityQuestion:
+          securityQuestion != null ? securityQuestion() : this.securityQuestion,
       secret: secret ?? this.secret,
       newPassword: newPassword ?? this.newPassword,
       isValid: isValid ?? this.isValid,
-      checkCurrentPassword: checkCurrentPassword ?? this.checkCurrentPassword,
       errorMessage: errorMessage ?? this.errorMessage,
     );
   }

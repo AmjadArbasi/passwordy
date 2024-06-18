@@ -130,7 +130,7 @@ class CurrentPasswordChangedField extends StatelessWidget {
           ),
           onChanged: (currentPassword) => context
               .read<UserUpdateInfoCubit>()
-              .currentPasswordChecked(currentPassword),
+              .currentPassword(currentPassword),
         );
       },
     );

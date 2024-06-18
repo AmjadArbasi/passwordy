@@ -1,5 +1,5 @@
 import 'package:flutter_application_passmanager/src/features/auth/auth.dart';
-import 'package:flutter_application_passmanager/src/features/login/login.dart';
+import 'package:flutter_application_passmanager/src/features/user_manager/user_manager.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 /// 1. [Test Initialization:]

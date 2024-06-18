@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_passmanager/src/core/core.dart';
 import 'package:get/get.dart';
-import 'package:logger/logger.dart';
 
 class TranslatorController extends GetxController {
   late Locale language;
@@ -16,7 +15,6 @@ class TranslatorController extends GetxController {
         ? TAppTheme.lightThemeArabic
         : TAppTheme.lightThemeEnglish;
 
-    Logger().f(locale);
     Get.updateLocale(locale);
   }
 
@@ -24,7 +22,6 @@ class TranslatorController extends GetxController {
   void onInit() {
     String? languageCode =
         internalLocalService.sharedPreferences.getString('languageCode');
-    Logger().f(languageCode);
     if (languageCode == 'ar') {
       language = const Locale('ar');
       themeApp = TAppTheme.lightThemeArabic;

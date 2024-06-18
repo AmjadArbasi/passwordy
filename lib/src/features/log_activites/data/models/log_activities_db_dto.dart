@@ -1,5 +1,5 @@
 import 'package:flutter_application_passmanager/src/features/log_activites/data/models/models.dart';
-import 'package:flutter_application_passmanager/src/features/login/login.dart';
+import 'package:flutter_application_passmanager/src/features/user_manager/user_manager.dart';
 import 'package:isar/isar.dart';
 
 part 'log_activities_db_dto.g.dart';
