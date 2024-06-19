@@ -245,37 +245,4 @@ class UserManagerApis implements IUserManagerApis {
       throw DatabaseException("user-not-found");
     }
   }
-
-  // @override
-  // Future<UserLocalModel> getCurrentLoggedUser() async {
-  //   final session = await _secureStorage.getToken(_keySession);
-
-  //   if (session != null) {
-  //     final user = await _isar.userLocalDtos.getByUsername(session);
-
-  //     if (user != null) {
-  //       final lastSuccessfulSignIn =
-  //           TimeFormatter.dateFormatter(user.lastSuccessfulSignIn);
-
-  //       final lastUnsuccessfulSignIn =
-  //           TimeFormatter.dateFormatter(user.lastUnuccessfulSignIn);
-
-  //       final userModel = UserLocalModel(
-  //         id: user.id,
-  //         displayName: user.displayName,
-  //         username: user.username,
-  //         lastSuccessfulSignIn: lastSuccessfulSignIn,
-  //         lastUnsuccessfulSignIn: lastUnsuccessfulSignIn,
-  //         createdAt: user.createdAt,
-  //         securityQuestion: user.securityQuestion,
-  //         onboardingCompleted: user.onboardingCompleted,
-  //       );
-  //       return userModel;
-  //     } else {
-  //       throw UserManagerException("user-not-found");
-  //     }
-  //   } else {
-  //     throw UserManagerException("user-not-authorized");
-  //   }
-  // }
 }

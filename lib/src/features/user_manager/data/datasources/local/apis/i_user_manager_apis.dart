@@ -18,6 +18,4 @@ abstract class IUserManagerApis {
     required String secret,
     required String newMasterPassword,
   });
-
-  // Future<UserLocalModel> getCurrentLoggedUser();
 }
