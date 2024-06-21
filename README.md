@@ -15,6 +15,11 @@ Passwordy is a secure password manager app meticulously crafted with Flutter to 
 - 👆️ Supports English and Arabic.
 - 👆️ Supports multi user.
 
+## Video demo
+
+[![Watch the video]](https://youtu.be/mhAqiZSIXc4)
+
+
 ## Installation
 1. Clone the repository:
     ```sh
