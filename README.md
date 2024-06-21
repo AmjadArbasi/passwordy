@@ -17,8 +17,7 @@ Passwordy is a secure password manager app meticulously crafted with Flutter to 
 
 ## Video demo
 
-[![Watch the video]](https://youtu.be/mhAqiZSIXc4)
-
+https://github.com/AmjadArbasi/passwordy/assets/111657853/39821d81-12cd-4249-8158-b7e34fb4e46f
 
 ## Installation
 1. Clone the repository:
